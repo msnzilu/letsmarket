@@ -1,0 +1,254 @@
+// app/api/auth/callback/[platform]/route.ts
+// Universal OAuth callback handler for all social platforms
+
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
+import { Platform } from '@/types';
+
+// Platform OAuth configurations
+const PLATFORM_CONFIGS: Record<Platform, {
+    tokenUrl: string;
+    userInfoUrl: string;
+    scope: string;
+}> = {
+    facebook: {
+        tokenUrl: 'https://graph.facebook.com/v18.0/oauth/access_token',
+        userInfoUrl: 'https://graph.facebook.com/me?fields=id,name,picture',
+        scope: 'pages_manage_posts,pages_read_engagement',
+    },
+    instagram: {
+        tokenUrl: 'https://graph.facebook.com/v18.0/oauth/access_token',
+        userInfoUrl: 'https://graph.facebook.com/me?fields=id,name,picture',
+        scope: 'instagram_basic,instagram_content_publish',
+    },
+    x: {
+        tokenUrl: 'https://api.twitter.com/2/oauth2/token',
+        userInfoUrl: 'https://api.twitter.com/2/users/me',
+        scope: 'tweet.read tweet.write users.read',
+    },
+    linkedin: {
+        tokenUrl: 'https://www.linkedin.com/oauth/v2/accessToken',
+        userInfoUrl: 'https://api.linkedin.com/v2/userinfo',
+        scope: 'openid profile w_member_social',
+    },
+    tiktok: {
+        tokenUrl: 'https://open.tiktokapis.com/v2/oauth/token/',
+        userInfoUrl: 'https://open.tiktokapis.com/v2/user/info/',
+        scope: 'user.info.basic,video.publish',
+    },
+    reddit: {
+        tokenUrl: 'https://www.reddit.com/api/v1/access_token',
+        userInfoUrl: 'https://oauth.reddit.com/api/v1/me',
+        scope: 'identity submit',
+    },
+};
+
+async function exchangeCodeForToken(platform: Platform, code: string, redirectUri: string) {
+    const config = PLATFORM_CONFIGS[platform];
+    const clientId = process.env[`${platform.toUpperCase()}_CLIENT_ID`];
+    const clientSecret = process.env[`${platform.toUpperCase()}_CLIENT_SECRET`];
+
+    if (!clientId || !clientSecret) {
+        throw new Error(`Missing OAuth credentials for ${platform}`);
+    }
+
+    let response: Response;
+    let body: Record<string, string>;
+
+    if (platform === 'reddit') {
+        // Reddit uses Basic Auth
+        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        response = await fetch(config.tokenUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Basic ${auth}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                code,
+                redirect_uri: redirectUri,
+            }),
+        });
+    } else if (platform === 'x') {
+        // X uses PKCE
+        response = await fetch(config.tokenUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                grant_type: 'authorization_code',
+                code,
+                redirect_uri: redirectUri,
+                client_id: clientId,
+                code_verifier: 'challenge', // Should be stored from initial auth request
+            }),
+        });
+    } else if (platform === 'tiktok') {
+        response = await fetch(config.tokenUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                client_key: clientId,
+                client_secret: clientSecret,
+                code,
+                grant_type: 'authorization_code',
+                redirect_uri: redirectUri,
+            }),
+        });
+    } else {
+        // Facebook, Instagram, LinkedIn
+        response = await fetch(config.tokenUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                client_id: clientId,
+                client_secret: clientSecret,
+                code,
+                grant_type: 'authorization_code',
+                redirect_uri: redirectUri,
+            }),
+        });
+    }
+
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Token exchange failed: ${error}`);
+    }
+
+    return response.json();
+}
+
+async function fetchUserInfo(platform: Platform, accessToken: string) {
+    const config = PLATFORM_CONFIGS[platform];
+    let url = config.userInfoUrl;
+    let headers: HeadersInit = { 'Authorization': `Bearer ${accessToken}` };
+
+    if (platform === 'facebook' || platform === 'instagram') {
+        url = `${config.userInfoUrl}&access_token=${accessToken}`;
+        headers = {};
+    }
+
+    const response = await fetch(url, { headers });
+
+    if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Failed to fetch user info: ${error}`);
+    }
+
+    return response.json();
+}
+
+export async function GET(
+    request: NextRequest,
+    { params }: { params: Promise<{ platform: string }> }
+) {
+    try {
+        const { platform: platformParam } = await params;
+        const platform = platformParam as Platform;
+        const { searchParams } = new URL(request.url);
+        const code = searchParams.get('code');
+        const error = searchParams.get('error');
+
+        if (error) {
+            return NextResponse.redirect(new URL(`/connections?error=${error}`, request.url));
+        }
+
+        if (!code) {
+            return NextResponse.redirect(new URL('/connections?error=no_code', request.url));
+        }
+
+        if (!PLATFORM_CONFIGS[platform]) {
+            return NextResponse.redirect(new URL('/connections?error=invalid_platform', request.url));
+        }
+
+        const supabase = await createClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError || !user) {
+            return NextResponse.redirect(new URL('/login', request.url));
+        }
+
+        const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/${platform}`;
+
+        // Exchange code for tokens
+        const tokenData = await exchangeCodeForToken(platform, code, redirectUri);
+        const accessToken = tokenData.access_token;
+        const refreshToken = tokenData.refresh_token;
+        const expiresIn = tokenData.expires_in;
+
+        // Fetch user info
+        const userInfo = await fetchUserInfo(platform, accessToken);
+
+        // Normalize user data based on platform
+        let platformUserId: string;
+        let accountName: string;
+        let accountUsername: string | undefined;
+        let accountAvatar: string | undefined;
+
+        switch (platform) {
+            case 'facebook':
+            case 'instagram':
+                platformUserId = userInfo.id;
+                accountName = userInfo.name;
+                accountAvatar = userInfo.picture?.data?.url;
+                break;
+            case 'x':
+                platformUserId = userInfo.data.id;
+                accountName = userInfo.data.name;
+                accountUsername = userInfo.data.username;
+                accountAvatar = userInfo.data.profile_image_url;
+                break;
+            case 'linkedin':
+                platformUserId = userInfo.sub;
+                accountName = userInfo.name;
+                accountAvatar = userInfo.picture;
+                break;
+            case 'tiktok':
+                platformUserId = userInfo.data.user.open_id;
+                accountName = userInfo.data.user.display_name;
+                accountUsername = userInfo.data.user.username;
+                accountAvatar = userInfo.data.user.avatar_url;
+                break;
+            case 'reddit':
+                platformUserId = userInfo.id;
+                accountName = userInfo.name;
+                accountUsername = userInfo.name;
+                accountAvatar = userInfo.icon_img;
+                break;
+            default:
+                throw new Error('Unsupported platform');
+        }
+
+        // Upsert connection
+        const { error: upsertError } = await supabase
+            .from('social_connections')
+            .upsert({
+                user_id: user.id,
+                platform,
+                platform_user_id: platformUserId,
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                token_expires_at: expiresIn
+                    ? new Date(Date.now() + expiresIn * 1000).toISOString()
+                    : null,
+                account_name: accountName,
+                account_username: accountUsername,
+                account_avatar: accountAvatar,
+                is_active: true,
+                updated_at: new Date().toISOString(),
+            }, {
+                onConflict: 'user_id,platform,platform_user_id',
+            });
+
+        if (upsertError) {
+            throw upsertError;
+        }
+
+        return NextResponse.redirect(new URL('/connections?success=connected', request.url));
+    } catch (error: any) {
+        console.error('OAuth callback error:', error);
+        return NextResponse.redirect(
+            new URL(`/connections?error=${encodeURIComponent(error.message)}`, request.url)
+        );
+    }
+}

@@ -1,65 +1,152 @@
-import Image from "next/image";
+// app/page.tsx
 
-export default function Home() {
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Brain, Zap, TrendingUp, Users, CheckCircle } from 'lucide-react';
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="pt-20 pb-32 px-4">
+        <div className="w-full mx-auto text-center">
+          <div className="inline-block mb-4 px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+            Join 500+ marketers optimizing their websites
+          </div>
+
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+            Turn Psychology Into Profits
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+            Analyze your website for 6 core psychology principles and get AI-powered copy
+            that actually converts. See what you're missing in under 2 minutes.
           </p>
+
+          <div className="flex gap-4 justify-center">
+            <Link href="/signup">
+              <Button size="lg" className="text-lg px-8">
+                Analyze Your Website Free
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" variant="outline" className="text-lg px-8">
+                Sign In
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            How It Works
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="p-6 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">1</span>
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Enter Your URL</h3>
+              <p className="text-slate-600">
+                Paste your website URL and our AI scrapes your homepage in seconds
+              </p>
+            </Card>
+
+            <Card className="p-6 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">2</span>
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Get Your Score</h3>
+              <p className="text-slate-600">
+                See how you score on 6 psychology principles that drive conversions
+              </p>
+            </Card>
+
+            <Card className="p-6 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">3</span>
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Implement & Win</h3>
+              <p className="text-slate-600">
+                Copy optimized headlines and CTAs directly into your site
+              </p>
+            </Card>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            What You'll Get
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="p-6 flex gap-4">
+              <Brain className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Psychology Breakdown</h3>
+                <p className="text-slate-600">
+                  Scores for Social Proof, Loss Aversion, Authority, Scarcity, Cognitive Ease, and Pricing Psychology
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-6 flex gap-4">
+              <Zap className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">AI-Generated Copy</h3>
+                <p className="text-slate-600">
+                  5 headline variations and 3 CTA options optimized for conversion
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-6 flex gap-4">
+              <TrendingUp className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Top 10 Recommendations</h3>
+                <p className="text-slate-600">
+                  Prioritized by impact with implementation difficulty ratings
+                </p>
+              </div>
+            </Card>
+
+            <Card className="p-6 flex gap-4">
+              <Users className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Analysis History</h3>
+                <p className="text-slate-600">
+                  Track improvements over time and compare before/after results
+                </p>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-purple-600 to-blue-600">
+        <div className="max-w-4xl mx-auto text-center text-white">
+          <h2 className="text-4xl font-bold mb-6">
+            Ready to Boost Your Conversions?
+          </h2>
+          <p className="text-xl mb-8 opacity-90">
+            Join hundreds of marketers using psychology to optimize their websites
+          </p>
+          <Link href="/signup">
+            <Button size="lg" variant="secondary" className="text-lg px-8">
+              Start Free Analysis Now
+            </Button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

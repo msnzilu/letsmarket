@@ -1,0 +1,58 @@
+# Docker ignore file
+# Prevents unnecessary files from being copied to Docker image
+
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build output
+.next
+out
+build
+
+# Version control
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Environment files (will be injected at runtime)
+.env
+.env.local
+.env.development
+.env.production
+
+# Docker files (not needed inside container)
+Dockerfile*
+docker-compose*.yml
+docker-stack.yml
+.dockerignore
+
+# Documentation
+README.md
+docs
+
+# Tests
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+coverage
+
+# Misc
+.DS_Store
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Supabase local
+supabase/.branches
+supabase/.temp
+
+# SSL certs (mounted separately)
+nginx/ssl
