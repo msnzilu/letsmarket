@@ -24,7 +24,7 @@ export async function GET() {
                     social_connections (
                         platform,
                         account_name,
-                        avatar_url
+                        account_avatar
                     )
                 ),
                 campaign_posts (

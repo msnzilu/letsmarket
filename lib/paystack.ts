@@ -63,6 +63,7 @@ export async function initializeTransaction({
     metadata,
     callback_url,
     plan,
+    currency,
 }: {
     email: string;
     amount: number;
@@ -70,6 +71,7 @@ export async function initializeTransaction({
     metadata?: Record<string, any>;
     callback_url?: string;
     plan?: string;
+    currency?: 'KES' | 'USD';
 }) {
     return paystackRequest<{
         authorization_url: string;
@@ -84,6 +86,7 @@ export async function initializeTransaction({
             metadata,
             callback_url,
             plan,
+            currency,
         }),
     });
 }

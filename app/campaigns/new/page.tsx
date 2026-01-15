@@ -23,7 +23,7 @@ interface Connection {
     id: string;
     platform: string;
     account_name: string;
-    avatar_url?: string;
+    account_avatar?: string;
 }
 
 const SCHEDULE_OPTIONS = [

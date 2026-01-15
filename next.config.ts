@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+
+  // Removing experimental turbopack root which was causing issues
+  // Next.js 15+ should infer the root correctly from package.json position
 };
 
 export default nextConfig;

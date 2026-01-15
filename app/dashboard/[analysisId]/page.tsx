@@ -8,9 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import ScoreCard from '@/components/ScoreCard';
 import CopySection from '@/components/CopySection';
 import Link from 'next/link';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { getScoreColor, getDifficultyColor } from '@/lib/utils';
 import { Analysis, Website } from '@/types';
+import { getEffectivePlan } from '@/lib/subscription';
+import ExportPdfButton from '@/components/ExportPdfButton';
 
 export default async function AnalysisDetailPage({
     params,
@@ -47,6 +49,15 @@ export default async function AnalysisDetailPage({
         redirect('/dashboard');
     }
 
+    // Fetch subscription
+    const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+    const plan = getEffectivePlan(subscription);
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="mb-8">
@@ -64,10 +75,7 @@ export default async function AnalysisDetailPage({
                             Analysis from {new Date(analysisData.created_at).toLocaleDateString()}
                         </p>
                     </div>
-                    <Button variant="outline">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download PDF
-                    </Button>
+                    <ExportPdfButton analysisId={analysisId} plan={plan} />
                 </div>
             </div>
 

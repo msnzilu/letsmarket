@@ -4,7 +4,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { initializeTransaction } from '@/lib/paystack';
-import { PLAN_PRICES, Plan } from '@/lib/subscription';
+import { Plan } from '@/lib/subscription';
+
+// Base prices in USD
+const BASE_PRICES_USD: Record<'free' | 'pro' | 'enterprise', number> = {
+    free: 0,
+    pro: 29,
+    enterprise: 0,
+};
+
+// Approximate USD to KES rate
+const KES_RATE = 130;
 
 export async function POST(request: NextRequest) {
     try {
@@ -15,7 +25,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { plan } = await request.json() as { plan: Plan };
+        const { plan, currency = 'KES' } = await request.json() as { plan: Plan; currency?: 'KES' | 'USD' };
 
         if (!plan || !['pro', 'enterprise'].includes(plan)) {
             return NextResponse.json(
@@ -31,7 +41,14 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const amount = PLAN_PRICES[plan];
+        // Calculate amount in smallest currency unit (cents/cents)
+        const baseUSD = BASE_PRICES_USD[plan];
+        // For KES: convert USD to KES then multiply by 100 (Paystack uses smallest unit)
+        // For USD: multiply by 100 (cents)
+        const amount = currency === 'KES'
+            ? Math.round(baseUSD * KES_RATE * 100)
+            : Math.round(baseUSD * 100);
+
         const reference = `sub_${user.id}_${Date.now()}`;
         const callback_url = `${process.env.NEXT_PUBLIC_APP_URL}/api/subscription/callback`;
 
@@ -40,10 +57,12 @@ export async function POST(request: NextRequest) {
             amount,
             reference,
             callback_url,
+            currency, // Pass currency to Paystack
             metadata: {
                 user_id: user.id,
                 plan,
                 type: 'subscription',
+                currency,
             },
         });
 

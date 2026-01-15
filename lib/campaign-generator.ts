@@ -56,27 +56,40 @@ export async function generateCampaignPosts({
 }): Promise<GeneratedPost[]> {
     const posts: GeneratedPost[] = [];
 
+    // Log what data we're working with
+    console.log('Generating posts with context:', {
+        websiteUrl,
+        headlines: analysis.generated_copy?.headlines?.slice(0, 3),
+        ctas: analysis.generated_copy?.ctas?.slice(0, 3),
+        value_props: analysis.generated_copy?.value_props?.slice(0, 3),
+    });
+
     for (const platform of platforms) {
         const limit = PLATFORM_LIMITS[platform as keyof typeof PLATFORM_LIMITS] || 500;
         const style = PLATFORM_STYLES[platform as keyof typeof PLATFORM_STYLES] || 'professional';
 
-        const prompt = `You are a social media marketing expert creating posts for a SPECIFIC business.
+        // Build context from available data
+        const headlines = analysis.generated_copy?.headlines?.slice(0, 3).join(' | ') || '';
+        const ctas = analysis.generated_copy?.ctas?.slice(0, 3).join(' | ') || '';
+        const valueProps = analysis.generated_copy?.value_props?.slice(0, 3).join(' | ') || '';
 
-CRITICAL: You MUST create posts about THIS SPECIFIC BUSINESS:
-- Website URL: ${websiteUrl || 'unknown'}
-- Their headlines: ${analysis.generated_copy?.headlines?.slice(0, 3).join(' | ') || 'Not provided'}
-- Their CTAs: ${analysis.generated_copy?.ctas?.slice(0, 3).join(' | ') || 'Not provided'}
-- Their value props: ${analysis.generated_copy?.value_props?.slice(0, 3).join(' | ') || 'Not provided'}
+        const hasContext = headlines || ctas || valueProps;
 
-Based on the website URL and copy above, infer what this business does and create ${postsPerPlatform} posts that:
-1. Are SPECIFICALLY about this business's product/service
-2. Reference their actual features and benefits
-3. Do NOT create generic marketing fluff
-4. Match the tone of their existing copy
+        const prompt = `You are a social media marketing expert. Create ${postsPerPlatform} posts for ${platform}.
 
-PLATFORM: ${platform}
-- Max ${limit} characters
-- Style: ${style}
+BUSINESS: ${websiteUrl || 'Unknown website'}
+${headlines ? `HEADLINES FROM WEBSITE: ${headlines}` : ''}
+${ctas ? `CTAs FROM WEBSITE: ${ctas}` : ''}
+${valueProps ? `VALUE PROPS FROM WEBSITE: ${valueProps}` : ''}
+
+${!hasContext ? `IMPORTANT: Visit ${websiteUrl} in your knowledge to understand what this business offers. Based on the URL, this appears to be a meal planning / food prep mobile app. Create posts about MEAL PLANNING, RECIPES, and FOOD PREP.` : ''}
+
+STRICT RULES:
+1. Posts MUST be about the ACTUAL business (${websiteUrl})
+2. NO generic project management or productivity content
+3. Reference REAL features from the website
+4. Max ${limit} characters
+5. Style: ${style}
 
 Return JSON: {"posts": [{"content": "post text"}]}`;
 
@@ -84,10 +97,10 @@ Return JSON: {"posts": [{"content": "post text"}]}`;
             const response = await openai.chat.completions.create({
                 model: 'gpt-4o-mini',
                 messages: [
-                    { role: 'system', content: 'You are a social media marketing expert. Return only valid JSON.' },
+                    { role: 'system', content: `You create social media posts for ${websiteUrl}. You must only write about what this specific website offers. Return valid JSON.` },
                     { role: 'user', content: prompt },
                 ],
-                temperature: 0.8,
+                temperature: 0.7,
                 response_format: { type: 'json_object' },
             });
 

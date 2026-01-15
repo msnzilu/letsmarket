@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, Mail, Calendar, Crown, Settings, LogOut, Pencil, Loader2, Check, X } from 'lucide-react';
+import { ArrowLeft, Mail, Calendar, Crown, Settings, LogOut, Pencil, Loader2, Check, X, Shield, Users, Key, Palette } from 'lucide-react';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 import PlanBadge from '@/components/PlanBadge';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -190,6 +190,36 @@ export default function ProfilePage() {
                 </div>
             </Card>
 
+            {/* Enterprise Settings (Only for Enterprise Plan) */}
+            {plan === 'enterprise' && (
+                <Card className="p-6 mb-6 border-purple-200 bg-purple-50/30">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2 text-purple-900">
+                        <Shield className="w-5 h-5 text-purple-600" />
+                        Enterprise Settings
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <Link href="/settings/team">
+                            <Button variant="outline" className="w-full bg-white hover:bg-purple-50">
+                                <Users className="w-4 h-4 mr-2" />
+                                Team Management
+                            </Button>
+                        </Link>
+                        <Link href="/settings/api-keys">
+                            <Button variant="outline" className="w-full bg-white hover:bg-purple-50">
+                                <Key className="w-4 h-4 mr-2" />
+                                API Access
+                            </Button>
+                        </Link>
+                        <Link href="/settings/branding">
+                            <Button variant="outline" className="w-full bg-white hover:bg-purple-50">
+                                <Palette className="w-4 h-4 mr-2" />
+                                White-Labeling
+                            </Button>
+                        </Link>
+                    </div>
+                </Card>
+            )}
+
             {/* Subscription Card */}
             <Card className="p-6 mb-6">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
@@ -199,7 +229,9 @@ export default function ProfilePage() {
 
                 <div className="flex justify-between items-center">
                     <div>
-                        <p className="font-medium">{plan === 'free' ? 'Free Plan' : 'Pro Plan'}</p>
+                        <p className="font-medium">
+                            {plan === 'enterprise' ? 'Enterprise Plan' : plan === 'pro' ? 'Pro Plan' : 'Free Plan'}
+                        </p>
                         <p className="text-sm text-slate-500">
                             {plan === 'free'
                                 ? 'Limited features'
