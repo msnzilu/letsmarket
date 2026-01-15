@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,15 +19,25 @@ const PLATFORMS: Platform[] = ['facebook', 'instagram', 'x', 'linkedin', 'tiktok
 export default function ConnectionsPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const supabase = createClient();
     const [connections, setConnections] = useState<Partial<SocialConnection>[]>([]);
     const [loading, setLoading] = useState(true);
+    const [authChecked, setAuthChecked] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState<Platform | null>(null);
 
     const successMessage = searchParams.get('success');
     const errorMessage = searchParams.get('error');
 
     useEffect(() => {
-        fetchConnections();
+        // Check auth first
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (!user) {
+                router.push('/login');
+                return;
+            }
+            setAuthChecked(true);
+            fetchConnections();
+        });
     }, []);
 
     const fetchConnections = async () => {
@@ -67,7 +78,7 @@ export default function ConnectionsPage() {
     const connectedCount = connections.length;
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="mb-8">
                 <Link href="/dashboard">
                     <Button variant="ghost" className="mb-4">
@@ -153,38 +164,6 @@ export default function ConnectionsPage() {
                         />
                     ))}
                 </div>
-            )}
-
-            {/* Developer Setup Instructions - only shown in development */}
-            {process.env.NODE_ENV === 'development' && (
-                <Card className="p-6 mt-8 border-dashed border-orange-300 bg-orange-50">
-                    <h3 className="font-semibold mb-3 text-orange-800">🔧 Developer Setup Required</h3>
-                    <p className="text-slate-600 text-sm mb-4">
-                        This message only appears in development. Add OAuth credentials to your{' '}
-                        <code className="bg-slate-100 px-1 rounded">.env.local</code> file to enable social connections.
-                    </p>
-                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg text-xs overflow-x-auto">
-                        {`# Facebook / Instagram (Meta Business)
-NEXT_PUBLIC_FACEBOOK_CLIENT_ID=your_app_id
-FACEBOOK_CLIENT_SECRET=your_app_secret
-
-# X (Twitter)
-NEXT_PUBLIC_X_CLIENT_ID=your_client_id
-X_CLIENT_SECRET=your_client_secret
-
-# LinkedIn
-NEXT_PUBLIC_LINKEDIN_CLIENT_ID=your_client_id
-LINKEDIN_CLIENT_SECRET=your_client_secret
-
-# TikTok
-NEXT_PUBLIC_TIKTOK_CLIENT_ID=your_client_key
-TIKTOK_CLIENT_SECRET=your_client_secret
-
-# Reddit
-NEXT_PUBLIC_REDDIT_CLIENT_ID=your_client_id
-REDDIT_CLIENT_SECRET=your_client_secret`}
-                    </pre>
-                </Card>
             )}
         </div>
     );

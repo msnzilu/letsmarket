@@ -74,7 +74,7 @@ export default async function AnalysisDetailPage({
             {/* Overall Score */}
             <Card className="p-8 mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
                 <div className="text-center">
-                    <p className="text-lg text-slate-600 mb-2">Overall Psychology Score</p>
+                    <p className="text-lg text-slate-600 mb-2">Overall Conversion Score</p>
                     <div className={`text-7xl font-bold mb-4 ${getScoreColor(analysisData.overall_score)}`}>
                         {analysisData.overall_score}
                     </div>
@@ -83,14 +83,14 @@ export default async function AnalysisDetailPage({
                             ? 'Critical - Major improvements needed'
                             : analysisData.overall_score < 70
                                 ? 'Good foundation with room for improvement'
-                                : 'Excellent use of psychology principles'}
+                                : 'Excellent use of persuasion principles'}
                     </p>
                 </div>
             </Card>
 
             {/* Principle Scores */}
             <div className="mb-8">
-                <h2 className="text-2xl font-bold mb-4">Psychology Principles</h2>
+                <h2 className="text-2xl font-bold mb-4">Persuasion Principles</h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Object.values(analysisData.principle_scores).map((principle: any) => (
                         <ScoreCard key={principle.name} principle={principle} />

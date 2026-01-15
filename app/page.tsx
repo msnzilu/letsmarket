@@ -16,12 +16,12 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            Turn Psychology Into Profits
+            Turn Visitors Into Customers
           </h1>
 
           <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-            Analyze your website for 6 core psychology principles and get AI-powered copy
-            that actually converts. See what you're missing in under 2 minutes.
+            Analyze your website for 6 core conversion principles and get AI-powered copy
+            that turns visitors into customers. See what you're missing in under 2 minutes.
           </p>
 
           <div className="flex gap-4 justify-center">
@@ -63,7 +63,7 @@ export default function HomePage() {
               </div>
               <h3 className="font-semibold text-lg mb-2">Get Your Score</h3>
               <p className="text-slate-600">
-                See how you score on 6 psychology principles that drive conversions
+                See how you score on 6 persuasion principles that drive conversions
               </p>
             </Card>
 
@@ -91,9 +91,9 @@ export default function HomePage() {
             <Card className="p-6 flex gap-4">
               <Brain className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold mb-2">Psychology Breakdown</h3>
-                <p className="text-slate-600">
-                  Scores for Social Proof, Loss Aversion, Authority, Scarcity, Cognitive Ease, and Pricing Psychology
+                <h3 className="font-semibold mb-2">Conversion Breakdown</h3>
+                <p className="text-sm text-slate-600">
+                  Scores for Social Proof, Loss Aversion, Authority, Scarcity, Cognitive Ease, and Pricing Strategy
                 </p>
               </div>
             </Card>
@@ -138,7 +138,7 @@ export default function HomePage() {
             Ready to Boost Your Conversions?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join hundreds of marketers using psychology to optimize their websites
+            Join hundreds of marketers using AI to optimize their websites
           </p>
           <Link href="/signup">
             <Button size="lg" variant="secondary" className="text-lg px-8">

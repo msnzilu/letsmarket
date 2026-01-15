@@ -56,11 +56,11 @@ export default function AnalyzePage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 py-12">
-            <Card className="p-8 w-full max-w-2xl">
+            <Card className="p-8 w-full max-w-7xl">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold mb-2">Analyze Your Website</h1>
                     <p className="text-slate-600">
-                        Get psychology-powered insights and optimized copy in under 2 minutes
+                        Get AI-powered insights and optimized copy in under 2 minutes
                     </p>
                 </div>
 

@@ -4,9 +4,13 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
+    // Clone headers and add pathname
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-pathname', request.nextUrl.pathname);
+
     let response = NextResponse.next({
         request: {
-            headers: request.headers,
+            headers: requestHeaders,
         },
     });
 
@@ -26,7 +30,7 @@ export async function middleware(request: NextRequest) {
                     });
                     response = NextResponse.next({
                         request: {
-                            headers: request.headers,
+                            headers: requestHeaders,
                         },
                     });
                     response.cookies.set({
@@ -43,7 +47,7 @@ export async function middleware(request: NextRequest) {
                     });
                     response = NextResponse.next({
                         request: {
-                            headers: request.headers,
+                            headers: requestHeaders,
                         },
                     });
                     response.cookies.set({
@@ -59,7 +63,7 @@ export async function middleware(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
 
     // Protected routes that require authentication
-    const protectedRoutes = ['/dashboard', '/analyze'];
+    const protectedRoutes = ['/dashboard', '/analyze', '/connections', '/posts', '/campaigns', '/profile'];
     const isProtectedRoute = protectedRoutes.some(route =>
         request.nextUrl.pathname.startsWith(route)
     );

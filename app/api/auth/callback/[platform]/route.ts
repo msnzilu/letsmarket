@@ -45,10 +45,21 @@ const PLATFORM_CONFIGS: Record<Platform, {
 
 async function exchangeCodeForToken(platform: Platform, code: string, redirectUri: string) {
     const config = PLATFORM_CONFIGS[platform];
-    const clientId = process.env[`${platform.toUpperCase()}_CLIENT_ID`];
-    const clientSecret = process.env[`${platform.toUpperCase()}_CLIENT_SECRET`];
+
+    // Handle X (Twitter) naming - env vars use X_ prefix
+    let clientId: string | undefined;
+    let clientSecret: string | undefined;
+
+    if (platform === 'x') {
+        clientId = process.env.X_CLIENT_ID || process.env.NEXT_PUBLIC_X_CLIENT_ID;
+        clientSecret = process.env.X_CLIENT_SECRET;
+    } else {
+        clientId = process.env[`${platform.toUpperCase()}_CLIENT_ID`];
+        clientSecret = process.env[`${platform.toUpperCase()}_CLIENT_SECRET`];
+    }
 
     if (!clientId || !clientSecret) {
+        console.error(`Missing credentials for ${platform}. clientId: ${!!clientId}, clientSecret: ${!!clientSecret}`);
         throw new Error(`Missing OAuth credentials for ${platform}`);
     }
 
@@ -71,16 +82,19 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
             }),
         });
     } else if (platform === 'x') {
-        // X uses PKCE
+        // X uses PKCE + Basic Auth
+        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
         response = await fetch(config.tokenUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Basic ${auth}`,
+            },
             body: new URLSearchParams({
                 grant_type: 'authorization_code',
                 code,
                 redirect_uri: redirectUri,
-                client_id: clientId,
-                code_verifier: 'challenge', // Should be stored from initial auth request
+                code_verifier: 'challenge',
             }),
         });
     } else if (platform === 'tiktok') {

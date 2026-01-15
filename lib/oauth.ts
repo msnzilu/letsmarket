@@ -64,6 +64,16 @@ export function getOAuthUrl(platform: Platform): string {
 }
 
 function getClientId(platform: Platform): string {
+    // X uses different env var naming
+    if (platform === 'x') {
+        const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID || process.env.X_CLIENT_ID;
+        if (!clientId) {
+            console.warn('Missing X_CLIENT_ID or NEXT_PUBLIC_X_CLIENT_ID environment variable');
+            return '';
+        }
+        return clientId;
+    }
+
     const envKey = `NEXT_PUBLIC_${platform.toUpperCase()}_CLIENT_ID`;
     const clientId = process.env[envKey];
 

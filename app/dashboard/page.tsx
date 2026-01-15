@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { TrendingUp } from 'lucide-react';
 import { Website, Analysis } from '@/types';
 import AnalysisCard from '@/components/AnalysisCard';
+import DashboardStats from '@/components/DashboardStats';
 
 export default async function DashboardPage() {
     const supabase = await createClient();
@@ -33,14 +34,24 @@ export default async function DashboardPage() {
     }
 
     const websitesWithAnalyses = (websites || []) as (Website & { analyses: Analysis[] })[];
+    const totalAnalyses = websitesWithAnalyses.reduce(
+        (acc, w) => acc + (w.analyses?.length || 0),
+        0
+    );
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-12">
+            {/* Stats Section */}
+            <DashboardStats
+                websiteCount={websitesWithAnalyses.length}
+                analysisCount={totalAnalyses}
+            />
+
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-bold mb-2">Your Websites</h1>
                     <p className="text-slate-600">
-                        {websitesWithAnalyses.length} / 3 websites analyzed (Free Tier)
+                        Analyze websites and generate high-converting copy
                     </p>
                 </div>
                 <Link href="/analyze">
@@ -56,7 +67,7 @@ export default async function DashboardPage() {
                     <TrendingUp className="w-16 h-16 mx-auto mb-4 text-slate-300" />
                     <h2 className="text-xl font-semibold mb-2">No websites analyzed yet</h2>
                     <p className="text-slate-600 mb-6">
-                        Start by analyzing your first website to get psychology-powered insights
+                        Start by analyzing your first website to get AI-powered insights
                     </p>
                     <Link href="/analyze">
                         <Button>Analyze Your First Website</Button>

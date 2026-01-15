@@ -3,6 +3,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,12 +14,23 @@ import Link from 'next/link';
 import { ScheduledPost, Platform, PLATFORM_CONFIG } from '@/types';
 
 export default function PostsPage() {
+    const router = useRouter();
+    const supabase = createClient();
     const [posts, setPosts] = useState<ScheduledPost[]>([]);
     const [loading, setLoading] = useState(true);
+    const [authChecked, setAuthChecked] = useState(false);
     const [publishingId, setPublishingId] = useState<string | null>(null);
 
     useEffect(() => {
-        fetchPosts();
+        // Check auth first
+        supabase.auth.getUser().then(({ data: { user } }) => {
+            if (!user) {
+                router.push('/login');
+                return;
+            }
+            setAuthChecked(true);
+            fetchPosts();
+        });
     }, []);
 
     const fetchPosts = async () => {
@@ -108,7 +121,7 @@ export default function PostsPage() {
     const draftPosts = posts.filter(p => p.status === 'draft');
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-7xl mx-auto px-4 py-12">
             <div className="mb-8">
                 <Link href="/dashboard">
                     <Button variant="ghost" className="mb-4">
