@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ChatBot from "@/components/ChatBot";
 import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,6 +37,7 @@ export default async function RootLayout({
           {children}
         </main>
         {!isAuthPage && <Footer />}
+        <ChatBot />
       </body>
     </html>
   );

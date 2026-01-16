@@ -1,8 +1,8 @@
 // lib/principles-data.ts
 // Centralized data for all persuasion principles
 
-import { 
-    Users, Shield, Award, Clock, Sparkles, DollarSign, 
+import {
+    Users, Shield, Award, Clock, Sparkles, DollarSign,
     Quote, AlertTriangle, BookOpen, Package, Eye, Zap,
     CheckCircle, TrendingUp, Target, Percent, Users2, AlertCircle
 } from 'lucide-react';
@@ -647,5 +647,16 @@ export function getAllPrincipleSlugs(): string[] {
 
 // Map principle name to slug (for ScoreCard component)
 export function getPrincipleSlug(name: string): string {
-    return name.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and');
+    const n = name.toLowerCase();
+    if (n.includes('scarcity')) return 'scarcity';
+    if (n.includes('social proof')) return 'social-proof';
+    if (n.includes('loss aversion')) return 'loss-aversion';
+    if (n.includes('authority')) return 'authority';
+    if (n.includes('cognitive ease')) return 'cognitive-ease';
+    if (n.includes('pricing psychology')) return 'pricing-psychology';
+
+    return n.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/&/g, 'and')
+        .replace(/\//g, '-');
 }
