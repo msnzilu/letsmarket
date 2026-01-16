@@ -27,9 +27,9 @@ const features = [
         color: 'text-yellow-500'
     },
     {
-        title: 'Team Collaboration',
-        description: 'Invite up to 5 team members to manage your campaigns.',
-        icon: Users,
+        title: 'Priority Support',
+        description: 'Get help within 2 hours with a dedicated success manager.',
+        icon: Shield,
         color: 'text-purple-500'
     }
 ];
@@ -73,10 +73,12 @@ export default function UpgradeModal() {
                                             <div className="w-12 h-12 bg-white/20 rounded-2xl backdrop-blur-md flex items-center justify-center mb-6">
                                                 <Rocket size={24} />
                                             </div>
-                                            <h2 className="text-3xl font-bold mb-2">Upgrade to Pro</h2>
-                                            <p className="text-indigo-100 text-sm">
+                                            <Dialog.Title className="text-3xl font-bold mb-2">
+                                                Upgrade to Pro
+                                            </Dialog.Title>
+                                            <Dialog.Description className="text-indigo-100 text-sm">
                                                 Unlock the full potential of AI-driven marketing and scale your results.
-                                            </p>
+                                            </Dialog.Description>
                                         </div>
 
                                         <div className="space-y-4 mt-8">

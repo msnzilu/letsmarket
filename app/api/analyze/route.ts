@@ -142,9 +142,8 @@ export async function POST(request: NextRequest) {
         });
 
         if (rpcError) {
-            console.error('Failed to increment usage:', rpcError);
-            // We don't necessarily want to fail the whole request if just tracking fails,
-            // but for debugging, we need to know.
+            console.error('CRITICAL: Failed to increment usage tracking. Ensure migration 007 is applied:', rpcError);
+            throw new Error('System error: Unable to track usage. Please apply migration 007 to your database.');
         }
 
         return NextResponse.json({

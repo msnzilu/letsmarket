@@ -33,6 +33,7 @@ export default function AnalyzePage() {
                     setUsage(data.usage);
                     if (data.usage.analyses_count >= data.limits.analyses_total) {
                         setLimitReached(true);
+                        onOpen(); // Automatically trigger modal
                     }
                 }
             } catch (err) {
@@ -46,6 +47,8 @@ export default function AnalyzePage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (fetchingUsage) return; // Wait for limits to load
 
         if (limitReached) {
             onOpen(); // Trigger the upgrade modal
@@ -163,12 +166,17 @@ export default function AnalyzePage() {
                         <Button
                             type="submit"
                             className="w-full h-14 text-lg bg-slate-900 hover:bg-slate-800 transition-all rounded-xl shadow-lg hover:shadow-xl disabled:bg-slate-300"
-                            disabled={loading || limitReached}
+                            disabled={loading || limitReached || fetchingUsage}
                         >
                             {loading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 mr-3 animate-spin" />
                                     Analyzing Architecture...
+                                </>
+                            ) : fetchingUsage ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 mr-3 animate-spin" />
+                                    Checking account...
                                 </>
                             ) : (
                                 'Start AI Analysis'
