@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Plus, Megaphone, ArrowLeft } from 'lucide-react';
 import CampaignCard from '@/components/CampaignCard';
+import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 
 interface Campaign {
     id: string;
@@ -35,6 +36,8 @@ export default function CampaignsPage() {
     const supabase = createClient();
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
+    const [limits, setLimits] = useState<any>(null);
+    const { onOpen } = useUpgradeModal();
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }) => {
@@ -48,11 +51,12 @@ export default function CampaignsPage() {
 
     const fetchCampaigns = async () => {
         try {
-            const res = await fetch('/api/campaigns');
+            const res = await fetch('/api/subscription');
             const data = await res.json();
-            setCampaigns(data.campaigns || []);
+            setCampaigns(data.usage?.campaigns || []);
+            setLimits(data.limits);
         } catch (error) {
-            console.error('Error fetching campaigns:', error);
+            console.error('Error fetching campaigns/limits:', error);
         } finally {
             setLoading(false);
         }
@@ -93,12 +97,19 @@ export default function CampaignsPage() {
                             Automate your social media posting with AI-generated content
                         </p>
                     </div>
-                    <Link href="/campaigns/new">
-                        <Button size="lg">
-                            <Plus className="w-4 h-4 mr-2" />
-                            New Campaign
-                        </Button>
-                    </Link>
+                    <div onClick={(e) => {
+                        if (limits && limits.posts_per_month === 0) {
+                            e.preventDefault();
+                            onOpen();
+                        }
+                    }}>
+                        <Link href="/campaigns/new">
+                            <Button size="lg">
+                                <Plus className="w-4 h-4 mr-2" />
+                                New Campaign
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
 

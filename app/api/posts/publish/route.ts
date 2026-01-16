@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { Platform } from '@/types';
+import { decrypt } from '@/lib/encryption';
 
 // Platform-specific publish functions
 async function publishToFacebook(accessToken: string, content: string): Promise<{ postId: string; postUrl: string }> {
@@ -166,19 +167,19 @@ export async function POST(request: NextRequest) {
             switch (connection.platform as Platform) {
                 case 'facebook':
                 case 'instagram': // Instagram uses Facebook Graph API
-                    result = await publishToFacebook(connection.access_token, post.content);
+                    result = await publishToFacebook(decrypt(connection.access_token), post.content);
                     break;
                 case 'x':
-                    result = await publishToX(connection.access_token, post.content);
+                    result = await publishToX(decrypt(connection.access_token), post.content);
                     break;
                 case 'linkedin':
-                    result = await publishToLinkedIn(connection.access_token, post.content, connection.platform_user_id);
+                    result = await publishToLinkedIn(decrypt(connection.access_token), post.content, connection.platform_user_id);
                     break;
                 case 'tiktok':
-                    result = await publishToTikTok(connection.access_token, post.content);
+                    result = await publishToTikTok(decrypt(connection.access_token), post.content);
                     break;
                 case 'reddit':
-                    result = await publishToReddit(connection.access_token, post.content);
+                    result = await publishToReddit(decrypt(connection.access_token), post.content);
                     break;
                 default:
                     throw new Error(`Unsupported platform: ${connection.platform}`);

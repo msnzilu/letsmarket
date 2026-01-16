@@ -11,11 +11,15 @@ export async function scrapeWebsite(url: string): Promise<string> {
             headers: {
                 'Accept': 'text/plain'
             },
-            timeout: 30000 // 30 second timeout
+            timeout: 60000 // 60 second timeout
         });
 
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
+        if (error.code === 'ECONNABORTED') {
+            console.error('Scraping timeout error:', error);
+            throw new Error('Analysis is taking longer than expected. Please try again in a moment.');
+        }
         console.error('Scraping error:', error);
         throw new Error('Failed to scrape website. Please check the URL and try again.');
     }

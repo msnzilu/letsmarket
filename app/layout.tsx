@@ -6,6 +6,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
+import UpgradeModal from "@/components/UpgradeModal";
 import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -38,6 +39,7 @@ export default async function RootLayout({
         </main>
         {!isAuthPage && <Footer />}
         <ChatBot />
+        <UpgradeModal />
       </body>
     </html>
   );

@@ -13,6 +13,7 @@ import Link from 'next/link';
 import SocialConnectionCard from '@/components/SocialConnectionCard';
 import { Platform, SocialConnection, PLATFORM_CONFIG } from '@/types';
 import { getOAuthUrl } from '@/lib/oauth';
+import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 
 const PLATFORMS: Platform[] = ['facebook', 'instagram', 'x', 'linkedin', 'tiktok', 'reddit'];
 
@@ -24,6 +25,8 @@ export default function ConnectionsPage() {
     const [loading, setLoading] = useState(true);
     const [authChecked, setAuthChecked] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState<Platform | null>(null);
+    const [limits, setLimits] = useState<any>(null);
+    const { onOpen } = useUpgradeModal();
 
     const successMessage = searchParams.get('success');
     const errorMessage = searchParams.get('error');
@@ -57,17 +60,22 @@ export default function ConnectionsPage() {
 
     const fetchConnections = async () => {
         try {
-            const res = await fetch('/api/connections');
+            const res = await fetch('/api/subscription');
             const data = await res.json();
-            setConnections(data.connections || []);
+            setConnections(data.connections || data.usage?.connections || []);
+            setLimits(data.limits);
         } catch (error) {
-            console.error('Error fetching connections:', error);
+            console.error('Error fetching connections/limits:', error);
         } finally {
             setLoading(false);
         }
     };
 
     const handleConnect = (platform: Platform) => {
+        if (limits && limits.social_accounts === 0) {
+            onOpen();
+            return;
+        }
         setConnectingPlatform(platform);
         const authUrl = getOAuthUrl(platform);
         window.location.href = authUrl;

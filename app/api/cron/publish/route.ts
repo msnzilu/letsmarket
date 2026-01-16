@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { publishPost } from '@/lib/social-publishers';
+import { decrypt } from '@/lib/encryption';
 
 // This endpoint should be protected by a secret key in production
 // export const dynamic = 'force-dynamic';
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
                 const publishResult = await publishPost(
                     post.platform,
                     post.content,
-                    connection.access_token
+                    decrypt(connection.access_token)
                 );
 
                 // 5. Update post status to 'published'

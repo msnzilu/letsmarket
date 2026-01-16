@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, Loader2, Lock } from 'lucide-react';
 import { Plan } from '@/lib/subscription';
+import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 
 interface ExportPdfButtonProps {
     analysisId: string;
@@ -13,12 +14,13 @@ interface ExportPdfButtonProps {
 
 export default function ExportPdfButton({ analysisId, plan }: ExportPdfButtonProps) {
     const [loading, setLoading] = useState(false);
+    const { onOpen } = useUpgradeModal();
 
     const isPro = plan === 'pro' || plan === 'enterprise';
 
     const handleExport = async () => {
         if (!isPro) {
-            alert('PDF Export is a Pro feature. Please upgrade your plan to download reports.');
+            onOpen();
             return;
         }
 

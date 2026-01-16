@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { Platform } from '@/types';
+import { encrypt } from '@/lib/encryption';
 
 // Platform OAuth configurations
 const PLATFORM_CONFIGS: Record<Platform, {
@@ -244,8 +245,8 @@ export async function GET(
                 user_id: user.id,
                 platform,
                 platform_user_id: platformUserId,
-                access_token: accessToken,
-                refresh_token: refreshToken,
+                access_token: encrypt(accessToken),
+                refresh_token: refreshToken ? encrypt(refreshToken) : null,
                 token_expires_at: expiresIn
                     ? new Date(Date.now() + expiresIn * 1000).toISOString()
                     : null,
