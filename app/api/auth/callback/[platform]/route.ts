@@ -54,14 +54,18 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
         clientId = process.env.X_CLIENT_ID || process.env.NEXT_PUBLIC_X_CLIENT_ID;
         clientSecret = process.env.X_CLIENT_SECRET;
     } else {
-        clientId = process.env[`${platform.toUpperCase()}_CLIENT_ID`];
-        clientSecret = process.env[`${platform.toUpperCase()}_CLIENT_SECRET`];
+        const upperPlatform = platform.toUpperCase();
+        // Check both NEXT_PUBLIC_ and non-prefixed versions
+        clientId = process.env[`NEXT_PUBLIC_${upperPlatform}_CLIENT_ID`] || process.env[`${upperPlatform}_CLIENT_ID`];
+        clientSecret = process.env[`${upperPlatform}_CLIENT_SECRET`];
     }
 
     if (!clientId || !clientSecret) {
         console.error(`Missing credentials for ${platform}. clientId: ${!!clientId}, clientSecret: ${!!clientSecret}`);
         throw new Error(`Missing OAuth credentials for ${platform}`);
     }
+
+    console.log(`[${platform}] Exchanging code for token with client_id: ${clientId.substring(0, 10)}...`);
 
     let response: Response;
     let body: Record<string, string>;

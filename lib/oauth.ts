@@ -51,6 +51,13 @@ export function getOAuthUrl(platform: Platform): string {
     const clientId = getClientId(platform);
     const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/${platform}`;
 
+    if (!clientId) {
+        console.error(`[${platform}] Missing client_id for OAuth URL generation`);
+        throw new Error(`Missing client_id for ${platform}`);
+    }
+
+    console.log(`[${platform}] Generating OAuth URL with client_id: ${clientId.substring(0, 10)}...`);
+
     const params = new URLSearchParams({
         client_id: clientId,
         redirect_uri: redirectUri,
@@ -64,21 +71,32 @@ export function getOAuthUrl(platform: Platform): string {
 }
 
 function getClientId(platform: Platform): string {
-    // X uses different env var naming
-    if (platform === 'x') {
-        const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID || process.env.X_CLIENT_ID;
-        if (!clientId) {
-            console.warn('Missing X_CLIENT_ID or NEXT_PUBLIC_X_CLIENT_ID environment variable');
-            return '';
-        }
-        return clientId;
+    let clientId: string | undefined;
+
+    // Must use explicit env var names for Next.js bundler to inline them
+    switch (platform) {
+        case 'x':
+            clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID;
+            break;
+        case 'facebook':
+            clientId = process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID;
+            break;
+        case 'instagram':
+            clientId = process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID; // Instagram uses Facebook app
+            break;
+        case 'linkedin':
+            clientId = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID;
+            break;
+        case 'tiktok':
+            clientId = process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID;
+            break;
+        case 'reddit':
+            clientId = process.env.NEXT_PUBLIC_REDDIT_CLIENT_ID;
+            break;
     }
 
-    const envKey = `NEXT_PUBLIC_${platform.toUpperCase()}_CLIENT_ID`;
-    const clientId = process.env[envKey];
-
     if (!clientId) {
-        console.warn(`Missing ${envKey} environment variable`);
+        console.error(`Missing NEXT_PUBLIC_${platform.toUpperCase()}_CLIENT_ID environment variable`);
         return '';
     }
 

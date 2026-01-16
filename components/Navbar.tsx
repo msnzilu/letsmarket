@@ -3,6 +3,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
@@ -55,7 +56,13 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg" />
+                        <Image 
+                            src="/logo/logo.png" 
+                            alt="LetsMarket Logo" 
+                            width={150} 
+                            height={100}
+                            className="w-8 h-8 object-contain"
+                        />
                         <span className="font-bold text-xl">LetsMarket</span>
                     </Link>
 

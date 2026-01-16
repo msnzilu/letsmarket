@@ -28,6 +28,21 @@ export default function ConnectionsPage() {
     const successMessage = searchParams.get('success');
     const errorMessage = searchParams.get('error');
 
+    // Auto-dismiss success/error messages after 5 seconds
+    useEffect(() => {
+        if (successMessage || errorMessage) {
+            const timer = setTimeout(() => {
+                // Remove query params from URL without reloading
+                const url = new URL(window.location.href);
+                url.searchParams.delete('success');
+                url.searchParams.delete('error');
+                router.replace(url.pathname + url.search);
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage, errorMessage, router]);
+
     useEffect(() => {
         // Check auth first
         supabase.auth.getUser().then(({ data: { user } }) => {
