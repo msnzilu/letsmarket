@@ -5,11 +5,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/paystack';
 import { createClient } from '@supabase/supabase-js';
 
-// Use service role for webhook (no user context)
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Lazy initialize Supabase client to avoid build-time errors
+function getSupabaseClient() {
+    return createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+}
 
 export async function POST(request: NextRequest) {
     const signature = request.headers.get('x-paystack-signature');
@@ -66,6 +68,7 @@ async function handleChargeSuccess(data: any) {
     const plan = metadata.plan || 'pro';
 
     // Update subscription
+    const supabase = getSupabaseClient();
     await supabase
         .from('subscriptions')
         .upsert({
@@ -96,6 +99,7 @@ async function handleSubscriptionCreated(data: any) {
     const { customer, subscription_code, plan, next_payment_date } = data;
 
     // Find user by customer email
+    const supabase = getSupabaseClient();
     const { data: users } = await supabase
         .from('subscriptions')
         .select('user_id')
@@ -116,6 +120,7 @@ async function handleSubscriptionCreated(data: any) {
 async function handleSubscriptionCanceled(data: any) {
     const { subscription_code } = data;
 
+    const supabase = getSupabaseClient();
     await supabase
         .from('subscriptions')
         .update({
@@ -128,6 +133,7 @@ async function handleSubscriptionCanceled(data: any) {
 async function handlePaymentFailed(data: any) {
     const { subscription } = data;
 
+    const supabase = getSupabaseClient();
     await supabase
         .from('subscriptions')
         .update({
