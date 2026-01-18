@@ -131,6 +131,7 @@ export default function PricingPage() {
     const getButtonText = (planId: string, cta: string) => {
         if (currentPlan === planId) return 'Current Plan';
         if (planId === 'free' && currentPlan !== 'free') return 'Downgrade';
+        if (currentPlan === 'free' && planId === 'pro') return 'Upgrade';
         return cta;
     };
 

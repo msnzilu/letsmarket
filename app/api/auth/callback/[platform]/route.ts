@@ -222,6 +222,22 @@ export async function GET(
             return NextResponse.redirect(new URL('/login', request.url));
         }
 
+        // Premium Check
+        const { data: subscription } = await supabase
+            .from('subscriptions')
+            .select('plan, status')
+            .eq('user_id', user.id)
+            .single();
+
+        const { getEffectivePlan } = await import('@/lib/subscription');
+        const plan = getEffectivePlan(subscription as any);
+
+        if (plan === 'free') {
+            return NextResponse.redirect(
+                new URL('/pricing?error=pro_required', request.url)
+            );
+        }
+
         const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/${platform}`;
 
         // Exchange code for tokens

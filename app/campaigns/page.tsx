@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Plus, Megaphone, ArrowLeft } from 'lucide-react';
 import CampaignCard from '@/components/CampaignCard';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
+import { PremiumGate } from '@/components/PremiumGate';
 
 interface Campaign {
     id: string;
@@ -81,97 +82,99 @@ export default function CampaignsPage() {
     const otherCampaigns = campaigns.filter(c => c.status !== 'active');
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-12">
-            <div className="mb-8">
-                <Link href="/dashboard">
-                    <Button variant="ghost" className="mb-4">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Dashboard
-                    </Button>
-                </Link>
-
-                <div className="flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold mb-2">Campaigns</h1>
-                        <p className="text-slate-600">
-                            Automate your social media posting with AI-generated content
-                        </p>
-                    </div>
-                    <div onClick={(e) => {
-                        if (limits && limits.posts_per_month === 0) {
-                            e.preventDefault();
-                            onOpen();
-                        }
-                    }}>
-                        <Link href="/campaigns/new">
-                            <Button size="lg">
-                                <Plus className="w-4 h-4 mr-2" />
-                                New Campaign
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </div>
-
-            {loading ? (
-                <div className="space-y-4">
-                    {[1, 2].map(i => (
-                        <Card key={i} className="p-6 animate-pulse">
-                            <div className="h-6 bg-slate-200 rounded w-1/3 mb-3" />
-                            <div className="h-4 bg-slate-200 rounded w-1/2" />
-                        </Card>
-                    ))}
-                </div>
-            ) : campaigns.length === 0 ? (
-                <Card className="p-12 text-center">
-                    <Megaphone className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-                    <h2 className="text-xl font-semibold mb-2">No campaigns yet</h2>
-                    <p className="text-slate-600 mb-6">
-                        Create your first campaign to start automating your social media posts
-                    </p>
-                    <Link href="/campaigns/new">
-                        <Button>Create Your First Campaign</Button>
+        <PremiumGate>
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="mb-8">
+                    <Link href="/dashboard">
+                        <Button variant="ghost" className="mb-4">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back to Dashboard
+                        </Button>
                     </Link>
-                </Card>
-            ) : (
-                <div className="space-y-8">
-                    {/* Active Campaigns */}
-                    {activeCampaigns.length > 0 && (
-                        <div>
-                            <h2 className="text-lg font-semibold mb-4 text-green-700">
-                                Active Campaigns ({activeCampaigns.length})
-                            </h2>
-                            <div className="space-y-4">
-                                {activeCampaigns.map(campaign => (
-                                    <CampaignCard
-                                        key={campaign.id}
-                                        campaign={campaign}
-                                        onStatusChange={handleStatusChange}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    )}
 
-                    {/* Other Campaigns */}
-                    {otherCampaigns.length > 0 && (
+                    <div className="flex justify-between items-center">
                         <div>
-                            <h2 className="text-lg font-semibold mb-4 text-slate-600">
-                                {activeCampaigns.length > 0 ? 'Other Campaigns' : 'All Campaigns'} ({otherCampaigns.length})
-                            </h2>
-                            <div className="space-y-4">
-                                {otherCampaigns.map(campaign => (
-                                    <CampaignCard
-                                        key={campaign.id}
-                                        campaign={campaign}
-                                        onStatusChange={handleStatusChange}
-                                    />
-                                ))}
-                            </div>
+                            <h1 className="text-3xl font-bold mb-2">Campaigns</h1>
+                            <p className="text-slate-600">
+                                Automate your social media posting with AI-generated content
+                            </p>
                         </div>
-                    )}
+                        <div onClick={(e) => {
+                            if (limits && limits.posts_per_month === 0) {
+                                e.preventDefault();
+                                onOpen();
+                            }
+                        }}>
+                            <Link href="/campaigns/new">
+                                <Button size="lg">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    New Campaign
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
-            )}
-        </div>
+
+                {loading ? (
+                    <div className="space-y-4">
+                        {[1, 2].map(i => (
+                            <Card key={i} className="p-6 animate-pulse">
+                                <div className="h-6 bg-slate-200 rounded w-1/3 mb-3" />
+                                <div className="h-4 bg-slate-200 rounded w-1/2" />
+                            </Card>
+                        ))}
+                    </div>
+                ) : campaigns.length === 0 ? (
+                    <Card className="p-12 text-center">
+                        <Megaphone className="w-16 h-16 mx-auto mb-4 text-slate-300" />
+                        <h2 className="text-xl font-semibold mb-2">No campaigns yet</h2>
+                        <p className="text-slate-600 mb-6">
+                            Create your first campaign to start automating your social media posts
+                        </p>
+                        <Link href="/campaigns/new">
+                            <Button>Create Your First Campaign</Button>
+                        </Link>
+                    </Card>
+                ) : (
+                    <div className="space-y-8">
+                        {/* Active Campaigns */}
+                        {activeCampaigns.length > 0 && (
+                            <div>
+                                <h2 className="text-lg font-semibold mb-4 text-green-700">
+                                    Active Campaigns ({activeCampaigns.length})
+                                </h2>
+                                <div className="space-y-4">
+                                    {activeCampaigns.map(campaign => (
+                                        <CampaignCard
+                                            key={campaign.id}
+                                            campaign={campaign}
+                                            onStatusChange={handleStatusChange}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Other Campaigns */}
+                        {otherCampaigns.length > 0 && (
+                            <div>
+                                <h2 className="text-lg font-semibold mb-4 text-slate-600">
+                                    {activeCampaigns.length > 0 ? 'Other Campaigns' : 'All Campaigns'} ({otherCampaigns.length})
+                                </h2>
+                                <div className="space-y-4">
+                                    {otherCampaigns.map(campaign => (
+                                        <CampaignCard
+                                            key={campaign.id}
+                                            campaign={campaign}
+                                            onStatusChange={handleStatusChange}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </PremiumGate>
     );
 }

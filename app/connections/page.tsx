@@ -14,6 +14,7 @@ import SocialConnectionCard from '@/components/SocialConnectionCard';
 import { Platform, SocialConnection, PLATFORM_CONFIG } from '@/types';
 import { getOAuthUrl } from '@/lib/oauth';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
+import { PremiumGate } from '@/components/PremiumGate';
 
 const PLATFORMS: Platform[] = ['x', 'linkedin'];
 
@@ -112,94 +113,96 @@ export default function ConnectionsPage() {
     const connectedCount = connections.length;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-12">
-            <div className="mb-8">
-                <Link href="/dashboard">
-                    <Button variant="ghost" className="mb-4">
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Dashboard
-                    </Button>
-                </Link>
+        <PremiumGate>
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <div className="mb-8">
+                    <Link href="/dashboard">
+                        <Button variant="ghost" className="mb-4">
+                            <ArrowLeft className="w-4 h-4 mr-2" />
+                            Back to Dashboard
+                        </Button>
+                    </Link>
 
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h1 className="text-3xl font-bold mb-2">Social Connections</h1>
-                        <p className="text-slate-600">
-                            Connect your social media accounts to publish content
-                        </p>
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h1 className="text-3xl font-bold mb-2">Social Connections</h1>
+                            <p className="text-slate-600">
+                                Connect your social media accounts to publish content
+                            </p>
+                        </div>
+                        {connectedCount > 0 && (
+                            <Badge variant="secondary" className="text-lg px-4 py-2">
+                                {connectedCount} Connected
+                            </Badge>
+                        )}
                     </div>
-                    {connectedCount > 0 && (
-                        <Badge variant="secondary" className="text-lg px-4 py-2">
-                            {connectedCount} Connected
-                        </Badge>
-                    )}
                 </div>
-            </div>
 
-            {/* Status Messages */}
-            {successMessage && (
-                <Card className="p-4 mb-6 bg-green-50 border-green-200">
-                    <div className="flex items-center gap-3">
-                        <Check className="w-5 h-5 text-green-600" />
-                        <p className="text-green-800">
-                            {successMessage === 'connected' && 'Account connected successfully!'}
-                        </p>
-                    </div>
+                {/* Status Messages */}
+                {successMessage && (
+                    <Card className="p-4 mb-6 bg-green-50 border-green-200">
+                        <div className="flex items-center gap-3">
+                            <Check className="w-5 h-5 text-green-600" />
+                            <p className="text-green-800">
+                                {successMessage === 'connected' && 'Account connected successfully!'}
+                            </p>
+                        </div>
+                    </Card>
+                )}
+
+                {errorMessage && (
+                    <Card className="p-4 mb-6 bg-red-50 border-red-200">
+                        <div className="flex items-center gap-3">
+                            <AlertCircle className="w-5 h-5 text-red-600" />
+                            <p className="text-red-800">
+                                Connection failed: {decodeURIComponent(errorMessage)}
+                            </p>
+                        </div>
+                    </Card>
+                )}
+
+                {/* Info Card */}
+                <Card className="p-6 mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
+                    <h2 className="font-semibold text-lg mb-2">How it works</h2>
+                    <ol className="list-decimal list-inside space-y-2 text-slate-700">
+                        <li>Connect your social media accounts below</li>
+                        <li>Analyze a website to generate AI copy</li>
+                        <li>Click "Post to Socials" on any headline or CTA</li>
+                        <li>Post instantly or schedule for later</li>
+                    </ol>
                 </Card>
-            )}
 
-            {errorMessage && (
-                <Card className="p-4 mb-6 bg-red-50 border-red-200">
-                    <div className="flex items-center gap-3">
-                        <AlertCircle className="w-5 h-5 text-red-600" />
-                        <p className="text-red-800">
-                            Connection failed: {decodeURIComponent(errorMessage)}
-                        </p>
-                    </div>
-                </Card>
-            )}
-
-            {/* Info Card */}
-            <Card className="p-6 mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
-                <h2 className="font-semibold text-lg mb-2">How it works</h2>
-                <ol className="list-decimal list-inside space-y-2 text-slate-700">
-                    <li>Connect your social media accounts below</li>
-                    <li>Analyze a website to generate AI copy</li>
-                    <li>Click "Post to Socials" on any headline or CTA</li>
-                    <li>Post instantly or schedule for later</li>
-                </ol>
-            </Card>
-
-            {/* Connection Cards */}
-            {loading ? (
-                <div className="grid md:grid-cols-2 gap-4">
-                    {[1, 2].map(i => (
-                        <Card key={i} className="p-6 animate-pulse">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-200 rounded-xl" />
-                                <div>
-                                    <div className="h-5 bg-slate-200 rounded w-24 mb-2" />
-                                    <div className="h-4 bg-slate-200 rounded w-32" />
+                {/* Connection Cards */}
+                {loading ? (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {[1, 2].map(i => (
+                            <Card key={i} className="p-6 animate-pulse">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-slate-200 rounded-xl" />
+                                    <div>
+                                        <div className="h-5 bg-slate-200 rounded w-24 mb-2" />
+                                        <div className="h-4 bg-slate-200 rounded w-32" />
+                                    </div>
                                 </div>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            ) : (
-                <div className="grid md:grid-cols-2 gap-4">
-                    {PLATFORMS.map(platform => (
-                        <SocialConnectionCard
-                            key={platform}
-                            platform={platform}
-                            connection={getConnectionForPlatform(platform)}
-                            onConnect={handleConnect}
-                            onDisconnect={handleDisconnect}
-                            onUpdate={handleUpdate}
-                            isConnecting={connectingPlatform === platform}
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
+                            </Card>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {PLATFORMS.map(platform => (
+                            <SocialConnectionCard
+                                key={platform}
+                                platform={platform}
+                                connection={getConnectionForPlatform(platform)}
+                                onConnect={handleConnect}
+                                onDisconnect={handleDisconnect}
+                                onUpdate={handleUpdate}
+                                isConnecting={connectingPlatform === platform}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+        </PremiumGate>
     );
 }

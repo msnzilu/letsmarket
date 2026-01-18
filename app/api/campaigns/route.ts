@@ -74,6 +74,23 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        // Premium Check
+        const { data: subscription } = await supabase
+            .from('subscriptions')
+            .select('plan, status')
+            .eq('user_id', user.id)
+            .single();
+
+        const { getEffectivePlan } = await import('@/lib/subscription');
+        const plan = getEffectivePlan(subscription as any);
+
+        if (plan === 'free') {
+            return NextResponse.json(
+                { error: 'Pro subscription required for campaigns' },
+                { status: 403 }
+            );
+        }
+
         const body = await request.json();
         const {
             name,

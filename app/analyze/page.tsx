@@ -126,8 +126,8 @@ export default function AnalyzePage() {
                                             <Lock className="text-purple-600 w-8 h-8" />
                                         </div>
                                         <h3 className="text-2xl font-bold text-slate-900 mb-2">Limit Reached</h3>
-                                        <p className="text-slate-600 mb-6">
-                                            You've analyzed <strong>{usage?.analyses_count}</strong> websites. Upgrade to <strong>Pro</strong> for unlimited analyses and advanced features.
+                                        <p className="text-slate-600 mb-6 font-medium">
+                                            You've used your <strong>one free analysis</strong> limit. Upgrade to <strong>Pro</strong> for unlimited analyses and advanced features.
                                         </p>
                                         <Button
                                             onClick={onOpen}

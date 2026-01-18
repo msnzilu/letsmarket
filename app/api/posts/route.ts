@@ -69,6 +69,23 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
+        // Premium Check
+        const { data: subscription } = await supabase
+            .from('subscriptions')
+            .select('plan, status')
+            .eq('user_id', user.id)
+            .single();
+
+        const { getEffectivePlan } = await import('@/lib/subscription');
+        const plan = getEffectivePlan(subscription as any);
+
+        if (plan === 'free') {
+            return NextResponse.json(
+                { error: 'Pro subscription required for social posting' },
+                { status: 403 }
+            );
+        }
+
         // Verify the connection belongs to the user
         const { data: connection } = await supabase
             .from('social_connections')
