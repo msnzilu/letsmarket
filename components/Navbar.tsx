@@ -73,6 +73,9 @@ export default function Navbar() {
                         <Link href="/privacy" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
                             Privacy
                         </Link>
+                        <Link href="/about" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
+                            About
+                        </Link>
                         {loading ? (
                             <div className="flex space-x-4">
                                 <div className="h-9 w-20 bg-slate-100 rounded animate-pulse" />
@@ -165,6 +168,7 @@ export default function Navbar() {
                                     Sign Up
                                 </Link>
                                 <div className="pt-4 border-t border-slate-100 flex justify-center gap-4 text-xs text-slate-400">
+                                    <Link href="/about" onClick={() => setMobileMenuOpen(false)}>About</Link>
                                     <Link href="/privacy" onClick={() => setMobileMenuOpen(false)}>Privacy</Link>
                                     <Link href="/terms" onClick={() => setMobileMenuOpen(false)}>Terms</Link>
                                     <Link href="/cookies" onClick={() => setMobileMenuOpen(false)}>Cookies</Link>

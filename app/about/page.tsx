@@ -1,8 +1,8 @@
 // app/about/page.tsx
 
-import React from 'react';
-import { Target, Users, Zap, Award } from 'lucide-react';
-import Image from 'next/image';
+import Link from 'next/link';
+import { Target, Users, Zap, Award, ArrowRight } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 export default function AboutPage() {
     return (
@@ -97,7 +97,7 @@ export default function AboutPage() {
                         <p className="text-slate-600 text-sm leading-relaxed">We build tools that respect the user's intelligence and time, avoiding "spammy" AI tactics.</p>
                     </Card>
                     <Card className="p-8 border-none shadow-sm h-full">
-                        < Award className="w-10 h-10 mx-auto mb-6 text-blue-600" />
+                        <Award className="w-10 h-10 mx-auto mb-6 text-blue-600" />
                         <h3 className="text-xl font-bold mb-4">Data-Driven Design</h3>
                         <p className="text-slate-600 text-sm leading-relaxed">Every recommendation is backed by established behavioral economic principles.</p>
                     </Card>
@@ -113,12 +113,12 @@ export default function AboutPage() {
             <section className="py-24 text-center max-w-4xl mx-auto px-4">
                 <h2 className="text-4xl font-black text-slate-900 mb-8">Ready to transform your marketing?</h2>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="/analyze" className="px-8 py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                    <Link href="/analyze" className="px-8 py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
                         Start Free Analysis <ArrowRight size={18} />
-                    </a>
-                    <a href="/pricing" className="px-8 py-4 border-2 border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-50 transition-all">
+                    </Link>
+                    <Link href="/pricing" className="px-8 py-4 border-2 border-slate-200 text-slate-900 font-bold rounded-xl hover:bg-slate-50 transition-all">
                         View Pricing
-                    </a>
+                    </Link>
                 </div>
             </section>
         </div>
