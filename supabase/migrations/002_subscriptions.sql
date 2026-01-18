@@ -127,16 +127,16 @@ CREATE OR REPLACE FUNCTION initialize_user_subscription()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Create free subscription
-    INSERT INTO subscriptions (user_id, plan, status)
-    VALUES (NEW.id, 'free', 'active');
+    INSERT INTO public.subscriptions (user_id, plan, status)
+    VALUES (NEW.id, 'free'::subscription_plan, 'active'::subscription_status);
     
     -- Create usage tracking
-    INSERT INTO usage_tracking (user_id)
+    INSERT INTO public.usage_tracking (user_id)
     VALUES (NEW.id);
     
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Trigger on user creation
 CREATE TRIGGER on_auth_user_created_subscription
