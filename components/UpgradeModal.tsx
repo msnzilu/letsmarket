@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Zap, Rocket, Globe, Users, BarChart3, Shield } from 'lucide-react';
+import { X, Check, Zap, Rocket, Globe, Users, BarChart3, Shield, RefreshCw } from 'lucide-react';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 import { Button } from './ui/button';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import Link from 'next/link';
 const features = [
     {
         title: 'Unlimited Analyses',
-        description: 'Remove the 3-website limit and analyze your entire portfolio.',
+        description: 'Remove the 1-website limit and analyze your entire portfolio.',
         icon: BarChart3,
         color: 'text-blue-500'
     },
@@ -73,10 +73,10 @@ export default function UpgradeModal() {
                                             <div className="w-12 h-12 bg-white/20 rounded-2xl backdrop-blur-md flex items-center justify-center mb-6">
                                                 <Rocket size={24} />
                                             </div>
-                                            <Dialog.Title className="text-3xl font-bold mb-2">
+                                            <Dialog.Title className="text-3xl font-black mb-2 tracking-tight">
                                                 Upgrade to Pro
                                             </Dialog.Title>
-                                            <Dialog.Description className="text-indigo-100 text-sm">
+                                            <Dialog.Description className="text-indigo-100 text-sm font-medium">
                                                 Unlock the full potential of AI-driven marketing and scale your results.
                                             </Dialog.Description>
                                         </div>
@@ -86,19 +86,19 @@ export default function UpgradeModal() {
                                                 <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
                                                     <Check size={12} />
                                                 </div>
-                                                <span className="text-sm font-medium">Billed monthly or yearly</span>
+                                                <span className="text-xs font-bold uppercase tracking-wider">Billed monthly or yearly</span>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
                                                     <Check size={12} />
                                                 </div>
-                                                <span className="text-sm font-medium">Cancel anytime</span>
+                                                <span className="text-xs font-bold uppercase tracking-wider">Cancel anytime</span>
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
                                                     <Check size={12} />
                                                 </div>
-                                                <span className="text-sm font-medium">Priority support</span>
+                                                <span className="text-xs font-bold uppercase tracking-wider">Priority support</span>
                                             </div>
                                         </div>
                                     </div>
@@ -106,7 +106,7 @@ export default function UpgradeModal() {
                                     {/* Right Side - Features & CTA */}
                                     <div className="md:w-[60%] p-8 bg-white">
                                         <div className="space-y-6">
-                                            <h3 className="text-lg font-bold text-slate-900 border-b pb-4">Features Included:</h3>
+                                            <h3 className="text-sm font-black text-slate-900 border-b pb-4 uppercase tracking-[0.2em]">Features Included:</h3>
 
                                             <div className="grid gap-6">
                                                 {features.map((feature, i) => (
@@ -115,8 +115,8 @@ export default function UpgradeModal() {
                                                             <feature.icon size={20} />
                                                         </div>
                                                         <div>
-                                                            <h4 className="font-bold text-slate-800 text-sm">{feature.title}</h4>
-                                                            <p className="text-xs text-slate-500 mt-0.5">{feature.description}</p>
+                                                            <h4 className="font-black text-slate-800 text-sm tracking-tight">{feature.title}</h4>
+                                                            <p className="text-xs text-slate-500 mt-0.5 font-medium leading-relaxed">{feature.description}</p>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -124,14 +124,18 @@ export default function UpgradeModal() {
                                         </div>
 
                                         <div className="mt-10 space-y-4">
-                                            <Link href="/pricing" onClick={onClose}>
-                                                <Button className="w-full h-14 text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all font-bold">
+                                            <Link href="/pricing" onClick={onClose} className="block">
+                                                <Button className="w-full h-14 text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all font-black uppercase tracking-widest">
                                                     View Plans & Pricing
                                                 </Button>
                                             </Link>
-                                            <p className="text-center text-[10px] text-slate-400 flex items-center justify-center gap-1">
+                                            <div className="flex items-center justify-center gap-2 text-green-600 font-bold text-[10px] uppercase tracking-wider">
+                                                <RefreshCw size={12} />
+                                                14-Day Money-Back Guarantee
+                                            </div>
+                                            <p className="text-center text-[10px] text-slate-400 flex items-center justify-center gap-1 font-bold uppercase tracking-widest">
                                                 <Shield size={10} />
-                                                Secure checkout powered by Paystack
+                                                Secure checkout powered by {process.env.NEXT_PUBLIC_PAYMENT_GATEWAY === 'paddle' ? 'Paddle' : 'Paystack'}
                                             </p>
                                         </div>
                                     </div>

@@ -8,9 +8,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { Check, Loader2, MapPin } from 'lucide-react';
+import { Check, Loader2, Shield } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
-import { useGeolocation, formatPrice } from '@/lib/hooks/useGeolocation';
 
 // Base prices in USD
 const BASE_PRICES = {
@@ -38,7 +37,7 @@ const plans: Plan[] = [
         period: 'forever',
         description: 'Perfect for trying out LetsMarket',
         features: [
-            '3 website analyses',
+            '1 website analysis',
             'Basic conversion scoring',
             '5 AI-generated headlines',
             '5 AI-generated CTAs',
@@ -88,13 +87,12 @@ const plans: Plan[] = [
 export default function PricingPage() {
     const router = useRouter();
     const { plan: currentPlan, isLoading: subLoading } = useSubscription();
-    const { currency, country, loading: geoLoading } = useGeolocation();
     const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
     const getDisplayPrice = (plan: Plan): string => {
         if (plan.id === 'enterprise') return 'Custom';
-        if (plan.basePrice === 0) return currency === 'KES' ? 'KES 0' : '$0';
-        return formatPrice(plan.basePrice, currency);
+        if (plan.basePrice === 0) return '$0';
+        return `$${plan.basePrice}`;
     };
 
     const handleUpgrade = async (planId: string) => {
@@ -113,7 +111,7 @@ export default function PricingPage() {
             const res = await fetch('/api/subscription/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ plan: planId, currency }),
+                body: JSON.stringify({ plan: planId, currency: 'USD' }),
             });
 
             const data = await res.json();
@@ -144,16 +142,6 @@ export default function PricingPage() {
                     Start free and scale as you grow. No hidden fees, cancel anytime.
                 </p>
 
-                {/* Currency indicator */}
-                {!geoLoading && (
-                    <div className="mt-4 inline-flex items-center gap-2 text-sm text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
-                        <MapPin className="w-4 h-4" />
-                        <span>
-                            Prices shown in {currency === 'KES' ? 'Kenyan Shillings (KES)' : 'US Dollars (USD)'}
-                            {country && ` • ${country}`}
-                        </span>
-                    </div>
-                )}
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -180,7 +168,7 @@ export default function PricingPage() {
                             <h2 className="text-2xl font-bold mb-2">{plan.name}</h2>
                             <div className="mb-4">
                                 <span className="text-4xl font-bold">
-                                    {geoLoading ? '...' : getDisplayPrice(plan)}
+                                    {getDisplayPrice(plan)}
                                 </span>
                                 <span className="text-slate-600">{plan.period}</span>
                             </div>
@@ -214,10 +202,29 @@ export default function PricingPage() {
 
             {/* Payment info */}
             <div className="text-center mt-12 text-sm text-slate-500">
-                <p>Secure payments powered by Paystack</p>
-                {currency === 'KES' && (
-                    <p className="mt-1 text-xs">Payment processed in Kenyan Shillings</p>
-                )}
+                <p>
+                    {process.env.NEXT_PUBLIC_PAYMENT_GATEWAY === 'paddle'
+                        ? 'Secure payments by Paddle'
+                        : 'Secure payments powered by Paystack'}
+                </p>
+            </div>
+
+            {/* Refund Policy Trust Section */}
+            <div className="mt-12 p-6 bg-purple-50 rounded-2xl border border-purple-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-purple-600 shadow-sm">
+                        <Shield className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-slate-900">14-Day Money-Back Guarantee</h3>
+                        <p className="text-sm text-slate-600">Try Pro for 14 days. If it's not for you, get a full refund. No questions asked.</p>
+                    </div>
+                </div>
+                <Link href="/refund-policy">
+                    <Button variant="outline" className="border-purple-200 text-purple-600 hover:bg-purple-100">
+                        Read Policy
+                    </Button>
+                </Link>
             </div>
 
             {/* FAQ teaser */}

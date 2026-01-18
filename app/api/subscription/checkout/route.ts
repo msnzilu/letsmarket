@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { initializeTransaction } from '@/lib/paystack';
+import { PaymentFactory } from '@/lib/payment/factory';
 import { Plan } from '@/lib/subscription';
 
 // Base prices in USD
@@ -13,8 +13,6 @@ const BASE_PRICES_USD: Record<'free' | 'pro' | 'enterprise', number> = {
     enterprise: 0,
 };
 
-// Approximate USD to KES rate
-const KES_RATE = 130;
 
 export async function POST(request: NextRequest) {
     try {
@@ -25,7 +23,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { plan, currency = 'KES' } = await request.json() as { plan: Plan; currency?: 'KES' | 'USD' };
+        const { plan } = await request.json() as { plan: Plan };
+        const currency = 'USD';
 
         if (!plan || !['pro', 'enterprise'].includes(plan)) {
             return NextResponse.json(
@@ -41,23 +40,21 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Calculate amount in smallest currency unit (cents/cents)
+        // Calculate amount in cents
         const baseUSD = BASE_PRICES_USD[plan];
-        // For KES: convert USD to KES then multiply by 100 (Paystack uses smallest unit)
-        // For USD: multiply by 100 (cents)
-        const amount = currency === 'KES'
-            ? Math.round(baseUSD * KES_RATE * 100)
-            : Math.round(baseUSD * 100);
+        const amount = Math.round(baseUSD * 100);
 
-        const reference = `sub_${user.id}_${Date.now()}`;
-        const callback_url = `${process.env.NEXT_PUBLIC_APP_URL}/api/subscription/callback`;
+        const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/subscription/callback`;
 
-        const result = await initializeTransaction({
+        const provider = PaymentFactory.getProvider();
+
+        const result = await provider.createCheckoutSession({
+            userId: user.id,
             email: user.email!,
+            plan: plan as 'pro' | 'enterprise',
+            currency,
             amount,
-            reference,
-            callback_url,
-            currency, // Pass currency to Paystack
+            callbackUrl,
             metadata: {
                 user_id: user.id,
                 plan,
@@ -67,8 +64,9 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json({
-            authorization_url: result.data.authorization_url,
-            reference: result.data.reference,
+            authorization_url: result.checkoutUrl,
+            reference: result.reference,
+            provider: provider.name
         });
     } catch (error: any) {
         console.error('Checkout error:', error);

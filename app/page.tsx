@@ -121,7 +121,7 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-slate-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">
             What You'll Get
@@ -181,7 +181,7 @@ export default function HomePage() {
             Ready to Boost Your Conversions?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Get your first 3 analyses completely free. No credit card required.
+            Get your first analysis completely free. No credit card required.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/signup">
@@ -191,7 +191,7 @@ export default function HomePage() {
             </Link>
             <div className="text-white/80 text-sm flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
-              <span>3 free credits available</span>
+              <span>1 free credit available</span>
             </div>
           </div>
         </div>

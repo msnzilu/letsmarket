@@ -44,7 +44,8 @@ export async function GET(request: NextRequest) {
                 user_id: userId,
                 plan,
                 status: 'active',
-                paystack_customer_id: String(result.data.customer.id),
+                provider: 'paystack',
+                provider_customer_id: String(result.data.customer.id),
                 current_period_start: new Date().toISOString(),
                 current_period_end: new Date(
                     Date.now() + 30 * 24 * 60 * 60 * 1000
@@ -63,8 +64,8 @@ export async function GET(request: NextRequest) {
             amount: result.data.amount,
             currency: 'NGN',
             status: 'success',
-            paystack_reference: ref,
-            paystack_transaction_id: String(result.data.id),
+            provider: 'paystack',
+            provider_reference: ref,
             description: `Subscription upgrade to ${plan}`,
         });
 

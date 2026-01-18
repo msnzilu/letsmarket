@@ -53,7 +53,7 @@ export default function PersuasionSection({
             {/* Testimonials */}
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {testimonials.map((t, i) => (
-                    <div key={i} className="p-6 bg-slate-50 rounded-xl border border-slate-100 relative">
+                    <div key={i} className="p-6 bg-slate-50 rounded-xl border border-slate-100 relative transition-colors">
                         <Quote className="w-8 h-8 text-purple-200 absolute top-3 left-3" />
                         <div className="flex mb-3">
                             {[1, 2, 3, 4, 5].map(star => (

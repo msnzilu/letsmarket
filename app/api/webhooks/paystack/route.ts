@@ -44,6 +44,10 @@ export async function POST(request: NextRequest) {
                 await handlePaymentFailed(event.data);
                 break;
 
+            case 'refund.processed':
+                await handleRefundProcessed(event.data);
+                break;
+
             default:
                 console.log('Unhandled event:', event.event);
         }
@@ -75,7 +79,8 @@ async function handleChargeSuccess(data: any) {
             user_id: userId,
             plan,
             status: 'active',
-            paystack_customer_id: String(customer.id),
+            provider: 'paystack',
+            provider_customer_id: String(customer.id),
             current_period_start: new Date().toISOString(),
             current_period_end: new Date(
                 Date.now() + 30 * 24 * 60 * 60 * 1000
@@ -90,7 +95,8 @@ async function handleChargeSuccess(data: any) {
         amount,
         currency: 'NGN',
         status: 'success',
-        paystack_reference: reference,
+        provider: 'paystack',
+        provider_reference: reference,
         description: `Subscription payment - ${plan}`,
     });
 }
@@ -103,14 +109,15 @@ async function handleSubscriptionCreated(data: any) {
     const { data: users } = await supabase
         .from('subscriptions')
         .select('user_id')
-        .eq('paystack_customer_id', String(customer.id));
+        .eq('provider_customer_id', String(customer.id))
+        .eq('provider', 'paystack');
 
     if (users && users.length > 0) {
         await supabase
             .from('subscriptions')
             .update({
-                paystack_subscription_code: subscription_code,
-                paystack_plan_code: plan.plan_code,
+                provider_subscription_id: subscription_code,
+                provider_plan_id: plan.plan_code,
                 current_period_end: next_payment_date,
             })
             .eq('user_id', users[0].user_id);
@@ -127,7 +134,8 @@ async function handleSubscriptionCanceled(data: any) {
             status: 'canceled',
             cancel_at_period_end: true,
         })
-        .eq('paystack_subscription_code', subscription_code);
+        .eq('provider_subscription_id', subscription_code)
+        .eq('provider', 'paystack');
 }
 
 async function handlePaymentFailed(data: any) {
@@ -139,5 +147,38 @@ async function handlePaymentFailed(data: any) {
         .update({
             status: 'past_due',
         })
-        .eq('paystack_subscription_code', subscription.subscription_code);
+        .eq('provider_subscription_id', subscription.subscription_code)
+        .eq('provider', 'paystack');
+}
+
+async function handleRefundProcessed(data: any) {
+    const { customer, amount, transaction_reference } = data;
+    const supabase = getSupabaseClient();
+
+    // Find the user/subscription
+    const { data: subs } = await supabase
+        .from('subscriptions')
+        .select('user_id')
+        .eq('provider_customer_id', String(customer.id))
+        .eq('provider', 'paystack')
+        .single();
+
+    if (subs) {
+        // Mark subscription as canceled/refunded
+        await supabase
+            .from('subscriptions')
+            .update({ status: 'canceled' })
+            .eq('user_id', subs.user_id);
+
+        // Record refund in history
+        await supabase.from('payment_history').insert({
+            user_id: subs.user_id,
+            amount,
+            currency: 'USD',
+            status: 'refunded',
+            provider: 'paystack',
+            provider_reference: transaction_reference,
+            description: 'Subscription Refunded'
+        });
+    }
 }

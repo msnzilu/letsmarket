@@ -9,8 +9,10 @@ export interface Subscription {
     user_id: string;
     plan: Plan;
     status: SubscriptionStatus;
-    paystack_customer_id?: string;
-    paystack_subscription_code?: string;
+    provider: string;
+    provider_customer_id?: string;
+    provider_subscription_id?: string;
+    provider_plan_id?: string;
     current_period_start?: string;
     current_period_end?: string;
     cancel_at_period_end: boolean;
@@ -28,8 +30,8 @@ export interface UsageTracking {
 // Feature limits by plan
 export const PLAN_LIMITS = {
     free: {
-        analyses_total: 3,
-        analyses_per_month: 3,
+        analyses_total: 1,
+        analyses_per_month: 1,
         headlines_per_analysis: 5,
         ctas_per_analysis: 5,
         social_accounts: 0,
@@ -59,7 +61,7 @@ export const PLAN_LIMITS = {
     },
 } as const;
 
-// Plan prices in cents (Paystack uses smallest currency unit)
+// Plan prices in cents (Smallest currency unit)
 export const PLAN_PRICES = {
     free: 0,
     pro: 2900, // $29.00

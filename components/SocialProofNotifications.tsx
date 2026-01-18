@@ -50,10 +50,34 @@ const NOTIFICATIONS = [
 ];
 
 export default function SocialProofNotifications() {
+    const [notifications, setNotifications] = useState(NOTIFICATIONS);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await fetch('/api/stats');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.recentActivity && data.recentActivity.length > 0) {
+                        const dynamicNotes = data.recentActivity.map((a: any) => ({
+                            id: `dynamic-${a.id}`,
+                            type: a.type === 'analysis' ? 'analysis' : 'signup',
+                            user: a.user,
+                            location: a.location,
+                            time: 'just now',
+                            icon: a.type === 'analysis' ? Zap : Users,
+                        }));
+                        setNotifications([...dynamicNotes, ...NOTIFICATIONS]);
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch notifications:', error);
+            }
+        };
+        fetchStats();
+
         const showTimeout = setTimeout(() => {
             setIsVisible(true);
         }, 5000); // Initial delay
@@ -62,7 +86,7 @@ export default function SocialProofNotifications() {
             setIsVisible(false);
 
             setTimeout(() => {
-                setCurrentIndex((prev) => (prev + 1) % NOTIFICATIONS.length);
+                setCurrentIndex((prev) => (prev + 1) % notifications.length);
                 setIsVisible(true);
             }, 1000); // Time to hide before showing next
 
@@ -72,9 +96,9 @@ export default function SocialProofNotifications() {
             clearTimeout(showTimeout);
             clearInterval(interval);
         };
-    }, []);
+    }, [notifications.length]);
 
-    const current = NOTIFICATIONS[currentIndex];
+    const current = notifications[currentIndex];
 
     return (
         <div className="fixed bottom-6 left-6 z-40 pointer-events-none sm:block hidden">

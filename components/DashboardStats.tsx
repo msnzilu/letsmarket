@@ -48,7 +48,7 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                 <div className="flex items-center gap-3">
                     <PlanBadge plan={plan} size="md" />
                     <div>
-                        <p className="font-medium">
+                        <p className="font-bold text-slate-900">
                             {plan === 'free' ? 'Free Tier' : plan === 'pro' ? 'Pro Plan' : 'Enterprise'}
                         </p>
                         <p className="text-sm text-slate-600">
@@ -60,7 +60,7 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                 </div>
                 {plan === 'free' && (
                     <Link href="/pricing">
-                        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600">
+                        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600 font-bold">
                             <Crown className="w-4 h-4 mr-2" />
                             Upgrade to Pro
                         </Button>
@@ -71,76 +71,76 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {/* Analyses */}
-                <Card className="p-4">
-                    <div className="flex items-center gap-2 text-slate-600 mb-2">
+                <Card className="p-4 bg-white border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500 mb-2">
                         <TrendingUp className="w-4 h-4" />
-                        <span className="text-sm">Analyses</span>
+                        <span className="text-xs font-bold uppercase tracking-wider">Analyses</span>
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold">{analysesUsed}</span>
+                        <span className="text-2xl font-black text-slate-900">{analysesUsed}</span>
                         {analysesLimit !== Infinity && (
-                            <span className="text-slate-500">/ {analysesLimit}</span>
+                            <span className="text-slate-400 text-xs">/ {analysesLimit}</span>
                         )}
                         {analysesLimit === Infinity && (
-                            <span className="text-green-600 text-sm">Unlimited</span>
+                            <span className="text-green-500 text-xs font-bold">Unlimited</span>
                         )}
                     </div>
                     {analysesLimit !== Infinity && (
-                        <Progress value={analysesPercent} className="mt-2 h-1.5" />
+                        <Progress value={analysesPercent} className="mt-3 h-1.5" />
                     )}
                 </Card>
 
                 {/* Websites */}
-                <Card className="p-4">
-                    <div className="flex items-center gap-2 text-slate-600 mb-2">
-                        <Zap className="w-4 h-4" />
-                        <span className="text-sm">Websites</span>
+                <Card className="p-4 bg-white border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500 mb-2">
+                        <Zap className="w-4 h-4 text-purple-500" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Websites</span>
                     </div>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold">{websiteCount}</span>
-                        <span className="text-slate-500 text-sm">tracked</span>
+                        <span className="text-2xl font-black text-slate-900">{websiteCount}</span>
+                        <span className="text-slate-400 text-xs font-medium">tracked</span>
                     </div>
                 </Card>
 
                 {/* Social Accounts */}
-                <Card className="p-4">
-                    <div className="flex items-center gap-2 text-slate-600 mb-2">
-                        <Link2 className="w-4 h-4" />
-                        <span className="text-sm">Social Accounts</span>
+                <Card className="p-4 bg-white border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500 mb-2">
+                        <Link2 className="w-4 h-4 text-blue-500" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Social Accounts</span>
                     </div>
                     <div className="flex items-baseline gap-2">
                         {socialLimit === 0 ? (
-                            <span className="text-slate-400 text-sm">Pro feature</span>
+                            <span className="text-slate-400 text-xs font-medium italic">Pro feature</span>
                         ) : (
                             <>
-                                <span className="text-2xl font-bold">0</span>
+                                <span className="text-2xl font-black text-slate-900">0</span>
                                 {socialLimit !== Infinity && (
-                                    <span className="text-slate-500">/ {socialLimit}</span>
+                                    <span className="text-slate-400 text-xs">/ {socialLimit}</span>
                                 )}
                             </>
                         )}
                     </div>
                     {socialLimit === 0 && (
-                        <Link href="/pricing" className="text-purple-600 text-xs hover:underline">
+                        <Link href="/pricing" className="text-purple-500 text-[10px] font-bold hover:underline mt-1 block">
                             Upgrade to connect
                         </Link>
                     )}
                 </Card>
 
                 {/* Posts */}
-                <Card className="p-4">
-                    <div className="flex items-center gap-2 text-slate-600 mb-2">
-                        <Send className="w-4 h-4" />
-                        <span className="text-sm">Posts This Month</span>
+                <Card className="p-4 bg-white border-slate-100">
+                    <div className="flex items-center gap-2 text-slate-500 mb-2">
+                        <Send className="w-4 h-4 text-green-500" />
+                        <span className="text-xs font-bold uppercase tracking-wider">Posts This Month</span>
                     </div>
                     <div className="flex items-baseline gap-2">
                         {postsLimit === 0 ? (
-                            <span className="text-slate-400 text-sm">Pro feature</span>
+                            <span className="text-slate-400 text-xs font-medium italic">Pro feature</span>
                         ) : (
                             <>
-                                <span className="text-2xl font-bold">{postsUsed}</span>
+                                <span className="text-2xl font-black text-slate-900">{postsUsed}</span>
                                 {postsLimit !== Infinity && (
-                                    <span className="text-slate-500">/ {postsLimit}</span>
+                                    <span className="text-slate-400 text-xs">/ {postsLimit}</span>
                                 )}
                             </>
                         )}

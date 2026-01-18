@@ -22,6 +22,8 @@ export const metadata: Metadata = {
 // Pages that should NOT show the footer (authenticated app pages)
 const AUTH_PAGES = ['/dashboard', '/analyze', '/connections', '/posts', '/campaigns', '/profile'];
 
+import { ThemeProvider } from "@/components/ThemeProvider";
+
 export default async function RootLayout({
   children,
 }: Readonly<{

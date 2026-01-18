@@ -9,7 +9,9 @@ import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { User } from '@supabase/supabase-js';
-import { Menu, X, User as UserIcon, LogOut, Settings, LayoutDashboard, Share2, Zap, CreditCard } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut, Settings, LayoutDashboard, Share2, Zap, CreditCard, Lock } from 'lucide-react';
+import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
+import { getEffectivePlan } from '@/lib/subscription';
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -19,6 +21,8 @@ export default function Navbar() {
     const [loading, setLoading] = useState(true);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const [plan, setPlan] = useState<string>('free');
+    const { onOpen } = useUpgradeModal();
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }) => {
@@ -30,6 +34,16 @@ export default function Navbar() {
             setUser(session?.user ?? null);
             setLoading(false);
         });
+
+        // Fetch plan
+        const fetchPlan = async () => {
+            const res = await fetch('/api/subscription');
+            if (res.ok) {
+                const data = await res.json();
+                setPlan(data.subscription?.plan || 'free');
+            }
+        };
+        fetchPlan();
 
         // Close dropdowns on outside click
         const handleClickOutside = (event: MouseEvent) => {
@@ -55,8 +69,8 @@ export default function Navbar() {
 
     const navLinks = user ? [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { href: '/campaigns', label: 'Campaigns', icon: Zap },
-        { href: '/connections', label: 'Connections', icon: Share2 },
+        { href: '/campaigns', label: 'Campaigns', icon: Zap, premium: true },
+        { href: '/connections', label: 'Connections', icon: Share2, premium: true },
     ] : [];
 
     const isActive = (href: string) => {
@@ -87,17 +101,34 @@ export default function Navbar() {
                             </div>
                         ) : user ? (
                             <>
-                                {navLinks.map(link => (
-                                    <Link key={link.href} href={link.href}>
-                                        <Button
-                                            variant={isActive(link.href) ? 'default' : 'ghost'}
-                                            className="gap-2"
-                                        >
-                                            <link.icon className="w-4 h-4" />
-                                            {link.label}
-                                        </Button>
-                                    </Link>
-                                ))}
+                                {navLinks.map(link => {
+                                    const isPremiumRestricted = link.premium && plan === 'free';
+                                    return (
+                                        <div key={link.href}>
+                                            {isPremiumRestricted ? (
+                                                <Button
+                                                    variant="ghost"
+                                                    className="gap-2 text-slate-400"
+                                                    onClick={onOpen}
+                                                >
+                                                    <link.icon className="w-4 h-4" />
+                                                    {link.label}
+                                                    <Lock className="w-3 h-3 ml-1" />
+                                                </Button>
+                                            ) : (
+                                                <Link href={link.href}>
+                                                    <Button
+                                                        variant={isActive(link.href) ? 'default' : 'ghost'}
+                                                        className="gap-2"
+                                                    >
+                                                        <link.icon className="w-4 h-4" />
+                                                        {link.label}
+                                                    </Button>
+                                                </Link>
+                                            )}
+                                        </div>
+                                    );
+                                })}
 
                                 {/* Profile Dropdown */}
                                 <div className="relative profile-dropdown-container">
@@ -113,7 +144,7 @@ export default function Navbar() {
                                     {profileMenuOpen && (
                                         <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in duration-200">
                                             <div className="px-4 py-2 border-b border-slate-50 mb-2">
-                                                <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
+                                                <p className="text-sm font-bold text-slate-900 truncate">{user?.email}</p>
                                                 <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Account Active</p>
                                             </div>
 
@@ -159,16 +190,18 @@ export default function Navbar() {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button
-                        className="md:hidden p-2"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    >
-                        {mobileMenuOpen ? (
-                            <X className="w-6 h-6" />
-                        ) : (
-                            <Menu className="w-6 h-6" />
-                        )}
-                    </button>
+                    <div className="md:hidden flex items-center gap-2">
+                        <button
+                            className="p-2"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            {mobileMenuOpen ? (
+                                <X className="w-6 h-6" />
+                            ) : (
+                                <Menu className="w-6 h-6" />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -183,20 +216,38 @@ export default function Navbar() {
                             </div>
                         ) : user ? (
                             <>
-                                {navLinks.map(link => (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(link.href)
-                                            ? 'bg-purple-100 text-purple-700'
-                                            : 'hover:bg-slate-100'
-                                            }`}
-                                    >
-                                        <link.icon className="w-5 h-5" />
-                                        {link.label}
-                                    </Link>
-                                ))}
+                                {navLinks.map(link => {
+                                    const isPremiumRestricted = link.premium && plan === 'free';
+                                    return (
+                                        <div key={link.href}>
+                                            {isPremiumRestricted ? (
+                                                <button
+                                                    onClick={() => {
+                                                        onOpen();
+                                                        setMobileMenuOpen(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-slate-400 hover:bg-slate-50"
+                                                >
+                                                    <link.icon className="w-5 h-5" />
+                                                    {link.label}
+                                                    <Lock className="w-4 h-4 ml-auto" />
+                                                </button>
+                                            ) : (
+                                                <Link
+                                                    href={link.href}
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(link.href)
+                                                        ? 'bg-purple-100 text-purple-700'
+                                                        : 'hover:bg-slate-100'
+                                                        }`}
+                                                >
+                                                    <link.icon className="w-5 h-5" />
+                                                    {link.label}
+                                                </Link>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                                 <Link
                                     href="/profile"
                                     onClick={() => setMobileMenuOpen(false)}
@@ -238,7 +289,7 @@ export default function Navbar() {
                                 <Link
                                     href="/signup"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 rounded-lg bg-purple-600 text-white text-center"
+                                    className="block px-4 py-3 rounded-lg bg-purple-600 text-white text-center font-bold"
                                 >
                                     Sign Up
                                 </Link>
