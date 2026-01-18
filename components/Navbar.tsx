@@ -164,6 +164,11 @@ export default function Navbar() {
                                 >
                                     Sign Up
                                 </Link>
+                                <div className="pt-4 border-t border-slate-100 flex justify-center gap-4 text-xs text-slate-400">
+                                    <Link href="/privacy" onClick={() => setMobileMenuOpen(false)}>Privacy</Link>
+                                    <Link href="/terms" onClick={() => setMobileMenuOpen(false)}>Terms</Link>
+                                    <Link href="/cookies" onClick={() => setMobileMenuOpen(false)}>Cookies</Link>
+                                </div>
                             </>
                         )}
                     </div>
