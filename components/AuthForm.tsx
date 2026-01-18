@@ -137,6 +137,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <Button type="submit" className="w-full" disabled={loading}>
                     {loading ? 'Loading...' : mode === 'signup' ? 'Sign Up' : 'Sign In'}
                 </Button>
+
+                {mode === 'signup' && (
+                    <p className="text-[10px] text-slate-400 text-center mt-4 uppercase tracking-tighter">
+                        By signing up, you agree to our{' '}
+                        <a href="/terms" className="underline hover:text-slate-600">Terms</a>,{' '}
+                        <a href="/privacy" className="underline hover:text-slate-600">Privacy</a>{' '}
+                        and <a href="/cookies" className="underline hover:text-slate-600">Cookies</a>.
+                    </p>
+                )}
             </form>
 
             <div className="relative mb-6">

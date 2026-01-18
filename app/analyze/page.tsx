@@ -92,7 +92,7 @@ export default function AnalyzePage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 py-12">
-            <Card className="p-8 w-full max-w-7xl">
+            <Card className="p-8 w-full max-w-lg">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold mb-2">Analyze Your Website</h1>
                     <p className="text-slate-600">
@@ -184,27 +184,6 @@ export default function AnalyzePage() {
                         </Button>
                     </div>
                 </form>
-
-                <div className="mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 text-center text-sm">
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                        <div className="font-semibold text-purple-600">Social Proof</div>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                        <div className="font-semibold text-purple-600">Loss Aversion</div>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                        <div className="font-semibold text-purple-600">Authority</div>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                        <div className="font-semibold text-purple-600">Scarcity</div>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                        <div className="font-semibold text-purple-600">Cognitive Ease</div>
-                    </div>
-                    <div className="p-4 bg-slate-50 rounded-lg">
-                        <div className="font-semibold text-purple-600">Pricing</div>
-                    </div>
-                </div>
             </Card>
         </div>
     );

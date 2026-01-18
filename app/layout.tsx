@@ -7,6 +7,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
 import UpgradeModal from "@/components/UpgradeModal";
+import PersuasionSection from "@/components/PersuasionSection";
+import StatsBanner from "@/components/StatsBanner";
+import SocialProofNotifications from "@/components/SocialProofNotifications";
 import { headers } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,10 +39,16 @@ export default async function RootLayout({
         <Navbar />
         <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
           {children}
+
+          {/* Global Persuasion Zone (Social Proof & Authority) */}
+          <div className="max-w-7xl mx-auto px-4 py-24">
+            <PersuasionSection showBadges={true} />
+          </div>
         </main>
         {!isAuthPage && <Footer />}
         <ChatBot />
         <UpgradeModal />
+        <SocialProofNotifications />
       </body>
     </html>
   );

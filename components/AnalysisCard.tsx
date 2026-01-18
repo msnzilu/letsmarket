@@ -6,8 +6,10 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, TrendingUp, BarChart3 } from 'lucide-react';
+import { ExternalLink, TrendingUp, BarChart3, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { getScoreColor } from '@/lib/utils';
 import { Analysis, Website } from '@/types';
 
@@ -18,6 +20,31 @@ interface AnalysisCardProps {
 }
 
 export default function AnalysisCard({ website, analysis, onReanalyze }: AnalysisCardProps) {
+    const router = useRouter();
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const handleDelete = async () => {
+        try {
+            setIsDeleting(true);
+            const response = await fetch(`/api/websites/${website.id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete website');
+            }
+
+            router.refresh();
+        } catch (error) {
+            console.error('Error deleting website:', error);
+            alert('Failed to delete website');
+        } finally {
+            setIsDeleting(false);
+            setShowConfirm(false);
+        }
+    };
+
     return (
         <Card className="p-6 hover:shadow-lg transition-shadow">
             <div className="flex justify-between items-start gap-4">
@@ -75,11 +102,44 @@ export default function AnalysisCard({ website, analysis, onReanalyze }: Analysi
                         </Link>
                     )}
                     <Link href="/analyze">
-                        <Button variant="outline" onClick={onReanalyze}>
+                        <Button variant="outline" className="w-full" onClick={onReanalyze}>
                             <TrendingUp className="w-4 h-4 mr-2" />
                             Re-analyze
                         </Button>
                     </Link>
+
+                    {showConfirm ? (
+                        <div className="flex gap-2">
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                className="flex-1"
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                            >
+                                {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Confirm'}
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="flex-1"
+                                onClick={() => setShowConfirm(false)}
+                                disabled={isDeleting}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-400 hover:text-red-600 hover:bg-red-50"
+                            onClick={() => setShowConfirm(true)}
+                        >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete
+                        </Button>
+                    )}
                 </div>
             </div>
         </Card>

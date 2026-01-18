@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Brain, Zap, TrendingUp, Users, CheckCircle } from 'lucide-react';
+import { Brain, Zap, TrendingUp, Users, CheckCircle, ShieldAlert, Award, AlertCircle } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -26,7 +26,7 @@ export default function HomePage() {
 
           <div className="flex gap-4 justify-center">
             <Link href="/signup">
-              <Button size="lg" className="text-lg px-8">
+              <Button size="lg" className="text-lg px-8 bg-purple-600 hover:bg-purple-700">
                 Analyze Your Website Free
               </Button>
             </Link>
@@ -35,6 +35,46 @@ export default function HomePage() {
                 Sign In
               </Button>
             </Link>
+          </div>
+
+          <div className="mt-12 flex flex-wrap justify-center gap-8 opacity-60 grayscale">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="w-5 h-5" />
+              <span className="font-semibold">GDPR Compliant</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Award className="w-5 h-5" />
+              <span className="font-semibold">Industry Methodology</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5" />
+              <span className="font-semibold">Powered by GPT-4o</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Loss Aversion Section (Principle 2) */}
+      <section className="py-20 px-4 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 text-red-600 font-semibold mb-4">
+            <AlertCircle className="w-5 h-5" />
+            <span>The Cost of Inaction</span>
+          </div>
+          <h2 className="text-3xl font-bold mb-6">Stop Leaving Money on the Table</h2>
+          <p className="text-lg text-slate-600 mb-8">
+            Every day your website isn't optimized, you're losing potential customers to competitors
+            who understand marketing psychology. Don't let poor copy be the reason your growth stalls.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6 text-left">
+            <div className="bg-white p-6 rounded-xl border border-slate-200">
+              <h4 className="font-bold text-red-600 mb-2">The Gain-Only Approach</h4>
+              <p className="text-sm text-slate-500">Traditional tools tell you what to add. You're still guessing what works.</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-slate-200">
+              <h4 className="font-bold text-green-600 mb-2">The Psychology Approach</h4>
+              <p className="text-sm text-slate-500">We tell you exactly why people are leaving and how to stop the leak.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -131,20 +171,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section (Principle 4 & 6: Scarcity & Pricing Psychology) */}
       <section className="py-20 px-4 bg-gradient-to-r from-purple-600 to-blue-600">
         <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-4xl font-bold mb-6">
+          <div className="inline-block mb-6 px-4 py-1 bg-white/20 rounded-full text-sm font-medium backdrop-blur-sm">
+            ⚡ Beta Phase: First 1,000 users get Pro features free
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Boost Your Conversions?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join hundreds of marketers using AI to optimize their websites
+            Get your first 3 analyses completely free. No credit card required.
           </p>
-          <Link href="/signup">
-            <Button size="lg" variant="secondary" className="text-lg px-8">
-              Start Free Analysis Now
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/signup">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-7">
+                Start Free Analysis Now
+              </Button>
+            </Link>
+            <div className="text-white/80 text-sm flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              <span>3 free credits available</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>

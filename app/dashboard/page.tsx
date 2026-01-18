@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { TrendingUp } from 'lucide-react';
 import { Website, Analysis } from '@/types';
-import AnalysisCard from '@/components/AnalysisCard';
 import DashboardStats from '@/components/DashboardStats';
+import AnalysisCard from '@/components/AnalysisCard';
 
 export default async function DashboardPage() {
     const supabase = await createClient();

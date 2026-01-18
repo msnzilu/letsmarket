@@ -56,18 +56,23 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <Link href="/" className="flex items-center space-x-2">
-                        <Image 
-                            src="/logo/logo.png" 
-                            alt="LetsMarket Logo" 
-                            width={150} 
+                        <Image
+                            src="/logo/logo.png"
+                            alt="LetsMarket Logo"
+                            width={150}
                             height={100}
                             className="w-8 h-8 object-contain"
                         />
                         <span className="font-bold text-xl">LetsMarket</span>
                     </Link>
 
-                    {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4">
+                        <Link href="/pricing" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
+                            Pricing
+                        </Link>
+                        <Link href="/privacy" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
+                            Privacy
+                        </Link>
                         {loading ? (
                             <div className="flex space-x-4">
                                 <div className="h-9 w-20 bg-slate-100 rounded animate-pulse" />

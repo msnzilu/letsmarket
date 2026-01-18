@@ -99,6 +99,11 @@ export default function Footer() {
                                     Terms of Service
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/cookies" className="hover:text-white transition-colors">
+                                    Cookie Policy
+                                </Link>
+                            </li>
                         </ul>
                     </div>
                 </div>
