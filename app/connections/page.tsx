@@ -15,7 +15,7 @@ import { Platform, SocialConnection, PLATFORM_CONFIG } from '@/types';
 import { getOAuthUrl } from '@/lib/oauth';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 
-const PLATFORMS: Platform[] = ['facebook', 'instagram', 'x', 'linkedin', 'tiktok', 'reddit'];
+const PLATFORMS: Platform[] = ['x', 'linkedin'];
 
 export default function ConnectionsPage() {
     const router = useRouter();
@@ -60,10 +60,15 @@ export default function ConnectionsPage() {
 
     const fetchConnections = async () => {
         try {
-            const res = await fetch('/api/subscription');
-            const data = await res.json();
-            setConnections(data.connections || data.usage?.connections || []);
-            setLimits(data.limits);
+            // Fetch subscription and limits
+            const subRes = await fetch('/api/subscription');
+            const subData = await subRes.json();
+            setLimits(subData.limits);
+
+            // Fetch actual connections
+            const connRes = await fetch('/api/connections');
+            const connData = await connRes.json();
+            setConnections(connData.connections || []);
         } catch (error) {
             console.error('Error fetching connections/limits:', error);
         } finally {
@@ -94,6 +99,12 @@ export default function ConnectionsPage() {
         }
     };
 
+    const handleUpdate = (updatedConnection: Partial<SocialConnection>) => {
+        setConnections(prev => prev.map(c =>
+            c.id === updatedConnection.id ? { ...c, ...updatedConnection } : c
+        ));
+    };
+
     const getConnectionForPlatform = (platform: Platform) => {
         return connections.find(c => c.platform === platform);
     };
@@ -114,7 +125,7 @@ export default function ConnectionsPage() {
                     <div>
                         <h1 className="text-3xl font-bold mb-2">Social Connections</h1>
                         <p className="text-slate-600">
-                            Connect your social media accounts to publish AI-generated content
+                            Connect your social media accounts to publish content
                         </p>
                     </div>
                     {connectedCount > 0 && (
@@ -162,7 +173,7 @@ export default function ConnectionsPage() {
             {/* Connection Cards */}
             {loading ? (
                 <div className="grid md:grid-cols-2 gap-4">
-                    {[1, 2, 3, 4, 5, 6].map(i => (
+                    {[1, 2].map(i => (
                         <Card key={i} className="p-6 animate-pulse">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-slate-200 rounded-xl" />
@@ -183,6 +194,7 @@ export default function ConnectionsPage() {
                             connection={getConnectionForPlatform(platform)}
                             onConnect={handleConnect}
                             onDisconnect={handleDisconnect}
+                            onUpdate={handleUpdate}
                             isConnecting={connectingPlatform === platform}
                         />
                     ))}

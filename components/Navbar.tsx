@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { User } from '@supabase/supabase-js';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User as UserIcon, LogOut, Settings, LayoutDashboard, Share2, Zap, CreditCard } from 'lucide-react';
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -18,6 +18,7 @@ export default function Navbar() {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }) => {
@@ -30,20 +31,32 @@ export default function Navbar() {
             setLoading(false);
         });
 
-        return () => subscription.unsubscribe();
+        // Close dropdowns on outside click
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest('.profile-dropdown-container')) {
+                setProfileMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            subscription.unsubscribe();
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, []);
 
     const handleSignOut = async () => {
         await supabase.auth.signOut();
         setMobileMenuOpen(false);
+        setProfileMenuOpen(false);
         router.push('/');
     };
 
     const navLinks = user ? [
-        { href: '/dashboard', label: 'Dashboard' },
-        { href: '/campaigns', label: 'Campaigns' },
-        { href: '/connections', label: 'Connections' },
-        { href: '/profile', label: 'Profile' },
+        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/campaigns', label: 'Campaigns', icon: Zap },
+        { href: '/connections', label: 'Connections', icon: Share2 },
     ] : [];
 
     const isActive = (href: string) => {
@@ -67,15 +80,6 @@ export default function Navbar() {
                     </Link>
 
                     <div className="hidden md:flex items-center space-x-4">
-                        <Link href="/pricing" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
-                            Pricing
-                        </Link>
-                        <Link href="/privacy" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
-                            Privacy
-                        </Link>
-                        <Link href="/about" className="text-sm font-medium text-slate-600 hover:text-purple-600 transition-colors px-2">
-                            About
-                        </Link>
                         {loading ? (
                             <div className="flex space-x-4">
                                 <div className="h-9 w-20 bg-slate-100 rounded animate-pulse" />
@@ -85,14 +89,62 @@ export default function Navbar() {
                             <>
                                 {navLinks.map(link => (
                                     <Link key={link.href} href={link.href}>
-                                        <Button variant={isActive(link.href) ? 'default' : 'ghost'}>
+                                        <Button
+                                            variant={isActive(link.href) ? 'default' : 'ghost'}
+                                            className="gap-2"
+                                        >
+                                            <link.icon className="w-4 h-4" />
                                             {link.label}
                                         </Button>
                                     </Link>
                                 ))}
-                                <Button variant="outline" onClick={handleSignOut}>
-                                    Sign Out
-                                </Button>
+
+                                {/* Profile Dropdown */}
+                                <div className="relative profile-dropdown-container">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className={`rounded-full border-2 transition-all ${profileMenuOpen ? 'border-purple-500 bg-purple-50' : 'border-transparent'}`}
+                                        onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+                                    >
+                                        <UserIcon className="w-5 h-5 text-slate-600" />
+                                    </Button>
+
+                                    {profileMenuOpen && (
+                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-100 py-2 z-50 animate-in fade-in zoom-in duration-200">
+                                            <div className="px-4 py-2 border-b border-slate-50 mb-2">
+                                                <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
+                                                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Account Active</p>
+                                            </div>
+
+                                            <Link
+                                                href="/profile"
+                                                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-purple-600 transition-colors"
+                                                onClick={() => setProfileMenuOpen(false)}
+                                            >
+                                                <Settings className="w-4 h-4" />
+                                                Account Settings
+                                            </Link>
+
+                                            <Link
+                                                href="/pricing"
+                                                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-purple-600 transition-colors"
+                                                onClick={() => setProfileMenuOpen(false)}
+                                            >
+                                                <CreditCard className="w-4 h-4" />
+                                                Pricing & Plans
+                                            </Link>
+
+                                            <button
+                                                onClick={handleSignOut}
+                                                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors mt-2 border-t border-slate-50 pt-3"
+                                            >
+                                                <LogOut className="w-4 h-4" />
+                                                Sign Out
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </>
                         ) : (
                             <>
@@ -136,14 +188,37 @@ export default function Navbar() {
                                         key={link.href}
                                         href={link.href}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className={`block px-4 py-3 rounded-lg transition-colors ${isActive(link.href)
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(link.href)
                                             ? 'bg-purple-100 text-purple-700'
                                             : 'hover:bg-slate-100'
                                             }`}
                                     >
+                                        <link.icon className="w-5 h-5" />
                                         {link.label}
                                     </Link>
                                 ))}
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/profile')
+                                        ? 'bg-purple-100 text-purple-700'
+                                        : 'hover:bg-slate-100'
+                                        }`}
+                                >
+                                    <Settings className="w-5 h-5" />
+                                    Account Settings
+                                </Link>
+                                <Link
+                                    href="/pricing"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/pricing')
+                                        ? 'bg-purple-100 text-purple-700'
+                                        : 'hover:bg-slate-100'
+                                        }`}
+                                >
+                                    <CreditCard className="w-5 h-5" />
+                                    Pricing & Plans
+                                </Link>
                                 <button
                                     onClick={handleSignOut}
                                     className="w-full text-left px-4 py-3 rounded-lg hover:bg-slate-100 text-red-600"
@@ -167,12 +242,6 @@ export default function Navbar() {
                                 >
                                     Sign Up
                                 </Link>
-                                <div className="pt-4 border-t border-slate-100 flex justify-center gap-4 text-xs text-slate-400">
-                                    <Link href="/about" onClick={() => setMobileMenuOpen(false)}>About</Link>
-                                    <Link href="/privacy" onClick={() => setMobileMenuOpen(false)}>Privacy</Link>
-                                    <Link href="/terms" onClick={() => setMobileMenuOpen(false)}>Terms</Link>
-                                    <Link href="/cookies" onClick={() => setMobileMenuOpen(false)}>Cookies</Link>
-                                </div>
                             </>
                         )}
                     </div>

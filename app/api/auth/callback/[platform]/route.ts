@@ -112,6 +112,7 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
                 code,
                 grant_type: 'authorization_code',
                 redirect_uri: redirectUri,
+                code_verifier: 'challenge',
             }),
         });
     } else {
@@ -155,6 +156,40 @@ async function fetchUserInfo(platform: Platform, accessToken: string) {
     }
 
     return response.json();
+}
+
+async function fetchLinkedInOrganizations(accessToken: string) {
+    try {
+        const response = await fetch('https://api.linkedin.com/v2/organizationalEntityAcls?q=roleAssignee&role=ADMIN&state=APPROVED', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'X-Restli-Protocol-Version': '2.0.0',
+            },
+        });
+        if (!response.ok) return [];
+        const data = await response.json();
+        return data.elements || [];
+    } catch (error) {
+        console.error('Error fetching LinkedIn organizations:', error);
+        return [];
+    }
+}
+
+async function fetchLinkedInOrgDetails(accessToken: string, orgUrn: string) {
+    try {
+        const orgId = orgUrn.split(':').pop();
+        const response = await fetch(`https://api.linkedin.com/v2/organizations/${orgId}`, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'X-Restli-Protocol-Version': '2.0.0',
+            },
+        });
+        if (!response.ok) return null;
+        return response.json();
+    } catch (error) {
+        console.error('Error fetching LinkedIn organization details:', error);
+        return null;
+    }
 }
 
 export async function GET(
@@ -218,9 +253,30 @@ export async function GET(
                 accountAvatar = userInfo.data.profile_image_url;
                 break;
             case 'linkedin':
-                platformUserId = userInfo.sub;
-                accountName = userInfo.name;
-                accountAvatar = userInfo.picture;
+                // Try to find a managed page first
+                const orgs = await fetchLinkedInOrganizations(accessToken);
+                if (orgs && orgs.length > 0) {
+                    const primaryOrgUrn = orgs[0].organizationalTarget;
+                    const orgDetails = await fetchLinkedInOrgDetails(accessToken, primaryOrgUrn);
+
+                    if (orgDetails) {
+                        platformUserId = primaryOrgUrn; // Store full URN for pages
+                        accountName = orgDetails.localizedName || orgDetails.vanityName;
+                        // Handle logo if exists
+                        accountAvatar = userInfo.picture; // Keep user avatar for now or try to get logo
+                        if (orgDetails.logoV2) {
+                            // Extracting logo is complex, stick to user avatar for simplicity
+                        }
+                    } else {
+                        platformUserId = `urn:li:person:${userInfo.sub}`;
+                        accountName = userInfo.name;
+                        accountAvatar = userInfo.picture;
+                    }
+                } else {
+                    platformUserId = `urn:li:person:${userInfo.sub}`;
+                    accountName = userInfo.name;
+                    accountAvatar = userInfo.picture;
+                }
                 break;
             case 'tiktok':
                 platformUserId = userInfo.data.user.open_id;

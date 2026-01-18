@@ -6,14 +6,16 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Facebook, Twitter, Linkedin, Music, MessageCircle, Loader2, Trash2 } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Music, MessageCircle, Loader2, Trash2, Settings2 } from 'lucide-react';
 import { Platform, SocialConnection, PLATFORM_CONFIG } from '@/types';
+import LinkedInPageSelector from './LinkedInPageSelector';
 
 interface SocialConnectionCardProps {
     platform: Platform;
     connection?: Partial<SocialConnection>;
     onConnect: (platform: Platform) => void;
     onDisconnect: (connectionId: string) => void;
+    onUpdate?: (connection: Partial<SocialConnection>) => void;
     isConnecting?: boolean;
 }
 
@@ -31,9 +33,11 @@ export default function SocialConnectionCard({
     connection,
     onConnect,
     onDisconnect,
+    onUpdate,
     isConnecting,
 }: SocialConnectionCardProps) {
     const [isDisconnecting, setIsDisconnecting] = useState(false);
+    const [showPageSelector, setShowPageSelector] = useState(false);
     const config = PLATFORM_CONFIG[platform];
     const isConnected = !!connection?.id;
 
@@ -44,78 +48,122 @@ export default function SocialConnectionCard({
         setIsDisconnecting(false);
     };
 
+    const handlePageSelect = (pageId: string, pageName: string) => {
+        if (onUpdate && connection) {
+            onUpdate({
+                ...connection,
+                platform_user_id: pageId,
+                account_name: pageName,
+            });
+        }
+    };
+
+    // Check if this is a LinkedIn organization (company page)
+    const isLinkedInOrg = platform === 'linkedin' &&
+        connection?.platform_user_id?.includes('urn:li:organization');
+
     return (
-        <Card className="p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                    <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-white"
-                        style={{ backgroundColor: config.color }}
-                    >
-                        {PLATFORM_ICONS[platform]}
+        <>
+            <Card className="p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                        <div
+                            className="w-12 h-12 rounded-xl flex items-center justify-center text-white"
+                            style={{ backgroundColor: config.color }}
+                        >
+                            {PLATFORM_ICONS[platform]}
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg">{config.name}</h3>
+                            {isConnected ? (
+                                <div className="flex items-center gap-2 mt-1">
+                                    {connection.account_avatar && (
+                                        <img
+                                            src={connection.account_avatar}
+                                            alt=""
+                                            className="w-5 h-5 rounded-full"
+                                        />
+                                    )}
+                                    <span className="text-sm text-slate-600">
+                                        {connection.account_username || connection.account_name}
+                                    </span>
+                                    {isLinkedInOrg && (
+                                        <Badge variant="secondary" className="text-[10px] bg-blue-100 text-blue-700">
+                                            Company
+                                        </Badge>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="text-sm text-slate-500">Not connected</p>
+                            )}
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="font-semibold text-lg">{config.name}</h3>
-                        {isConnected ? (
-                            <div className="flex items-center gap-2 mt-1">
-                                {connection.account_avatar && (
-                                    <img
-                                        src={connection.account_avatar}
-                                        alt=""
-                                        className="w-5 h-5 rounded-full"
-                                    />
-                                )}
-                                <span className="text-sm text-slate-600">
-                                    {connection.account_username || connection.account_name}
-                                </span>
-                            </div>
-                        ) : (
-                            <p className="text-sm text-slate-500">Not connected</p>
+
+                    <div className="flex items-center gap-2">
+                        {isConnected && (
+                            <Badge variant="secondary" className="bg-green-100 text-green-700">
+                                Connected
+                            </Badge>
                         )}
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    {isConnected && (
-                        <Badge variant="secondary" className="bg-green-100 text-green-700">
-                            Connected
-                        </Badge>
+                <div className="mt-4 flex gap-2">
+                    {isConnected ? (
+                        <>
+                            {platform === 'linkedin' && (
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowPageSelector(true)}
+                                    className="text-blue-600 hover:bg-blue-50"
+                                >
+                                    <Settings2 className="w-4 h-4 mr-2" />
+                                    Select Page
+                                </Button>
+                            )}
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleDisconnect}
+                                disabled={isDisconnecting}
+                                className="text-red-600 hover:bg-red-50"
+                            >
+                                {isDisconnecting ? (
+                                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                ) : (
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                )}
+                                Disconnect
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            onClick={() => onConnect(platform)}
+                            disabled={isConnecting}
+                            style={{ backgroundColor: config.color }}
+                            className="text-white hover:opacity-90"
+                        >
+                            {isConnecting ? (
+                                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                            ) : (
+                                PLATFORM_ICONS[platform]
+                            )}
+                            <span className="ml-2">Connect {config.name}</span>
+                        </Button>
                     )}
                 </div>
-            </div>
+            </Card>
 
-            <div className="mt-4 flex gap-2">
-                {isConnected ? (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleDisconnect}
-                        disabled={isDisconnecting}
-                        className="text-red-600 hover:bg-red-50"
-                    >
-                        {isDisconnecting ? (
-                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        ) : (
-                            <Trash2 className="w-4 h-4 mr-2" />
-                        )}
-                        Disconnect
-                    </Button>
-                ) : (
-                    <Button
-                        onClick={() => onConnect(platform)}
-                        disabled={isConnecting}
-                        style={{ backgroundColor: config.color }}
-                        className="text-white hover:opacity-90"
-                    >
-                        {isConnecting ? (
-                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        ) : (
-                            PLATFORM_ICONS[platform]
-                        )}
-                        <span className="ml-2">Connect {config.name}</span>
-                    </Button>
-                )}
-            </div>
-        </Card>
+            {/* LinkedIn Page Selector Modal */}
+            {platform === 'linkedin' && connection?.id && (
+                <LinkedInPageSelector
+                    connectionId={connection.id}
+                    isOpen={showPageSelector}
+                    onClose={() => setShowPageSelector(false)}
+                    onSelect={handlePageSelect}
+                />
+            )}
+        </>
     );
 }

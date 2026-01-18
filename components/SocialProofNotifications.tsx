@@ -77,13 +77,13 @@ export default function SocialProofNotifications() {
     const current = NOTIFICATIONS[currentIndex];
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 pointer-events-none sm:block hidden">
+        <div className="fixed bottom-6 left-6 z-40 pointer-events-none sm:block hidden">
             <AnimatePresence>
                 {isVisible && (
                     <motion.div
-                        initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                        initial={{ opacity: 0, x: -50, scale: 0.9 }}
                         animate={{ opacity: 1, x: 0, scale: 1 }}
-                        exit={{ opacity: 0, x: 50, scale: 0.9 }}
+                        exit={{ opacity: 0, x: -50, scale: 0.9 }}
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
                         className="bg-white border-2 border-slate-100 shadow-2xl rounded-2xl p-4 flex items-center gap-4 max-w-[320px] pointer-events-auto"
                     >
