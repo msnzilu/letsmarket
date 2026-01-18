@@ -9,7 +9,7 @@ import { Plan } from '@/lib/subscription';
 // Base prices in USD
 const BASE_PRICES_USD: Record<'free' | 'pro' | 'enterprise', number> = {
     free: 0,
-    pro: 29,
+    pro: 49,
     enterprise: 0,
 };
 

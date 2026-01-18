@@ -4,7 +4,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plan, Feature, canAccessFeature, getEffectivePlan, PLAN_LIMITS } from '@/lib/subscription';
+import { Plan, Feature, canAccessFeature, getEffectivePlan, PLAN_LIMITS, UNLIMITED } from '@/lib/subscription';
 
 interface SubscriptionData {
     plan: Plan;
@@ -79,8 +79,8 @@ export function useSubscription(): UseSubscriptionReturn {
     const getRemaining = useCallback(
         (feature: Feature) => {
             const limit = limits[feature];
-            if (typeof limit === 'boolean') return limit ? Infinity : 0;
-            if (limit === Infinity) return Infinity;
+            if (typeof limit === 'boolean') return limit ? UNLIMITED : 0;
+            if (limit === (Infinity as any) || limit === (UNLIMITED as any)) return UNLIMITED;
 
             // Get current usage for this feature
             let currentUsage = 0;

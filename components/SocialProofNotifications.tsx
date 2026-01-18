@@ -4,83 +4,81 @@ import { useState, useEffect } from 'react';
 import { Users, Zap, CheckCircle, MapPin } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-// components/SocialProofNotifications.tsx
+const NOTIFICATION_TIMEOUT = 15000;
+const HIDE_TIMEOUT = 1000;
 
-const NOTIFICATIONS = [
-    {
-        id: 1,
-        type: 'signup',
-        user: 'Alex M.',
-        location: 'Oslo, Norway',
-        time: '2 minutes ago',
-        icon: Users,
-    },
-    {
-        id: 2,
-        type: 'analysis',
-        user: 'Sarah K.',
-        location: 'New York, USA',
-        time: '5 minutes ago',
-        icon: Zap,
-    },
-    {
-        id: 3,
-        type: 'signup',
-        user: 'Marco R.',
-        location: 'Milan, Italy',
-        time: '8 minutes ago',
-        icon: Users,
-    },
-    {
-        id: 4,
-        type: 'analysis',
-        user: 'Elena S.',
-        location: 'Madrid, Spain',
-        time: '12 minutes ago',
-        icon: CheckCircle,
-    },
-    {
-        id: 5,
-        type: 'signup',
-        user: 'James T.',
-        location: 'London, UK',
-        time: '15 minutes ago',
-        icon: Users,
-    }
-];
+interface Notification {
+    id: string | number;
+    type: 'signup' | 'analysis';
+    user: string;
+    location: string;
+    timestamp: number;
+}
 
 export default function SocialProofNotifications() {
-    const [notifications, setNotifications] = useState(NOTIFICATIONS);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
 
+    // Initial load and shuffle
     useEffect(() => {
-        const fetchStats = async () => {
+        const loadInitialData = async () => {
+            try {
+                // Import JSON data
+                const staticData = await import('@/lib/data/notifications.json');
+
+                // Shuffle static data and assign random recent timestamps
+                const now = Date.now();
+                const processedStatic: Notification[] = staticData.default
+                    .sort(() => Math.random() - 0.5)
+                    .map((item: any, index: number) => ({
+                        ...item,
+                        id: `static-${index}`,
+                        // Assign a random timestamp between 2 and 20 minutes ago
+                        timestamp: now - (Math.floor(Math.random() * 18 * 60 * 1000) + 2 * 60 * 1000)
+                    }));
+
+                setNotifications(processedStatic);
+            } catch (error) {
+                console.error('Failed to load notification data:', error);
+            }
+        };
+
+        const fetchDynamicStats = async () => {
             try {
                 const res = await fetch('/api/stats');
                 if (res.ok) {
                     const data = await res.json();
                     if (data.recentActivity && data.recentActivity.length > 0) {
-                        const dynamicNotes = data.recentActivity.map((a: any) => ({
+                        const dynamicNotes: Notification[] = data.recentActivity.map((a: any) => ({
                             id: `dynamic-${a.id}`,
                             type: a.type === 'analysis' ? 'analysis' : 'signup',
                             user: a.user,
                             location: a.location,
-                            time: 'just now',
-                            icon: a.type === 'analysis' ? Zap : Users,
+                            timestamp: Date.now() - (Math.floor(Math.random() * 60 * 1000)), // Just now/under 1 min
                         }));
-                        setNotifications([...dynamicNotes, ...NOTIFICATIONS]);
+
+                        setNotifications(prev => [...dynamicNotes, ...prev]);
                     }
                 }
             } catch (error) {
-                console.error('Failed to fetch notifications:', error);
+                console.error('Failed to fetch dynamic notifications:', error);
             }
         };
-        fetchStats();
+
+        loadInitialData();
+        fetchDynamicStats();
 
         const showTimeout = setTimeout(() => {
             setIsVisible(true);
-        }, 5000); // Initial delay
+        }, 5000);
+
+        return () => clearTimeout(showTimeout);
+    }, []);
+
+    // Cycling logic
+    useEffect(() => {
+        if (notifications.length === 0) return;
 
         const interval = setInterval(() => {
             setIsVisible(false);
@@ -88,17 +86,31 @@ export default function SocialProofNotifications() {
             setTimeout(() => {
                 setCurrentIndex((prev) => (prev + 1) % notifications.length);
                 setIsVisible(true);
-            }, 1000); // Time to hide before showing next
+            }, HIDE_TIMEOUT);
 
-        }, 15000); // Show each for 15s
+        }, NOTIFICATION_TIMEOUT);
 
-        return () => {
-            clearTimeout(showTimeout);
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
     }, [notifications.length]);
 
+    const formatTimeAgo = (timestamp: number) => {
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+
+        if (seconds < 60) return 'just now';
+
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+
+        return 'recently';
+    };
+
+    if (notifications.length === 0) return null;
+
     const current = notifications[currentIndex];
+    const Icon = current.type === 'analysis' ? Zap : Users;
 
     return (
         <div className="fixed bottom-6 left-6 z-40 pointer-events-none sm:block hidden">
@@ -112,7 +124,7 @@ export default function SocialProofNotifications() {
                         className="bg-white border-2 border-slate-100 shadow-2xl rounded-2xl p-4 flex items-center gap-4 max-w-[320px] pointer-events-auto"
                     >
                         <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
-                            <current.icon className="w-6 h-6 text-purple-600" />
+                            <Icon className="w-6 h-6 text-purple-600" />
                         </div>
 
                         <div className="flex-1">
@@ -123,7 +135,7 @@ export default function SocialProofNotifications() {
                                 <MapPin className="w-3 h-3" />
                                 <span>{current.location}</span>
                                 <span className="opacity-30">•</span>
-                                <span>{current.time}</span>
+                                <span>{formatTimeAgo(current.timestamp)}</span>
                             </div>
                         </div>
 

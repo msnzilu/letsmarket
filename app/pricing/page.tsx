@@ -14,7 +14,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 // Base prices in USD
 const BASE_PRICES = {
     free: 0,
-    pro: 29,
+    pro: 49,
     enterprise: 0, // Custom
 };
 
@@ -49,7 +49,7 @@ const plans: Plan[] = [
     {
         id: 'pro',
         name: 'Pro',
-        basePrice: 29,
+        basePrice: 49,
         period: '/month',
         description: 'For growing businesses and marketers',
         features: [

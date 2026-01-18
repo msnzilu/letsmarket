@@ -12,6 +12,8 @@ import { Loader2, Zap, ShieldCheck, Lock, ArrowRight, Sparkles } from 'lucide-re
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
+import { useSubscription } from '@/hooks/useSubscription';
+import { UNLIMITED } from '@/lib/subscription';
 import RevenueCalculator from '@/components/RevenueCalculator';
 
 export default function AnalyzePage() {
@@ -19,37 +21,25 @@ export default function AnalyzePage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [progress, setProgress] = useState('');
-    const [usage, setUsage] = useState<any>(null);
-    const [limitReached, setLimitReached] = useState(false);
-    const [fetchingUsage, setFetchingUsage] = useState(true);
-    const { onOpen } = useUpgradeModal();
     const router = useRouter();
+    const { onOpen } = useUpgradeModal();
+    const { plan, limits, usage, isLoading: subLoading } = useSubscription();
+
+    const limitReached = usage && limits &&
+        limits.analyses_total !== (Infinity as any) &&
+        limits.analyses_total !== (UNLIMITED as any) &&
+        usage.analyses_count >= (limits.analyses_total as number);
 
     useEffect(() => {
-        const checkUsage = async () => {
-            try {
-                const res = await fetch('/api/subscription');
-                const data = await res.json();
-                if (data.usage && data.limits) {
-                    setUsage(data.usage);
-                    if (data.usage.analyses_count >= data.limits.analyses_total) {
-                        setLimitReached(true);
-                        onOpen(); // Automatically trigger modal
-                    }
-                }
-            } catch (err) {
-                console.error('Failed to fetch usage:', err);
-            } finally {
-                setFetchingUsage(false);
-            }
-        };
-        checkUsage();
-    }, []);
+        if (!subLoading && limitReached) {
+            onOpen();
+        }
+    }, [subLoading, limitReached, onOpen]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (fetchingUsage) return; // Wait for limits to load
+        if (subLoading) return; // Wait for limits to load
 
         if (limitReached) {
             onOpen(); // Trigger the upgrade modal
@@ -155,7 +145,7 @@ export default function AnalyzePage() {
                                             onChange={(e) => setUrl(e.target.value)}
                                             placeholder="https://example.com"
                                             required
-                                            disabled={loading || limitReached}
+                                            disabled={loading || !!limitReached}
                                             className="text-lg py-7 px-5 border-2 border-slate-200 focus:border-purple-500 transition-all rounded-xl shadow-sm"
                                         />
                                         <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-purple-500 transition-colors">
@@ -171,14 +161,14 @@ export default function AnalyzePage() {
                                 <Button
                                     type="submit"
                                     className="w-full h-14 text-lg bg-slate-900 hover:bg-slate-800 transition-all rounded-xl shadow-lg hover:shadow-xl disabled:bg-slate-300"
-                                    disabled={loading || limitReached || fetchingUsage}
+                                    disabled={loading || !!limitReached || subLoading}
                                 >
                                     {loading ? (
                                         <>
                                             <Loader2 className="w-5 h-5 mr-3 animate-spin" />
                                             Analyzing Architecture...
                                         </>
-                                    ) : fetchingUsage ? (
+                                    ) : subLoading ? (
                                         <>
                                             <Loader2 className="w-5 h-5 mr-3 animate-spin" />
                                             Checking account...

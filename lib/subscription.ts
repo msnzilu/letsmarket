@@ -28,6 +28,8 @@ export interface UsageTracking {
 }
 
 // Feature limits by plan
+export const UNLIMITED = 999999999;
+
 export const PLAN_LIMITS = {
     free: {
         analyses_total: 1,
@@ -40,23 +42,23 @@ export const PLAN_LIMITS = {
         export_reports: false,
     },
     pro: {
-        analyses_total: Infinity,
-        analyses_per_month: Infinity,
-        headlines_per_analysis: Infinity,
-        ctas_per_analysis: Infinity,
+        analyses_total: UNLIMITED,
+        analyses_per_month: UNLIMITED,
+        headlines_per_analysis: UNLIMITED,
+        ctas_per_analysis: UNLIMITED,
         social_accounts: 5,
-        posts_per_month: Infinity,
+        posts_per_month: UNLIMITED,
         team_members: 5,
         export_reports: true,
     },
     enterprise: {
-        analyses_total: Infinity,
-        analyses_per_month: Infinity,
-        headlines_per_analysis: Infinity,
-        ctas_per_analysis: Infinity,
-        social_accounts: Infinity,
-        posts_per_month: Infinity,
-        team_members: Infinity,
+        analyses_total: UNLIMITED,
+        analyses_per_month: UNLIMITED,
+        headlines_per_analysis: UNLIMITED,
+        ctas_per_analysis: UNLIMITED,
+        social_accounts: UNLIMITED,
+        posts_per_month: UNLIMITED,
+        team_members: UNLIMITED,
         export_reports: true,
     },
 } as const;
@@ -64,7 +66,7 @@ export const PLAN_LIMITS = {
 // Plan prices in cents (Smallest currency unit)
 export const PLAN_PRICES = {
     free: 0,
-    pro: 2900, // $29.00
+    pro: 4900, // $49.00
     enterprise: 0, // Custom pricing
 } as const;
 
@@ -110,8 +112,8 @@ export function canAccessFeature(
         return { allowed: limit, limit };
     }
 
-    if (limit === Infinity) {
-        return { allowed: true, limit, remaining: Infinity };
+    if (limit === Infinity || limit === UNLIMITED) {
+        return { allowed: true, limit: limit as any, remaining: UNLIMITED };
     }
 
     const remaining = Math.max(0, limit - (currentUsage || 0));
