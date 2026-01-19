@@ -1,6 +1,6 @@
 services:
   app:
-    image: ${DOCKER_REGISTRY:-}letsmarket:${TAG:-latest}
+    image: ${DOCKER_REGISTRY:-}lezmarket:${TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile
@@ -43,7 +43,7 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - letsmarket-network
+      - lezmarket-network
     logging:
       driver: "json-file"
       options:
@@ -70,11 +70,11 @@ services:
         constraints:
           - node.role == manager
     networks:
-      - letsmarket-network
+      - lezmarket-network
     depends_on:
       - app
 
 networks:
-  letsmarket-network:
+  lezmarket-network:
     driver: overlay
     attachable: true

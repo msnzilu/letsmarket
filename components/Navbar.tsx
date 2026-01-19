@@ -84,13 +84,12 @@ export default function Navbar() {
                 <div className="flex justify-between items-center h-16">
                     <Link href="/" className="flex items-center space-x-2">
                         <Image
-                            src="/logo/logo.png"
-                            alt="LetsMarket Logo"
-                            width={150}
-                            height={100}
-                            className="w-8 h-8 object-contain"
+                            src="/logo/site-logo.png"
+                            alt="lez Market Logo"
+                            width={200}
+                            height={90}
+                            className="w-40 h-15 object-contain"
                         />
-                        <span className="font-bold text-xl">LetsMarket</span>
                     </Link>
 
                     <div className="hidden md:flex items-center space-x-4">
@@ -135,7 +134,7 @@ export default function Navbar() {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className={`rounded-full border-2 transition-all ${profileMenuOpen ? 'border-purple-500 bg-purple-50' : 'border-transparent'}`}
+                                        className={`rounded-full border-2 transition-all ${profileMenuOpen ? 'border-brand-primary bg-brand-secondary-light' : 'border-transparent'}`}
                                         onClick={() => setProfileMenuOpen(!profileMenuOpen)}
                                     >
                                         <UserIcon className="w-5 h-5 text-slate-600" />
@@ -150,7 +149,7 @@ export default function Navbar() {
 
                                             <Link
                                                 href="/profile"
-                                                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-purple-600 transition-colors"
+                                                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-brand-primary transition-colors"
                                                 onClick={() => setProfileMenuOpen(false)}
                                             >
                                                 <Settings className="w-4 h-4" />
@@ -159,7 +158,7 @@ export default function Navbar() {
 
                                             <Link
                                                 href="/pricing"
-                                                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-purple-600 transition-colors"
+                                                className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-brand-primary transition-colors"
                                                 onClick={() => setProfileMenuOpen(false)}
                                             >
                                                 <CreditCard className="w-4 h-4" />
@@ -237,7 +236,7 @@ export default function Navbar() {
                                                     href={link.href}
                                                     onClick={() => setMobileMenuOpen(false)}
                                                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive(link.href)
-                                                        ? 'bg-purple-100 text-purple-700'
+                                                        ? 'bg-brand-secondary-light text-brand-primary'
                                                         : 'hover:bg-slate-100'
                                                         }`}
                                                 >
@@ -252,7 +251,7 @@ export default function Navbar() {
                                     href="/profile"
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/profile')
-                                        ? 'bg-purple-100 text-purple-700'
+                                        ? 'bg-brand-secondary-light text-brand-primary'
                                         : 'hover:bg-slate-100'
                                         }`}
                                 >
@@ -263,7 +262,7 @@ export default function Navbar() {
                                     href="/pricing"
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/pricing')
-                                        ? 'bg-purple-100 text-purple-700'
+                                        ? 'bg-brand-secondary-light text-brand-primary'
                                         : 'hover:bg-slate-100'
                                         }`}
                                 >
@@ -289,7 +288,7 @@ export default function Navbar() {
                                 <Link
                                     href="/signup"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 rounded-lg bg-purple-600 text-white text-center font-bold"
+                                    className="block px-4 py-3 rounded-lg bg-brand-primary text-white text-center font-bold"
                                 >
                                     Sign Up
                                 </Link>

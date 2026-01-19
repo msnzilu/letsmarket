@@ -37,7 +37,7 @@ export default function ExportPdfButton({ analysisId, plan }: ExportPdfButtonPro
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `LetsMarket_Report_${analysisId.slice(0, 8)}.pdf`;
+            a.download = `lezMarket_Report_${analysisId.slice(0, 8)}.pdf`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);

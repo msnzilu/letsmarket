@@ -150,7 +150,7 @@ export default function PostComposerModal({
                                 <textarea
                                     value={content}
                                     onChange={(e) => setContent(e.target.value)}
-                                    className="w-full h-32 p-3 border rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    className="w-full h-32 p-3 border rounded-lg resize-none focus:ring-2 focus:ring-brand-primary focus:border-transparent"
                                     placeholder="Write your post..."
                                 />
                                 <p className="text-xs text-slate-500 mt-1">
@@ -187,8 +187,8 @@ export default function PostComposerModal({
                                                     onClick={() => toggleConnection(conn.id!)}
                                                     disabled={isOverLimit}
                                                     className={`p-3 rounded-lg border-2 transition-all text-left ${isSelected
-                                                            ? 'border-purple-500 bg-purple-50'
-                                                            : 'border-slate-200 hover:border-slate-300'
+                                                        ? 'border-brand-primary bg-brand-secondary-light'
+                                                        : 'border-slate-200 hover:border-slate-300'
                                                         } ${isOverLimit ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >
                                                     <div className="flex items-center gap-3">
@@ -205,7 +205,7 @@ export default function PostComposerModal({
                                                             </p>
                                                         </div>
                                                         {isSelected && (
-                                                            <Check className="w-5 h-5 text-purple-600 ml-auto" />
+                                                            <Check className="w-5 h-5 text-brand-primary ml-auto" />
                                                         )}
                                                     </div>
                                                     {isOverLimit && (
@@ -271,7 +271,7 @@ export default function PostComposerModal({
                                 <Button
                                     onClick={handlePost}
                                     disabled={selectedConnections.length === 0 || posting}
-                                    className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600"
+                                    className="flex-1 bg-gradient-to-r from-brand-primary to-brand-secondary"
                                 >
                                     {posting ? (
                                         <Loader2 className="w-4 h-4 animate-spin mr-2" />

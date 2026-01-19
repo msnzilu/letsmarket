@@ -148,7 +148,7 @@ export default function CampaignCard({ campaign, onStatusChange }: CampaignCardP
                     <span className="text-slate-500"> published</span>
                 </div>
                 <div>
-                    <span className="text-blue-600 font-medium">
+                    <span className="text-brand-primary font-medium">
                         {campaign.stats?.pending_posts || 0}
                     </span>
                     <span className="text-slate-500"> pending</span>

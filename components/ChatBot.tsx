@@ -21,7 +21,7 @@ export default function ChatBot() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "Hi! I'm your Let's Market assistant. How can I help you today?",
+            content: "Hi! I'm your lez Market assistant. How can I help you today?",
         },
     ]);
     const [input, setInput] = useState("");
@@ -90,13 +90,13 @@ export default function ChatBot() {
                         className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 flex items-center justify-between text-white">
+                        <div className="bg-gradient-to-r from-brand-primary to-brand-secondary p-4 flex items-center justify-between text-white">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                                     <Bot size={20} />
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-sm">Let's Market Assistant</h3>
+                                    <h3 className="font-semibold text-sm">lez Market Assistant</h3>
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-2 h-2 bg-green-400 rounded-full" />
                                         <span className="text-[10px] opacity-80">Always active</span>
@@ -128,7 +128,7 @@ export default function ChatBot() {
                                             "w-7 h-7 rounded-full flex items-center justify-center shrink-0 border",
                                             message.role === "user"
                                                 ? "bg-slate-100 border-slate-200"
-                                                : "bg-blue-50 border-blue-100 text-blue-600"
+                                                : "bg-brand-secondary-light border-brand-secondary/20 text-brand-primary"
                                         )}
                                     >
                                         {message.role === "user" ? <User size={14} /> : <Bot size={14} />}
@@ -137,7 +137,7 @@ export default function ChatBot() {
                                         className={cn(
                                             "p-3 rounded-2xl text-sm leading-relaxed",
                                             message.role === "user"
-                                                ? "bg-blue-600 text-white rounded-tr-none shadow-md shadow-blue-200/50"
+                                                ? "bg-brand-primary text-white rounded-tr-none shadow-md shadow-brand-primary/20"
                                                 : "bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm"
                                         )}
                                     >
@@ -147,11 +147,11 @@ export default function ChatBot() {
                             ))}
                             {isLoading && (
                                 <div className="flex gap-2 mr-auto max-w-[85%]">
-                                    <div className="w-7 h-7 rounded-full bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                                    <div className="w-7 h-7 rounded-full bg-brand-secondary-light border border-brand-secondary/20 text-brand-primary flex items-center justify-center shrink-0">
                                         <Bot size={14} />
                                     </div>
                                     <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-tl-none shadow-sm">
-                                        <Loader2 size={16} className="animate-spin text-blue-600" />
+                                        <Loader2 size={16} className="animate-spin text-brand-primary" />
                                     </div>
                                 </div>
                             )}
@@ -171,20 +171,20 @@ export default function ChatBot() {
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     placeholder="Ask a question..."
-                                    className="bg-slate-50 border-slate-200 focus:ring-blue-500"
+                                    className="bg-slate-50 border-slate-200 focus:ring-brand-primary"
                                     disabled={isLoading}
                                 />
                                 <Button
                                     type="submit"
                                     size="icon"
-                                    className="bg-blue-600 hover:bg-blue-700 shrink-0"
+                                    className="bg-brand-primary hover:bg-brand-primary/90 shrink-0"
                                     disabled={isLoading || !input.trim()}
                                 >
                                     <Send size={18} />
                                 </Button>
                             </form>
                             <p className="text-[10px] text-slate-400 text-center mt-2">
-                                Powered by Let's Market AI
+                                Powered by lez Market AI
                             </p>
                         </div>
                     </motion.div>
@@ -199,7 +199,7 @@ export default function ChatBot() {
                     "w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300",
                     isOpen
                         ? "bg-slate-800 text-white rotate-90"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-brand-primary text-white hover:bg-brand-primary/90"
                 )}
             >
                 {isOpen ? <X size={24} /> : <MessageCircle size={28} />}

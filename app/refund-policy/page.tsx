@@ -1,6 +1,12 @@
 // app/refund-policy/page.tsx
 
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+    title: 'Refund Policy - lez Market',
+    description: 'Learn about our 14-day money-back guarantee and how to request a refund for your lez Market subscription.',
+};
 
 export default function RefundPolicy() {
     const lastUpdated = new Date().toLocaleDateString('en-US', {
@@ -18,7 +24,7 @@ export default function RefundPolicy() {
                 <section>
                     <h2 className="text-2xl font-bold text-slate-900 mb-4">1. 14-Day Money-Back Guarantee</h2>
                     <p>
-                        We want you to be completely satisfied with LetsMarket. If you are a first-time subscriber and
+                        We want you to be completely satisfied with lez Market. If you are a first-time subscriber and
                         decide that our service isn't the right fit for you within the first 14 days of your initial
                         subscription, we will provide a full refund of your purchase.
                     </p>

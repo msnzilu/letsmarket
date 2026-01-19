@@ -62,7 +62,7 @@ export default function CopyCard({ copy, type, onPost }: CopyCardProps) {
                         <Button
                             size="sm"
                             onClick={() => onPost(copy.copy, type)}
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 text-white"
+                            className="bg-gradient-to-r from-brand-primary to-brand-secondary text-white"
                         >
                             <Send className="w-4 h-4 mr-1" />
                             Post

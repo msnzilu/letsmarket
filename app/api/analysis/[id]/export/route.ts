@@ -56,7 +56,7 @@ export async function GET(
         const pdfBytes = await generateAnalysisPDF(analysis, analysis.websites?.url || 'Unknown');
 
         // Return PDF as response
-        const filename = `LetsMarket_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+        const filename = `lezMarket_Report_${new Date().toISOString().split('T')[0]}.pdf`;
 
         return new Response(pdfBytes as any, {
             status: 200,

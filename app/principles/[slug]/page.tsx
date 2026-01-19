@@ -75,9 +75,9 @@ export default async function PrinciplePage({
 
     const Icon = principle.icon;
     const colorClasses = {
-        purple: { text: 'text-purple-600', bg: 'bg-purple-100', gradient: 'from-purple-600 to-blue-600', bgGradient: 'bg-gradient-to-br from-purple-50 to-blue-50', border: 'border-purple-500' },
+        purple: { text: 'text-brand-primary', bg: 'bg-brand-secondary-light', gradient: 'from-brand-primary to-brand-secondary', bgGradient: 'bg-gradient-to-br from-brand-secondary-light to-brand-secondary/5', border: 'border-brand-primary' },
         red: { text: 'text-red-600', bg: 'bg-red-100', gradient: 'from-red-600 to-orange-600', bgGradient: 'bg-gradient-to-br from-red-50 to-orange-50', border: 'border-red-500' },
-        blue: { text: 'text-blue-600', bg: 'bg-blue-100', gradient: 'from-blue-600 to-indigo-600', bgGradient: 'bg-gradient-to-br from-blue-50 to-indigo-50', border: 'border-blue-500' },
+        blue: { text: 'text-brand-secondary', bg: 'bg-brand-secondary/10', gradient: 'from-brand-secondary to-brand-primary', bgGradient: 'bg-gradient-to-br from-brand-secondary/5 to-brand-primary/5', border: 'border-brand-secondary' },
         orange: { text: 'text-orange-600', bg: 'bg-orange-100', gradient: 'from-orange-600 to-yellow-600', bgGradient: 'bg-gradient-to-br from-orange-50 to-yellow-50', border: 'border-orange-500' },
         green: { text: 'text-green-600', bg: 'bg-green-100', gradient: 'from-green-600 to-emerald-600', bgGradient: 'bg-gradient-to-br from-green-50 to-emerald-50', border: 'border-green-500' },
         emerald: { text: 'text-emerald-600', bg: 'bg-emerald-100', gradient: 'from-emerald-600 to-teal-600', bgGradient: 'bg-gradient-to-br from-emerald-50 to-teal-50', border: 'border-emerald-500' },
@@ -99,7 +99,7 @@ export default async function PrinciplePage({
                 {userAnalysis && (
                     <div className="flex items-center gap-2 text-sm text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
                         <span>Analysis for: <strong>{websiteUrl}</strong></span>
-                        <Link href={`/dashboard/${userAnalysis.id}`} className="text-blue-600 hover:underline flex items-center gap-1 ml-2">
+                        <Link href={`/dashboard/${userAnalysis.id}`} className="text-brand-primary hover:underline flex items-center gap-1 ml-2">
                             View Full Report <ExternalLink size={12} />
                         </Link>
                     </div>
@@ -124,9 +124,9 @@ export default async function PrinciplePage({
                     </Badge>
                 </Card>
 
-                <Card className="p-6 border-blue-200 bg-white">
+                <Card className="p-6 border-brand-secondary/20 bg-white">
                     <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                        <TrendingUp size={20} className="text-blue-600" />
+                        <TrendingUp size={20} className="text-brand-primary" />
                         {userAnalysis ? 'Your Analysis' : 'Personalize This'}
                     </h3>
 
@@ -136,7 +136,7 @@ export default async function PrinciplePage({
                                 <div className="flex justify-between items-center mb-1">
                                     <span className="text-sm font-medium text-slate-600">Your Score</span>
                                     <span className={`text-2xl font-bold ${(userPrincipleData?.score || 0) < 40 ? 'text-red-500' :
-                                            (userPrincipleData?.score || 0) < 70 ? 'text-yellow-600' : 'text-green-600'
+                                        (userPrincipleData?.score || 0) < 70 ? 'text-yellow-600' : 'text-green-600'
                                         }`}>
                                         {userPrincipleData?.score}/100
                                     </span>
@@ -144,7 +144,7 @@ export default async function PrinciplePage({
                                 <div className="w-full bg-slate-100 rounded-full h-2">
                                     <div
                                         className={`h-2 rounded-full transition-all ${(userPrincipleData?.score || 0) < 40 ? 'bg-red-500' :
-                                                (userPrincipleData?.score || 0) < 70 ? 'bg-yellow-500' : 'bg-green-500'
+                                            (userPrincipleData?.score || 0) < 70 ? 'bg-yellow-500' : 'bg-green-500'
                                             }`}
                                         style={{ width: `${userPrincipleData?.score}%` }}
                                     ></div>
@@ -176,10 +176,10 @@ export default async function PrinciplePage({
                     </h2>
                     <div className="grid gap-4">
                         {relevantRecommendations.map((rec, i) => (
-                            <Card key={i} className="p-5 border-l-4 border-l-blue-500">
+                            <Card key={i} className="p-5 border-l-4 border-l-brand-primary">
                                 <div className="flex justify-between items-start mb-2">
                                     <h3 className="font-bold text-lg">{rec.title}</h3>
-                                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-100">
+                                    <Badge variant="outline" className="bg-brand-secondary-light text-brand-primary border-brand-secondary/20">
                                         Impact Score: {rec.impactScore}
                                     </Badge>
                                 </div>

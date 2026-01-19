@@ -1,6 +1,16 @@
 // app/privacy/page.tsx
 
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+    title: 'Privacy Policy - lez Market',
+    description: 'Our commitment to protecting your personal data and respecting your privacy.',
+    robots: {
+        index: false,
+        follow: true,
+    }
+};
 
 export default function PrivacyPolicy() {
     const lastUpdated = new Date().toLocaleDateString('en-US', {
@@ -18,7 +28,7 @@ export default function PrivacyPolicy() {
                 <section>
                     <h2 className="text-2xl font-bold mb-4">1. Introduction</h2>
                     <p className="text-slate-600 leading-relaxed">
-                        Welcome to LetsMarket. We respect your privacy and are committed to protecting your personal data.
+                        Welcome to lez Market. We respect your privacy and are committed to protecting your personal data.
                         This Privacy Policy will inform you as to how we look after your personal data when you visit our website
                         and tell you about your privacy rights and how the law protects you.
                     </p>
@@ -62,7 +72,7 @@ export default function PrivacyPolicy() {
                     <h2 className="text-2xl font-bold mb-4">5. Contact Us</h2>
                     <p className="text-slate-600 leading-relaxed">
                         If you have any questions about this privacy policy or our privacy practices, please contact us at:
-                        <a href="mailto:privacy@letsmarket.ai" className="text-purple-600 hover:underline ml-1">privacy@letsmarket.ai</a>
+                        <a href="mailto:privacy@lezmarket.ai" className="text-purple-600 hover:underline ml-1">privacy@lezmarket.ai</a>
                     </p>
                 </section>
             </div>

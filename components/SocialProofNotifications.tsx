@@ -123,8 +123,8 @@ export default function SocialProofNotifications() {
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
                         className="bg-white border-2 border-slate-100 shadow-2xl rounded-2xl p-4 flex items-center gap-4 max-w-[320px] pointer-events-auto"
                     >
-                        <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
-                            <Icon className="w-6 h-6 text-purple-600" />
+                        <div className="w-12 h-12 rounded-full bg-brand-secondary-light flex items-center justify-center flex-shrink-0">
+                            <Icon className="w-6 h-6 text-brand-primary" />
                         </div>
 
                         <div className="flex-1">

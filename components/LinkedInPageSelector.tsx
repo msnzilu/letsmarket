@@ -113,7 +113,7 @@ export default function LinkedInPageSelector({
                 <div className="p-6 max-h-[400px] overflow-y-auto">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-8">
-                            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                            <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
                             <p className="text-sm text-slate-500 mt-2">Loading pages...</p>
                         </div>
                     ) : pages.length === 0 ? (
@@ -131,13 +131,13 @@ export default function LinkedInPageSelector({
                                     key={page.id}
                                     onClick={() => setSelectedPage(page)}
                                     className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${selectedPage?.id === page.id
-                                            ? 'border-blue-500 bg-blue-50'
-                                            : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                                        ? 'border-brand-primary bg-brand-secondary-light'
+                                        : 'border-slate-200 hover:border-brand-secondary hover:bg-slate-50'
                                         }`}
                                 >
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${page.type === 'organization'
-                                            ? 'bg-blue-100 text-blue-600'
-                                            : 'bg-slate-100 text-slate-600'
+                                        ? 'bg-brand-secondary-light text-brand-primary'
+                                        : 'bg-slate-100 text-slate-600'
                                         }`}>
                                         {page.type === 'organization' ? (
                                             <Building2 className="w-5 h-5" />
@@ -154,7 +154,7 @@ export default function LinkedInPageSelector({
                                         </p>
                                     </div>
                                     {selectedPage?.id === page.id && (
-                                        <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                                        <Check className="w-5 h-5 text-brand-primary flex-shrink-0" />
                                     )}
                                     {currentSelection === page.id && selectedPage?.id !== page.id && (
                                         <Badge variant="secondary" className="text-[10px]">Current</Badge>
@@ -173,7 +173,7 @@ export default function LinkedInPageSelector({
                     <Button
                         onClick={handleSave}
                         disabled={!selectedPage || saving || selectedPage.id === currentSelection}
-                        className="bg-blue-600 hover:bg-blue-700"
+                        className="bg-brand-primary hover:bg-brand-primary/90"
                     >
                         {saving ? (
                             <>

@@ -14,7 +14,7 @@ export default function PlanBadge({ plan, size = 'sm' }: PlanBadgeProps) {
     const getVariant = () => {
         switch (plan) {
             case 'pro':
-                return 'bg-gradient-to-r from-purple-600 to-blue-600 text-white border-0';
+                return 'bg-gradient-to-r from-brand-primary to-brand-secondary text-white border-0';
             case 'enterprise':
                 return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0';
             default:

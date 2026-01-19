@@ -45,7 +45,7 @@ export default function PersuasionSection({
         <div className={`space-y-12 ${className}`}>
             {/* Social Proof Header */}
             <div className="text-center space-y-2 mb-8">
-                <div className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                <div className="inline-block px-3 py-1 bg-brand-secondary-light text-brand-primary rounded-full text-[10px] font-bold uppercase tracking-widest">
                     Social Proof in Action
                 </div>
             </div>
@@ -54,7 +54,7 @@ export default function PersuasionSection({
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {testimonials.map((t, i) => (
                     <div key={i} className="p-6 bg-slate-50 rounded-xl border border-slate-100 relative transition-colors">
-                        <Quote className="w-8 h-8 text-purple-200 absolute top-3 left-3" />
+                        <Quote className="w-8 h-8 text-brand-secondary/20 absolute top-3 left-3" />
                         <div className="flex mb-3">
                             {[1, 2, 3, 4, 5].map(star => (
                                 <Star key={star} className="w-3 h-3 text-yellow-500 fill-yellow-500" />
@@ -79,7 +79,7 @@ export default function PersuasionSection({
                         <span>GDPR Compliant</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
-                        <CheckCircle className="w-4 h-4 text-purple-600" />
+                        <CheckCircle className="w-4 h-4 text-brand-primary" />
                         <span>Audited Methodology</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">

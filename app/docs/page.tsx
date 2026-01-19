@@ -1,9 +1,15 @@
 // app/docs/page.tsx
 
+import { Metadata } from 'next';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Book, Zap, Link2, Settings, Code, HelpCircle } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Documentation - lez Market Support',
+    description: 'Find guides, API references, and FAQs to help you get the most out of lez Market AI Website Analyzer.',
+};
 
 const sections = [
     {
@@ -70,15 +76,15 @@ export default function DocsPage() {
             <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold mb-4">Documentation</h1>
                 <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                    Everything you need to get started and make the most of LetsMarket.
+                    Everything you need to get started and make the most of lez Market.
                 </p>
             </div>
 
             {/* Quick Start Card */}
-            <Card className="p-8 mb-12 bg-gradient-to-br from-purple-50 to-blue-50">
+            <Card className="p-8 mb-12 bg-gradient-to-br from-brand-secondary-light to-brand-secondary/5">
                 <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold mb-2">New to LetsMarket?</h2>
+                        <h2 className="text-2xl font-bold mb-2">New to lez Market?</h2>
                         <p className="text-slate-600">
                             Get up and running in under 5 minutes with our quick start guide.
                         </p>
@@ -97,7 +103,7 @@ export default function DocsPage() {
                 {sections.map((section) => (
                     <Card key={section.title} className="p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <section.icon className="w-6 h-6 text-purple-600" />
+                            <section.icon className="w-6 h-6 text-brand-primary" />
                             <h3 className="font-semibold text-lg">{section.title}</h3>
                         </div>
                         <ul className="space-y-2">
@@ -105,7 +111,7 @@ export default function DocsPage() {
                                 <li key={item.title}>
                                     <Link
                                         href={item.href}
-                                        className="text-slate-600 hover:text-purple-600 hover:underline text-sm"
+                                        className="text-slate-600 hover:text-brand-primary hover:underline text-sm"
                                     >
                                         {item.title}
                                     </Link>

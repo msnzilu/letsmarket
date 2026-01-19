@@ -26,12 +26,12 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
     // @ts-ignore - autoTable is added by the import
     const doc = new jsPDF();
 
-    const purple = [124, 58, 237]; // Purple-600
+    const brandPrimary = [0, 139, 139]; // Dark Cyan (matched to brand-primary)
 
     // Header
     doc.setFontSize(24);
-    doc.setTextColor(purple[0], purple[1], purple[2]);
-    doc.text('LetsMarket Report', 105, 20, { align: 'center' });
+    doc.setTextColor(brandPrimary[0], brandPrimary[1], brandPrimary[2]);
+    doc.text('lez Market Report', 105, 20, { align: 'center' });
 
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
@@ -48,7 +48,7 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
     doc.text('Conversion Score', 20, 60);
 
     doc.setFontSize(48);
-    doc.setTextColor(purple[0], purple[1], purple[2]);
+    doc.setTextColor(brandPrimary[0], brandPrimary[1], brandPrimary[2]);
     doc.text(`${analysis.overall_score}`, 20, 85);
     doc.setFontSize(16);
     doc.setTextColor(100, 100, 100);
@@ -71,7 +71,7 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
         head: [['Principle', 'Score', 'Feedback']],
         body: tableBody,
         theme: 'striped',
-        headStyles: { fillColor: purple, textColor: 255 },
+        headStyles: { fillColor: brandPrimary, textColor: 255 },
         styles: { fontSize: 10, cellPadding: 5 },
         columnStyles: {
             0: { cellWidth: 40, fontStyle: 'bold' },
@@ -155,7 +155,7 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
     // Headlines
     if (copy.headlines?.length) {
         doc.setFontSize(12);
-        doc.setTextColor(purple[0], purple[1], purple[2]);
+        doc.setTextColor(brandPrimary[0], brandPrimary[1], brandPrimary[2]);
         doc.text('High-Converting Headlines', 20, currentY);
         currentY += 8;
         doc.setFontSize(10);
@@ -172,7 +172,7 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
     if (copy.ctas?.length) {
         if (currentY > 270) { doc.addPage(); currentY = 20; }
         doc.setFontSize(12);
-        doc.setTextColor(purple[0], purple[1], purple[2]);
+        doc.setTextColor(brandPrimary[0], brandPrimary[1], brandPrimary[2]);
         doc.text('Powerful Calls to Action', 20, currentY);
         currentY += 8;
         doc.setFontSize(10);
@@ -190,7 +190,7 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
         doc.setPage(i);
         doc.setFontSize(8);
         doc.setTextColor(150, 150, 150);
-        doc.text(`LetsMarket.io | Page ${i} of ${totalPages}`, 105, 290, { align: 'center' });
+        doc.text(`lezMarket.io | Page ${i} of ${totalPages}`, 105, 290, { align: 'center' });
     }
 
     return new Uint8Array(doc.output('arraybuffer'));

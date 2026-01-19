@@ -15,8 +15,36 @@ import { headers } from "next/headers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "LetsMarket - AI Website Analyzer",
-  description: "Analyze your website and get AI-powered copy that converts",
+  title: "lez Market - AI Website Analyzer for Conversion Optimization",
+  description: "Optimize your website for high conversion rates. Analyze your landing page for Social Proof, Scarcity, Authority and more. Get AI-powered copy that turns visitors into loyal customers.",
+  keywords: ["AI website analyzer", "conversion optimization", "marketing psychology", "AI copywriting", "landing page optimization", "conversion rate optimization", "CRO tool"],
+  authors: [{ name: "lez Market Team" }],
+  openGraph: {
+    title: "lez Market - Elevate Your Website's Conversion Potential",
+    description: "AI-powered conversion principles analysis and copywriting to transform your website performance.",
+    url: "https://lezmarket.vercel.app",
+    siteName: "lez Market",
+    images: [
+      {
+        url: "/logo/logo.png",
+        width: 800,
+        height: 600,
+        alt: "lez Market Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "lez Market - AI-Powered Conversion Optimization",
+    description: "Analyze your website and get AI-powered copy that converts in seconds.",
+    images: ["/logo/logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 // Pages that should NOT show the footer (authenticated app pages)

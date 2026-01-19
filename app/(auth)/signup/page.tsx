@@ -1,6 +1,12 @@
 // app/(auth)/signup/page.tsx
 
+import { Metadata } from 'next';
 import AuthForm from '@/components/AuthForm';
+
+export const metadata: Metadata = {
+    title: 'Sign Up - lez Market',
+    description: 'Create a free lez Market account and start optimizing your website for conversions.',
+};
 
 export default function SignupPage() {
     return (

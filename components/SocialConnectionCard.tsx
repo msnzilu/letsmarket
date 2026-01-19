@@ -88,7 +88,7 @@ export default function SocialConnectionCard({
                                         {connection.account_username || connection.account_name}
                                     </span>
                                     {isLinkedInOrg && (
-                                        <Badge variant="secondary" className="text-[10px] bg-blue-100 text-blue-700">
+                                        <Badge variant="secondary" className="text-[10px] bg-brand-secondary-light text-brand-primary">
                                             Company
                                         </Badge>
                                     )}
@@ -116,7 +116,7 @@ export default function SocialConnectionCard({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setShowPageSelector(true)}
-                                    className="text-blue-600 hover:bg-blue-50"
+                                    className="text-brand-primary hover:bg-brand-secondary-light"
                                 >
                                     <Settings2 className="w-4 h-4 mr-2" />
                                     Select Page

@@ -75,7 +75,7 @@ export default function RevenueCalculator() {
                             step="1000"
                             value={traffic}
                             onChange={(e) => setTraffic(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-primary"
                         />
                         <span className="font-mono font-bold text-slate-900 w-20 text-right">{traffic.toLocaleString()}</span>
                     </div>
@@ -91,7 +91,7 @@ export default function RevenueCalculator() {
                             step="0.1"
                             value={conversion}
                             onChange={(e) => setConversion(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-primary"
                         />
                         <span className="font-mono font-bold text-slate-900 w-20 text-right">{conversion}%</span>
                     </div>
@@ -107,7 +107,7 @@ export default function RevenueCalculator() {
                             step="10"
                             value={avgValue}
                             onChange={(e) => setAvgValue(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-primary"
                         />
                         <span className="font-mono font-bold text-slate-900 w-20 text-right">${avgValue}</span>
                     </div>
@@ -131,7 +131,7 @@ export default function RevenueCalculator() {
                     <span>Potential Monthly Increase: <b>${(lostRevenue).toLocaleString()}</b></span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <ArrowRight size={16} className="text-purple-500" />
+                    <ArrowRight size={16} className="text-brand-primary" />
                     <span>Stop the leak with targeted psychology.</span>
                 </div>
             </div>

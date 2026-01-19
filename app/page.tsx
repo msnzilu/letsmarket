@@ -1,9 +1,15 @@
 // app/page.tsx
 
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Brain, Zap, TrendingUp, Users, CheckCircle, ShieldAlert, Award, AlertCircle } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'lez Market - Turn Website Visitors Into Customers with AI',
+  description: 'Analyze your website for 6 core conversion principles and get AI-powered copy that turns visitors into loyal customers in under 2 minutes.',
+};
 
 export default function HomePage() {
   return (
@@ -11,11 +17,11 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="pt-20 pb-32 px-4">
         <div className="w-full mx-auto text-center">
-          <div className="inline-block mb-4 px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+          <div className="inline-block mb-4 px-4 py-2 bg-brand-secondary-light text-brand-primary rounded-full text-sm font-medium">
             Join 500+ marketers optimizing their websites
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent">
             Turn Visitors Into Customers
           </h1>
 
@@ -26,8 +32,8 @@ export default function HomePage() {
 
           <div className="flex gap-4 justify-center">
             <Link href="/signup">
-              <Button size="lg" className="text-lg px-8 bg-purple-600 hover:bg-purple-700">
-                Analyze Your Website Free
+              <Button size="lg" className="text-lg px-8 bg-brand-primary hover:bg-brand-primary/90">
+                Analyze Website Free
               </Button>
             </Link>
             <Link href="/login">
@@ -88,8 +94,8 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">1</span>
+              <div className="w-12 h-12 bg-brand-secondary-light rounded-lg flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-brand-primary">1</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">Enter Your URL</h3>
               <p className="text-slate-600">
@@ -98,8 +104,8 @@ export default function HomePage() {
             </Card>
 
             <Card className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">2</span>
+              <div className="w-12 h-12 bg-brand-secondary-light rounded-lg flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-brand-primary">2</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">Get Your Score</h3>
               <p className="text-slate-600">
@@ -108,8 +114,8 @@ export default function HomePage() {
             </Card>
 
             <Card className="p-6 text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">3</span>
+              <div className="w-12 h-12 bg-brand-secondary-light rounded-lg flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-brand-primary">3</span>
               </div>
               <h3 className="font-semibold text-lg mb-2">Implement & Win</h3>
               <p className="text-slate-600">
@@ -129,7 +135,7 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 gap-6">
             <Card className="p-6 flex gap-4">
-              <Brain className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <Brain className="w-6 h-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold mb-2">Conversion Breakdown</h3>
                 <p className="text-sm text-slate-600">
@@ -139,7 +145,7 @@ export default function HomePage() {
             </Card>
 
             <Card className="p-6 flex gap-4">
-              <Zap className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <Zap className="w-6 h-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold mb-2">AI-Generated Copy</h3>
                 <p className="text-slate-600">
@@ -149,7 +155,7 @@ export default function HomePage() {
             </Card>
 
             <Card className="p-6 flex gap-4">
-              <TrendingUp className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <TrendingUp className="w-6 h-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold mb-2">Top 10 Recommendations</h3>
                 <p className="text-slate-600">
@@ -159,7 +165,7 @@ export default function HomePage() {
             </Card>
 
             <Card className="p-6 flex gap-4">
-              <Users className="w-6 h-6 text-purple-600 flex-shrink-0 mt-1" />
+              <Users className="w-6 h-6 text-brand-primary flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-semibold mb-2">Analysis History</h3>
                 <p className="text-slate-600">
@@ -172,7 +178,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section (Principle 4 & 6: Scarcity & Pricing Psychology) */}
-      <section className="py-20 px-4 bg-gradient-to-r from-purple-600 to-blue-600">
+      <section className="py-20 px-4 bg-gradient-to-r from-brand-primary to-brand-secondary">
         <div className="max-w-4xl mx-auto text-center text-white">
           <div className="inline-block mb-6 px-4 py-1 bg-white/20 rounded-full text-sm font-medium backdrop-blur-sm">
             ⚡ Beta Phase: First 1,000 users get Pro features free

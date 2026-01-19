@@ -13,8 +13,8 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-1">
                         <Link href="/" className="flex items-center space-x-2 mb-4">
-                            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg" />
-                            <span className="font-bold text-xl text-white">LetsMarket</span>
+                            <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg" />
+                            <span className="font-bold text-xl text-white">lez Market</span>
                         </Link>
                         <p className="text-sm text-slate-400">
                             AI-powered website analysis to optimize your copy and boost conversions.
@@ -116,7 +116,7 @@ export default function Footer() {
                 {/* Bottom Bar */}
                 <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-sm text-slate-400">
-                        © {currentYear} LetsMarket. All rights reserved.
+                        © {currentYear} lez Market. All rights reserved.
                     </p>
 
                     {/* Social Links */}

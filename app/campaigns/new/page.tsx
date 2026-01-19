@@ -224,7 +224,7 @@ export default function NewCampaignPage() {
                             className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${s < step
                                 ? 'bg-green-500 text-white'
                                 : s === step
-                                    ? 'bg-purple-600 text-white'
+                                    ? 'bg-brand-primary text-white'
                                     : 'bg-slate-200 text-slate-600'
                                 }`}
                         >
@@ -250,7 +250,7 @@ export default function NewCampaignPage() {
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 placeholder="e.g., Weekly LinkedIn Posts"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
                             />
                         </div>
 
@@ -262,7 +262,7 @@ export default function NewCampaignPage() {
                                         key={site.id}
                                         onClick={() => setSelectedWebsite(site.id)}
                                         className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedWebsite === site.id
-                                            ? 'border-purple-500 bg-purple-50'
+                                            ? 'border-brand-primary bg-brand-secondary-light'
                                             : 'hover:border-slate-300'
                                             }`}
                                     >
@@ -279,7 +279,7 @@ export default function NewCampaignPage() {
                                 {websites.length === 0 && (
                                     <p className="text-slate-500">
                                         No websites analyzed yet.{' '}
-                                        <Link href="/analyze" className="text-purple-600 hover:underline">
+                                        <Link href="/analyze" className="text-brand-primary hover:underline">
                                             Analyze a website first
                                         </Link>
                                     </p>
@@ -305,7 +305,7 @@ export default function NewCampaignPage() {
                                         key={conn.id}
                                         onClick={() => toggleConnection(conn.id)}
                                         className={`p-4 border rounded-lg cursor-pointer transition-all flex items-center gap-4 ${isSelected
-                                            ? 'border-purple-500 bg-purple-50'
+                                            ? 'border-brand-primary bg-brand-secondary-light'
                                             : 'hover:border-slate-300'
                                             }`}
                                     >
@@ -319,14 +319,14 @@ export default function NewCampaignPage() {
                                             <p className="font-medium">{conn.account_name}</p>
                                             <p className="text-sm text-slate-500">{config?.name || conn.platform}</p>
                                         </div>
-                                        {isSelected && <Check className="w-5 h-5 text-purple-600" />}
+                                        {isSelected && <Check className="w-5 h-5 text-brand-primary" />}
                                     </div>
                                 );
                             })}
                             {connections.length === 0 && (
                                 <p className="text-slate-500">
                                     No social accounts connected.{' '}
-                                    <Link href="/connections" className="text-purple-600 hover:underline">
+                                    <Link href="/connections" className="text-brand-primary hover:underline">
                                         Connect accounts first
                                     </Link>
                                 </p>
@@ -349,8 +349,8 @@ export default function NewCampaignPage() {
                                         key={day.value}
                                         onClick={() => toggleDay(day.value)}
                                         className={`px-4 py-2 rounded-lg border transition-all ${scheduleDays.includes(day.value)
-                                            ? 'bg-purple-600 text-white border-purple-600'
-                                            : 'hover:border-purple-300'
+                                            ? 'bg-brand-primary text-white border-brand-primary'
+                                            : 'hover:border-brand-secondary'
                                             }`}
                                     >
                                         {day.label}
@@ -365,7 +365,7 @@ export default function NewCampaignPage() {
                                 type="time"
                                 value={scheduleTime}
                                 onChange={e => setScheduleTime(e.target.value)}
-                                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500"
+                                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
                             />
                         </div>
 
@@ -379,7 +379,7 @@ export default function NewCampaignPage() {
                                 max="14"
                                 value={postsPerWeek}
                                 onChange={e => setPostsPerWeek(parseInt(e.target.value))}
-                                className="w-full"
+                                className="w-full accent-brand-primary"
                             />
                         </div>
                     </div>

@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { TrendingUp, Link2, Send, Crown, Zap } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 import PlanBadge from '@/components/PlanBadge';
+import { UNLIMITED } from '@/lib/subscription';
 
 interface DashboardStatsProps {
     websiteCount: number;
@@ -34,12 +35,15 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
 
     const analysesUsed = usage?.analyses_count || analysisCount;
     const analysesLimit = limits.analyses_total;
-    const analysesPercent = analysesLimit === Infinity ? 0 : (analysesUsed / analysesLimit) * 100;
+    const isAnalysesUnlimited = (analysesLimit as number) === Infinity || (analysesLimit as number) === UNLIMITED;
+    const analysesPercent = isAnalysesUnlimited ? 0 : (analysesUsed / analysesLimit) * 100;
 
     const postsUsed = usage?.posts_this_month || 0;
     const postsLimit = limits.posts_per_month;
+    const isPostsUnlimited = (postsLimit as number) === Infinity || (postsLimit as number) === UNLIMITED;
 
     const socialLimit = limits.social_accounts;
+    const isSocialUnlimited = (socialLimit as number) === Infinity || (socialLimit as number) === UNLIMITED;
 
     return (
         <div className="space-y-6 mb-8">
@@ -60,7 +64,7 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                 </div>
                 {plan === 'free' && (
                     <Link href="/pricing">
-                        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-blue-600 font-bold">
+                        <Button size="sm" className="bg-gradient-to-r from-brand-primary to-brand-secondary font-bold">
                             <Crown className="w-4 h-4 mr-2" />
                             Upgrade to Pro
                         </Button>
@@ -78,14 +82,14 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                     </div>
                     <div className="flex items-baseline gap-2">
                         <span className="text-2xl font-black text-slate-900">{analysesUsed}</span>
-                        {analysesLimit !== Infinity && (
+                        {!isAnalysesUnlimited && (
                             <span className="text-slate-400 text-xs">/ {analysesLimit}</span>
                         )}
-                        {analysesLimit === Infinity && (
+                        {isAnalysesUnlimited && (
                             <span className="text-green-500 text-xs font-bold">Unlimited</span>
                         )}
                     </div>
-                    {analysesLimit !== Infinity && (
+                    {!isAnalysesUnlimited && (
                         <Progress value={analysesPercent} className="mt-3 h-1.5" />
                     )}
                 </Card>
@@ -93,7 +97,7 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                 {/* Websites */}
                 <Card className="p-4 bg-white border-slate-100">
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
-                        <Zap className="w-4 h-4 text-purple-500" />
+                        <Zap className="w-4 h-4 text-brand-primary" />
                         <span className="text-xs font-bold uppercase tracking-wider">Websites</span>
                     </div>
                     <div className="flex items-baseline gap-2">
@@ -105,7 +109,7 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                 {/* Social Accounts */}
                 <Card className="p-4 bg-white border-slate-100">
                     <div className="flex items-center gap-2 text-slate-500 mb-2">
-                        <Link2 className="w-4 h-4 text-blue-500" />
+                        <Link2 className="w-4 h-4 text-brand-secondary" />
                         <span className="text-xs font-bold uppercase tracking-wider">Social Accounts</span>
                     </div>
                     <div className="flex items-baseline gap-2">
@@ -114,8 +118,11 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                         ) : (
                             <>
                                 <span className="text-2xl font-black text-slate-900">0</span>
-                                {socialLimit !== Infinity && (
+                                {!isSocialUnlimited && (
                                     <span className="text-slate-400 text-xs">/ {socialLimit}</span>
+                                )}
+                                {isSocialUnlimited && (
+                                    <span className="text-green-500 text-xs font-bold">Unlimited</span>
                                 )}
                             </>
                         )}
@@ -139,8 +146,11 @@ export default function DashboardStats({ websiteCount, analysisCount }: Dashboar
                         ) : (
                             <>
                                 <span className="text-2xl font-black text-slate-900">{postsUsed}</span>
-                                {postsLimit !== Infinity && (
+                                {!isPostsUnlimited && (
                                     <span className="text-slate-400 text-xs">/ {postsLimit}</span>
+                                )}
+                                {isPostsUnlimited && (
+                                    <span className="text-green-500 text-xs font-bold">Unlimited</span>
                                 )}
                             </>
                         )}

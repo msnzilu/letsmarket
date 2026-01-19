@@ -94,7 +94,7 @@ export default function ApiKeysPage() {
     if (subLoading || loading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
             </div>
         );
     }
@@ -102,8 +102,8 @@ export default function ApiKeysPage() {
     if (plan !== 'enterprise') {
         return (
             <Card className="p-8 text-center border-dashed border-2">
-                <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Key className="w-8 h-8 text-purple-600" />
+                <div className="bg-brand-secondary-light w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Key className="w-8 h-8 text-brand-primary" />
                 </div>
                 <h2 className="text-xl font-bold mb-2">Public API Access</h2>
                 <p className="text-slate-600 mb-6 max-w-md mx-auto">
@@ -121,7 +121,7 @@ export default function ApiKeysPage() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold mb-1">API Keys</h1>
-                    <p className="text-slate-600">Manage keys for programmatic access to LetsMarket</p>
+                    <p className="text-slate-600">Manage keys for programmatic access to lez Market</p>
                 </div>
             </div>
 
@@ -134,7 +134,7 @@ export default function ApiKeysPage() {
                         placeholder="Key name (e.g. My App)"
                         value={newKeyName}
                         onChange={(e) => setNewKeyName(e.target.value)}
-                        className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                        className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
                     />
                     <Button onClick={handleCreate} disabled={creating || !newKeyName}>
                         {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
@@ -145,18 +145,18 @@ export default function ApiKeysPage() {
 
             {/* Modal for fresh key */}
             {generatedKey && (
-                <Card className="p-6 bg-purple-50 border-purple-200">
+                <Card className="p-6 bg-brand-secondary-light border-brand-primary/20">
                     <div className="flex items-start gap-4">
-                        <div className="bg-purple-100 p-2 rounded-lg">
-                            <AlertCircle className="w-6 h-6 text-purple-600" />
+                        <div className="bg-brand-secondary-light p-2 rounded-lg">
+                            <AlertCircle className="w-6 h-6 text-brand-primary" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="font-bold text-purple-900 mb-1">New API Key Generated</h3>
-                            <p className="text-sm text-purple-700 mb-4">
+                            <h3 className="font-bold text-brand-primary mb-1">New API Key Generated</h3>
+                            <p className="text-sm text-brand-primary mb-4">
                                 Copy this key now. For security purposes, it will never be shown again.
                             </p>
                             <div className="flex gap-2">
-                                <code className="flex-1 bg-white p-2 rounded border border-purple-200 break-all text-sm font-mono">
+                                <code className="flex-1 bg-white p-2 rounded border border-brand-primary/20 break-all text-sm font-mono">
                                     {generatedKey}
                                 </code>
                                 <Button size="sm" onClick={copyToClipboard} variant="outline" className="bg-white">

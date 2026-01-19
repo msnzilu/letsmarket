@@ -12,7 +12,7 @@ export default function BrandingPage() {
     const [saving, setSaving] = useState(false);
     const [branding, setBranding] = useState({
         companyName: '',
-        primaryColor: '#7c3aed',
+        primaryColor: '#008B8B',
         website: '',
         showPoweredBy: false,
     });
@@ -20,7 +20,7 @@ export default function BrandingPage() {
     if (subLoading) {
         return (
             <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                <Loader2 className="w-8 h-8 animate-spin text-brand-primary" />
             </div>
         );
     }
@@ -33,7 +33,7 @@ export default function BrandingPage() {
                 </div>
                 <h2 className="text-xl font-bold mb-2">White-Label Reports</h2>
                 <p className="text-slate-600 mb-6 max-w-md mx-auto">
-                    Remove LetsMarket branding from your reports. Add your own logo, company name, and custom colors to professional PDF exports.
+                    Remove lez Market branding from your reports. Add your own logo, company name, and custom colors to professional PDF exports.
                 </p>
                 <Button onClick={() => window.location.href = '/pricing'}>
                     Upgrade to Enterprise
@@ -66,7 +66,7 @@ export default function BrandingPage() {
                             <input
                                 type="text"
                                 placeholder="Acme Marketing"
-                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
                                 value={branding.companyName}
                                 onChange={(e) => setBranding({ ...branding, companyName: e.target.value })}
                             />
@@ -78,7 +78,7 @@ export default function BrandingPage() {
                                 <input
                                     type="text"
                                     placeholder="https://support.acme.com"
-                                    className="w-full pl-9 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                    className="w-full pl-9 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
                                     value={branding.website}
                                     onChange={(e) => setBranding({ ...branding, website: e.target.value })}
                                 />
@@ -89,7 +89,7 @@ export default function BrandingPage() {
                     {/* Logo Upload */}
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-slate-700">Company Logo</label>
-                        <div className="border-2 border-dashed border-slate-200 rounded-lg p-8 text-center hover:border-purple-300 transition-colors cursor-pointer bg-slate-50">
+                        <div className="border-2 border-dashed border-slate-200 rounded-lg p-8 text-center hover:border-brand-primary/30 transition-colors cursor-pointer bg-slate-50">
                             <ImageIcon className="w-10 h-10 text-slate-400 mx-auto mb-2" />
                             <p className="text-sm text-slate-500 mb-2">Click to upload logo or drag and drop</p>
                             <p className="text-xs text-slate-400">SVG, PNG or JPG (max. 2MB). Recommended: 200x50px</p>
@@ -128,11 +128,11 @@ export default function BrandingPage() {
                     {/* Toggles */}
                     <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
                         <div>
-                            <p className="font-semibold text-slate-800">Powered by LetsMarket</p>
+                            <p className="font-semibold text-slate-800">Powered by lez Market</p>
                             <p className="text-xs text-slate-500">Enable or disable the "Powered by" badge in report footers</p>
                         </div>
                         <div
-                            className={`w-12 h-6 rounded-full transition-colors cursor-pointer relative ${branding.showPoweredBy ? 'bg-purple-600' : 'bg-slate-300'}`}
+                            className={`w-12 h-6 rounded-full transition-colors cursor-pointer relative ${branding.showPoweredBy ? 'bg-brand-primary' : 'bg-slate-300'}`}
                             onClick={() => setBranding({ ...branding, showPoweredBy: !branding.showPoweredBy })}
                         >
                             <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${branding.showPoweredBy ? 'left-7' : 'left-1'}`} />
@@ -141,7 +141,7 @@ export default function BrandingPage() {
 
                     {/* Actions */}
                     <div className="pt-6 border-t flex justify-end">
-                        <Button onClick={handleSave} disabled={saving} className="bg-purple-600 hover:bg-purple-700">
+                        <Button onClick={handleSave} disabled={saving} className="bg-brand-primary hover:bg-purple-700">
                             {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                             Save Branding
                         </Button>

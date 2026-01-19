@@ -120,7 +120,7 @@ export default function ProfilePage() {
             <Card className="p-8 mb-6">
                 <div className="flex justify-between items-start mb-6">
                     <div className="flex items-center gap-4">
-                        <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                        <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold">
                             {(fullName || user?.email)?.[0].toUpperCase() || 'U'}
                         </div>
                         <div>
@@ -130,7 +130,7 @@ export default function ProfilePage() {
                                     value={fullName}
                                     onChange={e => setFullName(e.target.value)}
                                     placeholder="Your name"
-                                    className="text-xl font-semibold px-3 py-1 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                    className="text-xl font-semibold px-3 py-1 border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
                                 />
                             ) : (
                                 <h2 className="text-xl font-semibold">{displayName}</h2>
@@ -180,7 +180,7 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-2">
                                 <PlanBadge plan={plan} />
                                 {plan === 'free' && (
-                                    <Link href="/pricing" className="text-sm text-purple-600 hover:underline">
+                                    <Link href="/pricing" className="text-sm text-brand-primary hover:underline">
                                         Upgrade
                                     </Link>
                                 )}
@@ -192,26 +192,26 @@ export default function ProfilePage() {
 
             {/* Enterprise Settings (Only for Enterprise Plan) */}
             {plan === 'enterprise' && (
-                <Card className="p-6 mb-6 border-purple-200 bg-purple-50/30">
+                <Card className="p-6 mb-6 border-brand-primary/20 bg-brand-secondary-light/30">
                     <h3 className="font-semibold mb-4 flex items-center gap-2 text-purple-900">
-                        <Shield className="w-5 h-5 text-purple-600" />
+                        <Shield className="w-5 h-5 text-brand-primary" />
                         Enterprise Settings
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Link href="/settings/team">
-                            <Button variant="outline" className="w-full bg-white hover:bg-purple-50">
+                            <Button variant="outline" className="w-full bg-white hover:bg-brand-secondary-light">
                                 <Users className="w-4 h-4 mr-2" />
                                 Team Management
                             </Button>
                         </Link>
                         <Link href="/settings/api-keys">
-                            <Button variant="outline" className="w-full bg-white hover:bg-purple-50">
+                            <Button variant="outline" className="w-full bg-white hover:bg-brand-secondary-light">
                                 <Key className="w-4 h-4 mr-2" />
                                 API Access
                             </Button>
                         </Link>
                         <Link href="/settings/branding">
-                            <Button variant="outline" className="w-full bg-white hover:bg-purple-50">
+                            <Button variant="outline" className="w-full bg-white hover:bg-brand-secondary-light">
                                 <Palette className="w-4 h-4 mr-2" />
                                 White-Labeling
                             </Button>

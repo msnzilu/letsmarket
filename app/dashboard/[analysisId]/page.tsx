@@ -80,7 +80,7 @@ export default async function AnalysisDetailPage({
             </div>
 
             {/* Overall Score */}
-            <Card className="p-8 mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
+            <Card className="p-8 mb-8 bg-gradient-to-br from-brand-secondary-light to-brand-secondary/10">
                 <div className="text-center">
                     <p className="text-lg text-slate-600 mb-2">Overall Conversion Score</p>
                     <div className={`text-7xl font-bold mb-4 ${getScoreColor(analysisData.overall_score)}`}>

@@ -88,7 +88,7 @@ export default function AnalyzePage() {
                     <Card className="p-8 w-full border-none shadow-none bg-transparent">
                         <div className="text-left mb-8">
                             <h1 className="text-4xl font-black text-slate-900 mb-4">
-                                Optimize Your Conversion Architecture <span className="text-purple-600 block">with AI Psychology</span>
+                                Optimize Your Conversion Architecture <span className="text-brand-primary block">with AI Psychology</span>
                             </h1>
                             <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
                                 Our AI models audit your landing page against 20+ psychological triggers to find revenue leaks and generate copy that actually converts.
@@ -111,9 +111,9 @@ export default function AnalyzePage() {
                         <form onSubmit={handleSubmit} className="space-y-6 relative max-w-xl">
                             {limitReached && (
                                 <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-[2px] rounded-lg flex items-center justify-center">
-                                    <Card className="p-8 border-2 border-purple-200 shadow-2xl max-w-md text-center bg-white/90 transform hover:scale-[1.02] transition-all">
-                                        <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <Lock className="text-purple-600 w-8 h-8" />
+                                    <Card className="p-8 border-2 border-brand-primary/20 shadow-2xl max-w-md text-center bg-white/90 transform hover:scale-[1.02] transition-all">
+                                        <div className="w-16 h-16 bg-brand-secondary-light rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Lock className="text-brand-primary w-8 h-8" />
                                         </div>
                                         <h3 className="text-2xl font-bold text-slate-900 mb-2">Limit Reached</h3>
                                         <p className="text-slate-600 mb-6 font-medium">
@@ -121,7 +121,7 @@ export default function AnalyzePage() {
                                         </p>
                                         <Button
                                             onClick={onOpen}
-                                            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-6 group"
+                                            className="w-full bg-gradient-to-r from-brand-primary to-brand-secondary hover:from-brand-primary/90 hover:to-brand-secondary/90 text-white font-bold py-6 group"
                                             size="lg"
                                         >
                                             Unlock Pro Access
@@ -146,9 +146,9 @@ export default function AnalyzePage() {
                                             placeholder="https://example.com"
                                             required
                                             disabled={loading || !!limitReached}
-                                            className="text-lg py-7 px-5 border-2 border-slate-200 focus:border-purple-500 transition-all rounded-xl shadow-sm"
+                                            className="text-lg py-7 px-5 border-2 border-slate-200 focus:border-brand-primary transition-all rounded-xl shadow-sm"
                                         />
-                                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-purple-500 transition-colors">
+                                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-brand-primary transition-colors">
                                             <Zap size={20} />
                                         </div>
                                     </div>
@@ -185,7 +185,7 @@ export default function AnalyzePage() {
                 <div className="md:sticky md:top-24">
                     <RevenueCalculator />
 
-                    <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-700 text-white shadow-xl">
+                    <div className="mt-8 p-6 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-xl">
                         <h4 className="font-bold mb-2 flex items-center gap-2">
                             <Sparkles className="w-4 h-4" />
                             Pro Strategy Included

@@ -33,13 +33,13 @@ export default function StatsBanner() {
                     Live Platform Stats:
                 </span>
                 <span className="text-white text-xs font-semibold mx-4">
-                    🚀 <span className="text-purple-400">{stats.totalAnalyses.toLocaleString()}+</span> Analyses Performed
+                    🚀 <span className="text-brand-primary">{stats.totalAnalyses.toLocaleString()}+</span> Analyses Performed
                 </span>
                 <span className="text-white text-xs font-semibold mx-4 border-l border-slate-700 pl-4">
                     📈 Avg. <span className="text-green-400">{stats.avgConversionLift}%</span> Conversion Lift
                 </span>
                 <span className="text-white text-xs font-semibold mx-4 border-l border-slate-700 pl-4">
-                    ⚡ <span className="text-blue-400">{stats.avgScore}%</span> Avg. Optimization
+                    ⚡ <span className="text-brand-secondary">{stats.avgScore}%</span> Avg. Optimization
                 </span>
                 <span className="text-white text-xs font-semibold mx-4 border-l border-slate-700 pl-4">
                     👥 <span className="text-yellow-400">{(stats.totalUsers / 1000).toFixed(1)}k+</span> Marketers Trust Us

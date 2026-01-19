@@ -183,7 +183,7 @@ export default function ConnectionsPage() {
                 )}
 
                 {/* Info Card */}
-                <Card className="p-6 mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
+                <Card className="p-6 mb-8 bg-brand-secondary-light">
                     <h2 className="font-semibold text-lg mb-2">How it works</h2>
                     <ol className="list-decimal list-inside space-y-2 text-slate-700">
                         <li>Connect your social media accounts below</li>

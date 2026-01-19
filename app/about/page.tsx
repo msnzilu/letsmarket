@@ -1,21 +1,27 @@
 // app/about/page.tsx
 
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { Target, Users, Zap, Award, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+
+export const metadata: Metadata = {
+    title: 'About Us - lez Market Conversion AI',
+    description: 'Learn about our mission to humanize AI marketing and help businesses grow through conversion psychology and behavioral economics.',
+};
 
 export default function AboutPage() {
     return (
         <div className="min-h-screen bg-white">
             {/* Hero Section */}
             <section className="relative py-20 overflow-hidden bg-slate-900 text-white">
-                <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-500 to-transparent blur-3xl" />
+                <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-primary to-transparent blur-3xl" />
                 <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
                     <h1 className="text-5xl md:text-6xl font-black mb-6">
-                        We're on a Mission to <span className="text-purple-400">Humanize AI Marketing</span>
+                        We're on a Mission to <span className="text-brand-secondary">Humanize AI Marketing</span>
                     </h1>
                     <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
-                        LetsMarket was born from a simple observation: Most AI marketing tools focus on quantity. We focus on <b>Conversion Psychology</b>.
+                        lez Market was born from a simple observation: Most AI marketing tools focus on quantity. We focus on <b>Conversion Psychology</b>.
                     </p>
                 </div>
             </section>
@@ -34,8 +40,8 @@ export default function AboutPage() {
 
                         <div className="space-y-6">
                             <div className="flex gap-4">
-                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <Target className="text-purple-600" />
+                                <div className="w-12 h-12 bg-brand-secondary-light rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <Target className="text-brand-primary" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900">Precision Analysis</h4>
@@ -43,8 +49,8 @@ export default function AboutPage() {
                                 </div>
                             </div>
                             <div className="flex gap-4">
-                                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <Zap className="text-blue-600" />
+                                <div className="w-12 h-12 bg-brand-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <Zap className="text-brand-secondary" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900">Instant Execution</h4>
@@ -55,7 +61,7 @@ export default function AboutPage() {
                     </div>
 
                     <div className="relative">
-                        <div className="absolute inset-0 bg-purple-600 rounded-3xl rotate-3 opacity-5" />
+                        <div className="absolute inset-0 bg-brand-primary rounded-3xl rotate-3 opacity-5" />
                         <div className="relative bg-slate-50 rounded-3xl p-12 border-2 border-slate-100">
                             <div className="text-center mb-12">
                                 <div className="text-4xl font-black text-slate-900 mb-2">10M+</div>
@@ -92,12 +98,12 @@ export default function AboutPage() {
                 </div>
                 <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     <Card className="p-8 border-none shadow-sm h-full">
-                        <Users className="w-10 h-10 mx-auto mb-6 text-purple-600" />
+                        <Users className="w-10 h-10 mx-auto mb-6 text-brand-primary" />
                         <h3 className="text-xl font-bold mb-4">Empathy First</h3>
                         <p className="text-slate-600 text-sm leading-relaxed">We build tools that respect the user's intelligence and time, avoiding "spammy" AI tactics.</p>
                     </Card>
                     <Card className="p-8 border-none shadow-sm h-full">
-                        <Award className="w-10 h-10 mx-auto mb-6 text-blue-600" />
+                        <Award className="w-10 h-10 mx-auto mb-6 text-brand-secondary" />
                         <h3 className="text-xl font-bold mb-4">Data-Driven Design</h3>
                         <p className="text-slate-600 text-sm leading-relaxed">Every recommendation is backed by established behavioral economic principles.</p>
                     </Card>

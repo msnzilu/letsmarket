@@ -12,7 +12,7 @@ const features = [
         title: 'Unlimited Analyses',
         description: 'Remove the 1-website limit and analyze your entire portfolio.',
         icon: BarChart3,
-        color: 'text-blue-500'
+        color: 'text-brand-primary'
     },
     {
         title: '5+ Social Accounts',
@@ -30,7 +30,7 @@ const features = [
         title: 'Priority Support',
         description: 'Get help within 2 hours with a dedicated success manager.',
         icon: Shield,
-        color: 'text-purple-500'
+        color: 'text-brand-secondary'
     }
 ];
 
@@ -68,7 +68,7 @@ export default function UpgradeModal() {
 
                                 <div className="flex flex-col md:flex-row h-full">
                                     {/* Left Side - Visual & Promo */}
-                                    <div className="md:w-[40%] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-8 text-white flex flex-col justify-between">
+                                    <div className="md:w-[40%] bg-gradient-to-br from-brand-primary via-brand-primary to-brand-secondary p-8 text-white flex flex-col justify-between">
                                         <div>
                                             <div className="w-12 h-12 bg-white/20 rounded-2xl backdrop-blur-md flex items-center justify-center mb-6">
                                                 <Rocket size={24} />
@@ -76,7 +76,7 @@ export default function UpgradeModal() {
                                             <Dialog.Title className="text-3xl font-black mb-2 tracking-tight">
                                                 Upgrade to Pro
                                             </Dialog.Title>
-                                            <Dialog.Description className="text-indigo-100 text-sm font-medium">
+                                            <Dialog.Description className="text-brand-secondary-light text-sm font-medium">
                                                 Unlock the full potential of AI-driven marketing and scale your results.
                                             </Dialog.Description>
                                         </div>
@@ -125,7 +125,7 @@ export default function UpgradeModal() {
 
                                         <div className="mt-10 space-y-4">
                                             <Link href="/pricing" onClick={onClose} className="block">
-                                                <Button className="w-full h-14 text-lg bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg shadow-indigo-200 transition-all font-black uppercase tracking-widest">
+                                                <Button className="w-full h-14 text-lg bg-brand-primary hover:bg-brand-primary/90 text-white rounded-xl shadow-lg shadow-brand-primary/20 transition-all font-black uppercase tracking-widest">
                                                     View Plans & Pricing
                                                 </Button>
                                             </Link>

@@ -1,10 +1,16 @@
 // app/blog/page.tsx
 
+import { Metadata } from 'next';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Calendar, Clock, ArrowRight, TrendingUp } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'Blog - lez Market Conversion Insights',
+    description: 'Learn how to optimize your website copy and boost conversions with AI-powered insights, marketing psychology, and behavioral economics.',
+};
 
 const featuredPost = {
     slug: 'psychology-of-ctas',
@@ -74,7 +80,7 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto px-4 py-16">
             {/* Header */}
             <div className="text-center mb-12">
-                <Badge className="mb-4 bg-purple-100 text-purple-700">Blog</Badge>
+                <Badge className="mb-4 bg-brand-secondary-light text-brand-primary">Blog</Badge>
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">
                     Insights & Resources
                 </h1>
@@ -84,7 +90,7 @@ export default function BlogPage() {
             </div>
 
             {/* Featured Post */}
-            <Card className="mb-12 overflow-hidden bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+            <Card className="mb-12 overflow-hidden bg-gradient-to-br from-brand-primary to-brand-secondary text-white">
                 <div className="p-8 md:p-12">
                     <Badge className="bg-white/20 text-white mb-4">Featured</Badge>
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -133,7 +139,7 @@ export default function BlogPage() {
                         <Badge variant="secondary" className="mb-3">
                             {post.category}
                         </Badge>
-                        <h3 className="text-xl font-semibold mb-2 hover:text-purple-600 transition-colors">
+                        <h3 className="text-xl font-semibold mb-2 hover:text-brand-primary transition-colors">
                             <Link href={`/blog/${post.slug}`}>
                                 {post.title}
                             </Link>
@@ -154,7 +160,7 @@ export default function BlogPage() {
 
             {/* Newsletter CTA */}
             <Card className="p-8 text-center bg-slate-50">
-                <TrendingUp className="w-12 h-12 mx-auto mb-4 text-purple-600" />
+                <TrendingUp className="w-12 h-12 mx-auto mb-4 text-brand-primary" />
                 <h2 className="text-2xl font-bold mb-2">Get Weekly Insights</h2>
                 <p className="text-slate-600 mb-6 max-w-md mx-auto">
                     Join 5,000+ marketers getting conversion tips delivered to their inbox.
@@ -163,7 +169,7 @@ export default function BlogPage() {
                     <input
                         type="email"
                         placeholder="Enter your email"
-                        className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary"
                     />
                     <Button>Subscribe</Button>
                 </div>
