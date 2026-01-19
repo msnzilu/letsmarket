@@ -138,8 +138,8 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
 
     if (!response.ok) {
         const error = await response.text();
-        console.error(`[${platform}] Token exchange failed. Status: ${response.status}. Error: ${error}`);
-        throw new Error(`Token exchange failed: ${error}`);
+        console.error(`[${platform}] Token exchange failed. Status: ${response.status}. Body: ${error}`);
+        throw new Error(`Token exchange failed (${response.status}): ${error}`);
     }
 
     return response.json();

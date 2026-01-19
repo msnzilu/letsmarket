@@ -19,7 +19,7 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
         scope: 'instagram_basic,instagram_content_publish,public_profile',
     },
     x: {
-        authUrl: 'https://x.com/i/oauth2/authorize',
+        authUrl: 'https://twitter.com/i/oauth2/authorize',
         scope: 'tweet.read users.read offline.access',
         additionalParams: {
             code_challenge_method: 'S256',
