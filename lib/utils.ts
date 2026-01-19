@@ -7,6 +7,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function getAppUrl(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  return url.replace(/\/$/, '');
+}
+
 export function getScoreColor(score: number): string {
   if (score < 40) return 'text-red-600';
   if (score < 70) return 'text-yellow-600';

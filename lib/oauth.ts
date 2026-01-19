@@ -48,10 +48,12 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
     },
 };
 
+import { getAppUrl } from '@/lib/utils';
+
 export function getOAuthUrl(platform: Platform): string {
     const config = OAUTH_CONFIGS[platform];
     const clientId = getClientId(platform);
-    const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/${platform}`;
+    const redirectUri = `${getAppUrl()}/api/auth/callback/${platform}`;
 
     if (!clientId) {
         console.error(`[${platform}] Missing client_id for OAuth URL generation`);

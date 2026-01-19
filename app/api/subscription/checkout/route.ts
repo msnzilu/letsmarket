@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { PaymentFactory } from '@/lib/payment/factory';
 import { Plan } from '@/lib/subscription';
+import { getAppUrl } from '@/lib/utils';
 
 // Base prices in USD
 const BASE_PRICES_USD: Record<'free' | 'pro' | 'enterprise', number> = {
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
         const baseUSD = BASE_PRICES_USD[plan];
         const amount = Math.round(baseUSD * 100);
 
-        const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/subscription/callback`;
+        const callbackUrl = `${getAppUrl()}/api/subscription/callback`;
 
         const provider = PaymentFactory.getProvider();
 

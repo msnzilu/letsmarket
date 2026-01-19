@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { Platform } from '@/types';
 import { encrypt } from '@/lib/encryption';
+import { getAppUrl } from '@/lib/utils';
 
 // Platform OAuth configurations
 const PLATFORM_CONFIGS: Record<Platform, {
@@ -238,7 +239,7 @@ export async function GET(
             );
         }
 
-        const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/callback/${platform}`;
+        const redirectUri = `${getAppUrl()}/api/auth/callback/${platform}`;
 
         // Exchange code for tokens
         const tokenData = await exchangeCodeForToken(platform, code, redirectUri);
