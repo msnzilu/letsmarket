@@ -90,6 +90,11 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
     } else if (platform === 'x') {
         // X uses PKCE + Basic Auth
         const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        const cookieStore = await import('next/headers').then(h => h.cookies());
+        const codeVerifier = (await cookieStore).get('oauth_verifier')?.value || 'challenge';
+
+        console.log(`[${platform}] Exchanging code with verifier: ${codeVerifier === 'challenge' ? 'fallback' : 'dynamic'}`);
+
         response = await fetch(config.tokenUrl, {
             method: 'POST',
             headers: {
@@ -100,7 +105,7 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
                 grant_type: 'authorization_code',
                 code,
                 redirect_uri: redirectUri,
-                code_verifier: 'challenge',
+                code_verifier: codeVerifier,
             }),
         });
     } else if (platform === 'tiktok') {
@@ -133,6 +138,7 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
 
     if (!response.ok) {
         const error = await response.text();
+        console.error(`[${platform}] Token exchange failed. Status: ${response.status}. Error: ${error}`);
         throw new Error(`Token exchange failed: ${error}`);
     }
 

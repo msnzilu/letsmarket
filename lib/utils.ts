@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getAppUrl(): string {
   const url = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  return url.replace(/\/$/, '');
+  return url.trim().replace(/\/+$/, '');
 }
 
 export function getScoreColor(score: number): string {

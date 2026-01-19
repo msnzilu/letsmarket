@@ -19,16 +19,15 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
         scope: 'instagram_basic,instagram_content_publish,public_profile',
     },
     x: {
-        authUrl: 'https://twitter.com/i/oauth2/authorize',
-        scope: 'tweet.read tweet.write users.read offline.access',
+        authUrl: 'https://x.com/i/oauth2/authorize',
+        scope: 'tweet.read users.read offline.access',
         additionalParams: {
-            code_challenge: 'challenge',
-            code_challenge_method: 'plain',
+            code_challenge_method: 'S256',
         },
     },
     linkedin: {
         authUrl: 'https://www.linkedin.com/oauth/v2/authorization',
-        scope: 'openid profile w_member_social w_organization_social r_organization_admin',
+        scope: 'openid profile w_member_social',
     },
     tiktok: {
         authUrl: 'https://www.tiktok.com/v2/auth/authorize/',
@@ -50,7 +49,7 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
 
 import { getAppUrl } from '@/lib/utils';
 
-export function getOAuthUrl(platform: Platform): string {
+export function getOAuthUrl(platform: Platform, codeChallenge?: string): string {
     const config = OAUTH_CONFIGS[platform];
     const clientId = getClientId(platform);
     const redirectUri = `${getAppUrl()}/api/auth/callback/${platform}`;
@@ -60,18 +59,24 @@ export function getOAuthUrl(platform: Platform): string {
         throw new Error(`Missing client_id for ${platform}`);
     }
 
-    console.log(`[${platform}] Generating OAuth URL with client_id: ${clientId.substring(0, 10)}...`);
+    const state = generateState();
+    console.log(`[${platform}] Generating OAuth URL. State: ${state}, Client: ${clientId.substring(0, 10)}...`);
 
-    const params = new URLSearchParams({
+    const params: Record<string, string> = {
         client_id: clientId,
         redirect_uri: redirectUri,
         response_type: 'code',
         scope: config.scope,
-        state: generateState(),
+        state: state,
         ...config.additionalParams,
-    });
+    };
 
-    return `${config.authUrl}?${params.toString()}`;
+    if (codeChallenge) {
+        params.code_challenge = codeChallenge;
+    }
+
+    const searchParams = new URLSearchParams(params);
+    return `${config.authUrl}?${searchParams.toString()}`;
 }
 
 function getClientId(platform: Platform): string {

@@ -15,6 +15,7 @@ import { Platform, SocialConnection, PLATFORM_CONFIG } from '@/types';
 import { getOAuthUrl } from '@/lib/oauth';
 import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 import { PremiumGate } from '@/components/PremiumGate';
+import { generateCodeVerifier, generateCodeChallenge } from '@/lib/pkce';
 
 const PLATFORMS: Platform[] = ['x', 'linkedin'];
 
@@ -77,14 +78,34 @@ export default function ConnectionsPage() {
         }
     };
 
-    const handleConnect = (platform: Platform) => {
+    const handleConnect = async (platform: Platform) => {
         if (limits && limits.social_accounts === 0) {
             onOpen();
             return;
         }
         setConnectingPlatform(platform);
-        const authUrl = getOAuthUrl(platform);
-        window.location.href = authUrl;
+
+        try {
+            let authUrl: string;
+
+            if (platform === 'x' || platform === 'tiktok') {
+                const verifier = generateCodeVerifier();
+                const challenge = await generateCodeChallenge(verifier);
+
+                // Store verifier in a cookie for the callback to retrieve
+                // Expires in 15 minutes
+                document.cookie = `oauth_verifier=${verifier}; path=/; max-age=900; SameSite=Lax; Secure`;
+
+                authUrl = getOAuthUrl(platform, challenge);
+            } else {
+                authUrl = getOAuthUrl(platform);
+            }
+
+            window.location.href = authUrl;
+        } catch (error) {
+            console.error('Failed to generate OAuth URL:', error);
+            setConnectingPlatform(null);
+        }
     };
 
     const handleDisconnect = async (connectionId: string) => {
