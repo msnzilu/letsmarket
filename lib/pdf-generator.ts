@@ -1,6 +1,6 @@
 // lib/pdf-generator.ts
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 interface Recommendation {
     title: string;
@@ -66,12 +66,13 @@ export async function generateAnalysisPDF(analysis: AnalysisData, websiteUrl: st
     ]);
 
     // @ts-ignore
-    doc.autoTable({
+    // @ts-ignore
+    autoTable(doc, {
         startY: 112,
         head: [['Principle', 'Score', 'Feedback']],
         body: tableBody,
         theme: 'striped',
-        headStyles: { fillColor: brandPrimary, textColor: 255 },
+        headStyles: { fillColor: brandPrimary as [number, number, number], textColor: 255 },
         styles: { fontSize: 10, cellPadding: 5 },
         columnStyles: {
             0: { cellWidth: 40, fontStyle: 'bold' },
