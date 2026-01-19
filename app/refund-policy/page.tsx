@@ -44,7 +44,7 @@ export default function RefundPolicy() {
                     <h2 className="text-2xl font-bold text-slate-900 mb-4">3. How to Request a Refund</h2>
                     <p>
                         To request a refund, please contact our support team at
-                        <a href="mailto:support@psychanalyze.com" className="text-purple-600 font-medium hover:underline mx-1">support@psychanalyze.com</a>
+                        <a href="mailto:support@lezmarket.io" className="text-purple-600 font-medium hover:underline mx-1">support@lezmarket.io</a>
                         with the subject line "Refund Request". Please include:
                     </p>
                     <ul className="list-disc pl-6 space-y-2 mt-4">
@@ -59,7 +59,7 @@ export default function RefundPolicy() {
                     <p>
                         Once your refund request is received and approved, we will process it as soon as possible.
                         While we initiate the refund immediately, it may take 5-10 business days to appear on your bank statement
-                        depending on your payment provider (Paystack or Paddle).
+                        , depending on your payment provider (Paystack or Paddle).
                     </p>
                 </section>
 

@@ -1,6 +1,7 @@
 // components/Footer.tsx
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Twitter, Linkedin, Instagram, Mail } from 'lucide-react';
 
 export default function Footer() {
@@ -13,11 +14,16 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-1">
                         <Link href="/" className="flex items-center space-x-2 mb-4">
-                            <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg" />
-                            <span className="font-bold text-xl text-white">lez Market</span>
+                            <Image
+                                src="/logo/site-logo.png"
+                                alt="lez Market Logo"
+                                width={130}
+                                height={100}
+                                className="w-25 h-15 rounded-lg"
+                            />
                         </Link>
                         <p className="text-sm text-slate-400">
-                            AI-powered website analysis to optimize your copy and boost conversions.
+                            Turn clicks into customers. Automate the art of persuasion.
                         </p>
                     </div>
 
@@ -67,11 +73,11 @@ export default function Footer() {
                                     Pricing
                                 </Link>
                             </li>
-                            <li>
+                            {/* <li>
                                 <Link href="/docs#api-auth" className="hover:text-white transition-colors">
                                     API
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 
@@ -150,7 +156,7 @@ export default function Footer() {
                             <Instagram className="w-5 h-5" />
                         </a>
                         <a
-                            href="mailto:hello@psychanalyze.com"
+                            href="mailto:support@lezmarket.io"
                             className="text-slate-400 hover:text-white transition-colors"
                             aria-label="Email"
                         >

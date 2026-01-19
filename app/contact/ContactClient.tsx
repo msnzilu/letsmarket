@@ -36,8 +36,8 @@ export default function ContactClient() {
                 <Card className="p-6 text-center">
                     <Mail className="w-8 h-8 mx-auto text-brand-primary mb-3" />
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <a href="mailto:hello@lezmarket.com" className="text-brand-primary hover:underline">
-                        hello@lezmarket.com
+                    <a href="mailto:support@lezmarket.io" className="text-brand-primary hover:underline">
+                        support@lezmarket.io
                     </a>
                 </Card>
                 <Card className="p-6 text-center">

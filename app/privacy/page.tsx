@@ -72,7 +72,7 @@ export default function PrivacyPolicy() {
                     <h2 className="text-2xl font-bold mb-4">5. Contact Us</h2>
                     <p className="text-slate-600 leading-relaxed">
                         If you have any questions about this privacy policy or our privacy practices, please contact us at:
-                        <a href="mailto:privacy@lezmarket.ai" className="text-purple-600 hover:underline ml-1">privacy@lezmarket.ai</a>
+                        <a href="mailto:support@lezmarket.io" className="text-purple-600 hover:underline ml-1">support@lezmarket.io</a>
                     </p>
                 </section>
             </div>
