@@ -255,6 +255,27 @@ export default function ProfilePage() {
                 </div>
             </Card>
 
+            {/* Privacy & Data Card */}
+            <Card className="p-6 mb-6">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    Privacy & Data
+                </h3>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                    <div>
+                        <p className="font-bold text-lg text-slate-900">Request Data Deletion</p>
+                        <p className="text-sm text-slate-500">
+                            Exercising your right to be forgotten. This will permanently remove all your data from our systems.
+                        </p>
+                    </div>
+                    <Link href="/data-deletion" className="w-full sm:w-auto">
+                        <Button variant="outline" className="w-full sm:w-auto text-red-600 hover:bg-red-50 border-red-200">
+                            Delete My Data
+                        </Button>
+                    </Link>
+                </div>
+            </Card>
+
             {/* Sign Out */}
             <Button
                 variant="outline"

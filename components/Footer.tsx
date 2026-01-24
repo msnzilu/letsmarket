@@ -10,9 +10,9 @@ export default function Footer() {
     return (
         <footer className="bg-slate-900 text-slate-300">
             <div className="max-w-7xl mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
                     {/* Brand */}
-                    <div className="md:col-span-1">
+                    <div className="col-span-1 sm:col-span-2 md:col-span-1">
                         <Link href="/" className="flex items-center space-x-2 mb-4">
                             <Image
                                 src="/logo/site-logo.png"
@@ -73,11 +73,6 @@ export default function Footer() {
                                     Pricing
                                 </Link>
                             </li>
-                            {/* <li>
-                                <Link href="/docs#api-auth" className="hover:text-white transition-colors">
-                                    API
-                                </Link>
-                            </li> */}
                         </ul>
                     </div>
 
@@ -95,6 +90,13 @@ export default function Footer() {
                                     Contact
                                 </Link>
                             </li>
+                        </ul>
+                    </div>
+
+                    {/* Legals */}
+                    <div>
+                        <h3 className="font-semibold text-white mb-4">Legals</h3>
+                        <ul className="space-y-2 text-sm">
                             <li>
                                 <Link href="/privacy" className="hover:text-white transition-colors">
                                     Privacy Policy
@@ -113,6 +115,11 @@ export default function Footer() {
                             <li>
                                 <Link href="/cookies" className="hover:text-white transition-colors">
                                     Cookie Policy
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/data-deletion" className="hover:text-white transition-colors">
+                                    Data Deletion
                                 </Link>
                             </li>
                         </ul>

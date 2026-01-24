@@ -75,6 +75,20 @@ export default function PrivacyPolicy() {
                         <a href="mailto:support@lezmarket.io" className="text-purple-600 hover:underline ml-1">support@lezmarket.io</a>
                     </p>
                 </section>
+
+                <section className="bg-slate-50 p-8 rounded-2xl border border-slate-100">
+                    <h2 className="text-2xl font-bold mb-4">6. Data Deletion</h2>
+                    <p className="text-slate-600 leading-relaxed mb-6">
+                        You have the right to request the deletion of your personal data at any time.
+                        You can submit a formal request through our automated portal:
+                    </p>
+                    <a
+                        href="/data-deletion"
+                        className="inline-flex items-center px-6 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 hover:border-brand-primary hover:text-brand-primary transition-all shadow-sm"
+                    >
+                        Request Data Deletion
+                    </a>
+                </section>
             </div>
         </div>
     );
