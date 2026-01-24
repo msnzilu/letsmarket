@@ -1,14 +1,15 @@
 // app/api/cron/publish/route.ts
-// Cron job to publish scheduled posts
+// Cron job to publish scheduled posts AND auto-regenerate content
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { publishToSocial } from '@/lib/social';
 import { decrypt } from '@/lib/encryption';
 import { Platform } from '@/types';
+import { generateCampaignPosts } from '@/lib/campaign-generator';
 
-// This endpoint should be protected by a secret key in production
-// export const dynamic = 'force-dynamic';
+// Minimum pending posts before triggering regeneration
+const MIN_PENDING_POSTS = 2;
 
 export async function GET(request: NextRequest) {
     try {
@@ -21,9 +22,12 @@ export async function GET(request: NextRequest) {
         }
 
         const supabase = await createClient();
+        const now = new Date();
+        const nowISO = now.toISOString();
 
-        // 1. Find pending posts that are due
-        const now = new Date().toISOString();
+        // ========================================
+        // PART 1: Publish pending posts that are due
+        // ========================================
         const { data: posts, error: postsError } = await supabase
             .from('campaign_posts')
             .select(`
@@ -33,24 +37,22 @@ export async function GET(request: NextRequest) {
                 )
             `)
             .eq('status', 'pending')
-            .lte('scheduled_for', now)
-            .limit(10); // Process in small batches
+            .lte('scheduled_for', nowISO)
+            .limit(10);
 
         if (postsError) throw postsError;
 
         console.log(`Cron: Found ${posts?.length || 0} posts to publish`);
 
-        const results = [];
+        const publishResults = [];
 
         for (const post of (posts || [])) {
             try {
-                // 2. Update status to 'publishing' to prevent double-processing
                 await supabase
                     .from('campaign_posts')
                     .update({ status: 'publishing' })
                     .eq('id', post.id);
 
-                // 3. Find the connection for this post
                 const { data: connection, error: connError } = await supabase
                     .from('social_connections')
                     .select('*')
@@ -63,7 +65,6 @@ export async function GET(request: NextRequest) {
                     throw new Error(`No active connection found for ${post.platform}`);
                 }
 
-                // 4. Publish to platform
                 const publishResult = await publishToSocial(
                     post.platform as Platform,
                     {
@@ -73,7 +74,6 @@ export async function GET(request: NextRequest) {
                     }
                 );
 
-                // 5. Update post status to 'published'
                 await supabase
                     .from('campaign_posts')
                     .update({
@@ -84,11 +84,10 @@ export async function GET(request: NextRequest) {
                     })
                     .eq('id', post.id);
 
-                results.push({ id: post.id, status: 'success' });
+                publishResults.push({ id: post.id, status: 'success' });
             } catch (error: any) {
                 console.error(`Cron: Failed to publish post ${post.id}:`, error.message);
 
-                // Update post status to 'failed'
                 await supabase
                     .from('campaign_posts')
                     .update({
@@ -97,13 +96,130 @@ export async function GET(request: NextRequest) {
                     })
                     .eq('id', post.id);
 
-                results.push({ id: post.id, status: 'failed', error: error.message });
+                publishResults.push({ id: post.id, status: 'failed', error: error.message });
+            }
+        }
+
+        // ========================================
+        // PART 2: Auto-regenerate posts for active campaigns running low
+        // ========================================
+        const regenerationResults = [];
+
+        // Find active campaigns
+        const { data: activeCampaigns, error: campaignsError } = await supabase
+            .from('campaigns')
+            .select(`
+                *,
+                campaign_accounts (
+                    connection_id,
+                    social_connections (platform)
+                ),
+                analyses (
+                    overall_score,
+                    principle_scores,
+                    generated_copy
+                ),
+                websites (
+                    url
+                )
+            `)
+            .eq('status', 'active');
+
+        if (campaignsError) {
+            console.error('Cron: Error fetching active campaigns:', campaignsError);
+        }
+
+        for (const campaign of (activeCampaigns || [])) {
+            try {
+                // Count pending posts for this campaign
+                const { count: pendingCount } = await supabase
+                    .from('campaign_posts')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('campaign_id', campaign.id)
+                    .eq('status', 'pending');
+
+                console.log(`Cron: Campaign ${campaign.id} has ${pendingCount} pending posts`);
+
+                // If running low on pending posts, generate more
+                if ((pendingCount || 0) < MIN_PENDING_POSTS) {
+                    console.log(`Cron: Regenerating posts for campaign ${campaign.id}`);
+
+                    const platforms = campaign.campaign_accounts
+                        ?.map((ca: any) => ca.social_connections?.platform)
+                        .filter(Boolean) || [];
+
+                    if (platforms.length === 0 || !campaign.analyses) {
+                        console.log(`Cron: Skipping campaign ${campaign.id} - no platforms or analysis`);
+                        continue;
+                    }
+
+                    // Generate new posts
+                    const generatedPosts = await generateCampaignPosts({
+                        analysis: campaign.analyses,
+                        platforms,
+                        postsPerPlatform: Math.ceil(campaign.posts_per_week / platforms.length),
+                        websiteUrl: campaign.websites?.url,
+                    });
+
+                    if (generatedPosts.length === 0) {
+                        console.log(`Cron: No posts generated for campaign ${campaign.id}`);
+                        continue;
+                    }
+
+                    // Schedule the new posts starting from now
+                    const [hours, minutes] = (campaign.schedule_time || '09:00:00').split(':').map(Number);
+                    const scheduledPosts = generatedPosts.map((post, index) => {
+                        const scheduledFor = new Date(now);
+                        // Spread posts across upcoming days
+                        scheduledFor.setDate(scheduledFor.getDate() + index + 1);
+                        scheduledFor.setHours(hours, minutes, 0, 0);
+
+                        return {
+                            campaign_id: campaign.id,
+                            content: post.content,
+                            platform: post.platform,
+                            content_type: post.contentType,
+                            status: 'pending',
+                            scheduled_for: scheduledFor.toISOString(),
+                        };
+                    });
+
+                    // Insert new posts
+                    const { error: insertError } = await supabase
+                        .from('campaign_posts')
+                        .insert(scheduledPosts);
+
+                    if (insertError) {
+                        throw insertError;
+                    }
+
+                    // Update campaign next_post_at
+                    await supabase
+                        .from('campaigns')
+                        .update({ next_post_at: scheduledPosts[0]?.scheduled_for })
+                        .eq('id', campaign.id);
+
+                    regenerationResults.push({
+                        campaignId: campaign.id,
+                        postsGenerated: scheduledPosts.length,
+                    });
+
+                    console.log(`Cron: Generated ${scheduledPosts.length} new posts for campaign ${campaign.id}`);
+                }
+            } catch (error: any) {
+                console.error(`Cron: Error regenerating for campaign ${campaign.id}:`, error.message);
+                regenerationResults.push({
+                    campaignId: campaign.id,
+                    error: error.message,
+                });
             }
         }
 
         return NextResponse.json({
-            processed: results.length,
-            details: results,
+            published: publishResults.length,
+            publishDetails: publishResults,
+            regenerated: regenerationResults.length,
+            regenerationDetails: regenerationResults,
         });
 
     } catch (error: any) {
@@ -114,3 +230,4 @@ export async function GET(request: NextRequest) {
         );
     }
 }
+

@@ -58,6 +58,7 @@ export default function NewCampaignPage() {
     // Form state
     const [name, setName] = useState('');
     const [selectedWebsite, setSelectedWebsite] = useState<string | null>(null);
+    const [positioningFocus, setPositioningFocus] = useState('');
     const [selectedConnections, setSelectedConnections] = useState<string[]>([]);
     const [scheduleType, setScheduleType] = useState('weekly');
     const [scheduleDays, setScheduleDays] = useState<number[]>([1, 3, 5]); // Mon, Wed, Fri
@@ -170,6 +171,8 @@ export default function NewCampaignPage() {
                     schedule_days: scheduleDays,
                     schedule_time: scheduleTime + ':00',
                     posts_per_week: postsPerWeek,
+                    posts_per_week: postsPerWeek,
+                    positioning_focus: positioningFocus,
                     connection_ids: selectedConnections,
                 }),
             });

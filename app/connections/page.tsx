@@ -17,7 +17,7 @@ import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 import { PremiumGate } from '@/components/PremiumGate';
 import { generateCodeVerifier, generateCodeChallenge } from '@/lib/pkce';
 
-const PLATFORMS: Platform[] = ['x', 'linkedin'];
+const PLATFORMS: Platform[] = ['x', 'linkedin', 'facebook', 'instagram', 'reddit', 'tiktok', 'threads'];
 
 export default function ConnectionsPage() {
     const router = useRouter();
@@ -195,8 +195,8 @@ export default function ConnectionsPage() {
 
                 {/* Connection Cards */}
                 {loading ? (
-                    <div className="grid md:grid-cols-2 gap-4">
-                        {[1, 2].map(i => (
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {[1, 2, 3, 4, 5, 6, 7].map(i => (
                             <Card key={i} className="p-6 animate-pulse">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-slate-200 rounded-xl" />
@@ -209,7 +209,7 @@ export default function ConnectionsPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {PLATFORMS.map(platform => (
                             <SocialConnectionCard
                                 key={platform}

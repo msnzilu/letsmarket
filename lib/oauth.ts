@@ -45,6 +45,10 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
             duration: 'permanent',
         },
     },
+    threads: {
+        authUrl: 'https://threads.net/oauth/authorize',
+        scope: 'threads_basic,threads_content_publish',
+    },
 };
 
 import { getAppUrl } from '@/lib/utils';
@@ -101,6 +105,9 @@ function getClientId(platform: Platform): string {
             break;
         case 'reddit':
             clientId = process.env.NEXT_PUBLIC_REDDIT_CLIENT_ID;
+            break;
+        case 'threads':
+            clientId = process.env.NEXT_PUBLIC_THREADS_CLIENT_ID;
             break;
     }
 

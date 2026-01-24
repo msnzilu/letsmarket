@@ -68,36 +68,65 @@ export async function generateCampaignPosts({
         const limit = PLATFORM_LIMITS[platform as keyof typeof PLATFORM_LIMITS] || 500;
         const style = PLATFORM_STYLES[platform as keyof typeof PLATFORM_STYLES] || 'professional';
 
-        // Build context from available data
-        const headlines = analysis.generated_copy?.headlines?.slice(0, 3).join(' | ') || '';
-        const ctas = analysis.generated_copy?.ctas?.slice(0, 3).join(' | ') || '';
-        const valueProps = analysis.generated_copy?.value_props?.slice(0, 3).join(' | ') || '';
+        // Build context from available data - headlines and ctas are objects with 'copy' property
+        const headlinesList = analysis.generated_copy?.headlines || [];
+        const ctasList = analysis.generated_copy?.ctas || [];
+        const valuePropsList = analysis.generated_copy?.value_props || [];
+
+        // Extract the actual copy text from objects (they have {copy, principle, impactScore, difficulty})
+        const headlines = headlinesList
+            .slice(0, 5)
+            .map((h: any) => typeof h === 'string' ? h : h.copy)
+            .filter(Boolean)
+            .join(' | ');
+
+        const ctas = ctasList
+            .slice(0, 5)
+            .map((c: any) => typeof c === 'string' ? c : c.copy)
+            .filter(Boolean)
+            .join(' | ');
+
+        const valueProps = valuePropsList
+            .slice(0, 3)
+            .map((v: any) => typeof v === 'string' ? v : v.copy || v)
+            .filter(Boolean)
+            .join(' | ');
 
         const hasContext = headlines || ctas || valueProps;
 
-        const prompt = `You are a social media marketing expert. Create ${postsPerPlatform} posts for ${platform}.
+        console.log(`[${platform}] Building prompt with:`, {
+            websiteUrl,
+            headlines: headlines.substring(0, 100),
+            ctas: ctas.substring(0, 100),
+            hasContext,
+        });
 
-BUSINESS: ${websiteUrl || 'Unknown website'}
-${headlines ? `HEADLINES FROM WEBSITE: ${headlines}` : ''}
-${ctas ? `CTAs FROM WEBSITE: ${ctas}` : ''}
-${valueProps ? `VALUE PROPS FROM WEBSITE: ${valueProps}` : ''}
+        const prompt = `You are a social media marketing expert creating posts for a specific business.
 
-${!hasContext ? `IMPORTANT: Visit ${websiteUrl} in your knowledge to understand what this business offers. Based on the URL, this appears to be a meal planning / food prep mobile app. Create posts about MEAL PLANNING, RECIPES, and FOOD PREP.` : ''}
+WEBSITE URL: ${websiteUrl || 'Unknown'}
+${headlines ? `\nHEADLINES FROM THIS WEBSITE:\n${headlines}` : ''}
+${ctas ? `\nCALL-TO-ACTIONS FROM THIS WEBSITE:\n${ctas}` : ''}
+${valueProps ? `\nVALUE PROPOSITIONS:\n${valueProps}` : ''}
 
-STRICT RULES:
-1. Posts MUST be about the ACTUAL business (${websiteUrl})
-2. NO generic project management or productivity content
-3. Reference REAL features from the website
-4. Max ${limit} characters
+YOUR TASK: Create ${postsPerPlatform} ${platform} posts that promote THIS SPECIFIC BUSINESS.
+
+CRITICAL REQUIREMENTS:
+1. Posts MUST directly relate to the headlines, CTAs, or value propositions above
+2. Posts MUST be about what ${websiteUrl} actually offers
+3. DO NOT write generic content - reference specific features/benefits from the data above
+4. Maximum ${limit} characters per post
 5. Style: ${style}
 
-Return JSON: {"posts": [{"content": "post text"}]}`;
+Return JSON: {"posts": [{"content": "post text here"}]}`;
 
         try {
             const response = await openai.chat.completions.create({
                 model: 'gpt-4o-mini',
                 messages: [
-                    { role: 'system', content: `You create social media posts for ${websiteUrl}. You must only write about what this specific website offers. Return valid JSON.` },
+                    {
+                        role: 'system',
+                        content: `You create targeted social media posts for ${websiteUrl}. You MUST use the headlines and CTAs provided to create relevant, specific posts about this business. Never generate generic or unrelated content.`
+                    },
                     { role: 'user', content: prompt },
                 ],
                 temperature: 0.7,

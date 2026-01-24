@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Facebook, Twitter, Linkedin, Music, MessageCircle, Loader2, Trash2, Settings2 } from 'lucide-react';
+import { Facebook, Twitter, Linkedin, Music, MessageCircle, Loader2, Trash2, Settings2, AtSign } from 'lucide-react';
 import { Platform, SocialConnection, PLATFORM_CONFIG } from '@/types';
 import LinkedInPageSelector from './LinkedInPageSelector';
 
@@ -26,6 +26,7 @@ const PLATFORM_ICONS: Record<Platform, React.ReactNode> = {
     linkedin: <Linkedin className="w-6 h-6" />,
     tiktok: <Music className="w-6 h-6" />,
     reddit: <MessageCircle className="w-6 h-6" />,
+    threads: <AtSign className="w-6 h-6" />,
 };
 
 export default function SocialConnectionCard({

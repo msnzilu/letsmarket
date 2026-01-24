@@ -70,7 +70,7 @@ export interface User {
 }
 
 // Social Media Types
-export type Platform = 'facebook' | 'instagram' | 'x' | 'linkedin' | 'tiktok' | 'reddit';
+export type Platform = 'facebook' | 'instagram' | 'x' | 'linkedin' | 'tiktok' | 'reddit' | 'threads';
 
 export type PostStatus = 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed';
 
@@ -125,4 +125,22 @@ export const PLATFORM_CONFIG: Record<Platform, {
     linkedin: { name: 'LinkedIn', icon: 'linkedin', color: '#0A66C2', maxLength: 3000, supportsMedia: true },
     tiktok: { name: 'TikTok', icon: 'music', color: '#000000', maxLength: 2200, supportsMedia: true },
     reddit: { name: 'Reddit', icon: 'message-circle', color: '#FF4500', maxLength: 40000, supportsMedia: true },
+    threads: { name: 'Threads', icon: 'at-sign', color: '#000000', maxLength: 500, supportsMedia: true },
 };
+
+export interface Campaign {
+    id: string;
+    user_id: string;
+    name: string;
+    description?: string;
+    analysis_id: string;
+    website_id: string;
+    status: 'draft' | 'active' | 'paused' | 'completed';
+    schedule_type: 'daily' | 'weekly';
+    schedule_days: number[];
+    schedule_time: string;
+    posts_per_week: number;
+    positioning_focus?: string;
+    created_at: string;
+    next_post_at?: string;
+}

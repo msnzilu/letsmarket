@@ -43,6 +43,11 @@ const PLATFORM_CONFIGS: Record<Platform, {
         userInfoUrl: 'https://oauth.reddit.com/api/v1/me',
         scope: 'identity submit',
     },
+    threads: {
+        tokenUrl: 'https://graph.threads.net/oauth/access_token',
+        userInfoUrl: 'https://graph.threads.net/v1.0/me',
+        scope: 'threads_basic,threads_content_publish',
+    },
 };
 
 async function exchangeCodeForToken(platform: Platform, code: string, redirectUri: string) {
@@ -312,6 +317,12 @@ export async function GET(
                 accountName = userInfo.name;
                 accountUsername = userInfo.name;
                 accountAvatar = userInfo.icon_img;
+                break;
+            case 'threads':
+                platformUserId = userInfo.id;
+                accountName = userInfo.username || userInfo.name || 'Threads User';
+                accountUsername = userInfo.username;
+                accountAvatar = userInfo.threads_profile_picture_url;
                 break;
             default:
                 throw new Error('Unsupported platform');
