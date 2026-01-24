@@ -5,8 +5,6 @@ import { Platform } from '@/types';
 import { PublishResult, PublishOptions } from './types';
 import { publishToX } from './x';
 import { publishToLinkedIn } from './linkedin';
-import { publishToReddit } from './reddit';
-import { publishToTikTok } from './tiktok';
 import { publishToFacebook } from './facebook';
 import { publishToInstagram } from './instagram';
 import { publishToThreads } from './threads';
@@ -22,10 +20,6 @@ export async function publishToSocial(
             return publishToX(options);
         case 'linkedin':
             return publishToLinkedIn(options);
-        case 'reddit':
-            return publishToReddit(options);
-        case 'tiktok':
-            return publishToTikTok(options);
         case 'facebook':
             return publishToFacebook(options);
         case 'instagram':
@@ -39,8 +33,6 @@ export async function publishToSocial(
 
 export { publishToX } from './x';
 export { publishToLinkedIn } from './linkedin';
-export { publishToReddit } from './reddit';
-export { publishToTikTok } from './tiktok';
 export { publishToFacebook } from './facebook';
 export { publishToInstagram } from './instagram';
 export { publishToThreads } from './threads';

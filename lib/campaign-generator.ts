@@ -30,8 +30,6 @@ const PLATFORM_LIMITS = {
     linkedin: 3000,
     facebook: 500,
     instagram: 2200,
-    tiktok: 150,
-    reddit: 300,
 };
 
 const PLATFORM_STYLES = {
@@ -39,8 +37,6 @@ const PLATFORM_STYLES = {
     linkedin: 'professional, insightful, story-driven, use line breaks for readability, include relevant hashtags at the end',
     facebook: 'friendly, engaging, ask questions, encourage comments and shares',
     instagram: 'visual-focused caption, use emojis sparingly, 3-5 hashtags at end, storytelling approach',
-    tiktok: 'trendy, casual, hook in first line, use trending phrases',
-    reddit: 'authentic, value-first, no self-promotion feel, community-focused',
 };
 
 export async function generateCampaignPosts({

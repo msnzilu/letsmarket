@@ -6,34 +6,6 @@ import { Platform } from '@/types';
 import { decrypt } from '@/lib/encryption';
 import { publishToSocial } from '@/lib/social';
 
-async function publishToReddit(accessToken: string, content: string, subreddit: string = 'test'): Promise<{ postId: string; postUrl: string }> {
-    // Reddit API
-    const response = await fetch('https://oauth.reddit.com/api/submit', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            kind: 'self',
-            sr: subreddit,
-            title: content.slice(0, 300),
-            text: content,
-        }),
-    });
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to publish to Reddit');
-    }
-
-    const data = await response.json();
-    return {
-        postId: data.json?.data?.id || '',
-        postUrl: data.json?.data?.url || '',
-    };
-}
-
 // POST - Publish a post immediately
 export async function POST(request: NextRequest) {
     try {
@@ -78,14 +50,12 @@ export async function POST(request: NextRequest) {
             const platform = connection.platform as Platform;
 
             // Use unified social publishing for supported platforms
-            if (platform === 'x' || platform === 'linkedin') {
+            if (platform === 'x' || platform === 'linkedin' || platform === 'facebook' || platform === 'instagram' || platform === 'threads') {
                 result = await publishToSocial(platform, {
                     content: post.content,
                     accessToken: decrypt(connection.access_token),
                     userId: connection.platform_user_id,
                 });
-            } else if (platform === 'reddit') {
-                result = await publishToReddit(decrypt(connection.access_token), post.content);
             } else {
                 throw new Error(`Platform ${platform} is not yet supported for publishing.`);
             }

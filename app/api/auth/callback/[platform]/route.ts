@@ -33,16 +33,6 @@ const PLATFORM_CONFIGS: Record<Platform, {
         userInfoUrl: 'https://api.linkedin.com/v2/userinfo',
         scope: 'openid profile w_member_social',
     },
-    tiktok: {
-        tokenUrl: 'https://open.tiktokapis.com/v2/oauth/token/',
-        userInfoUrl: 'https://open.tiktokapis.com/v2/user/info/',
-        scope: 'user.info.basic,video.publish',
-    },
-    reddit: {
-        tokenUrl: 'https://www.reddit.com/api/v1/access_token',
-        userInfoUrl: 'https://oauth.reddit.com/api/v1/me',
-        scope: 'identity submit',
-    },
     threads: {
         tokenUrl: 'https://graph.threads.net/oauth/access_token',
         userInfoUrl: 'https://graph.threads.net/v1.0/me',
@@ -75,24 +65,8 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
     console.log(`[${platform}] Exchanging code for token with client_id: ${clientId.substring(0, 10)}...`);
 
     let response: Response;
-    let body: Record<string, string>;
 
-    if (platform === 'reddit') {
-        // Reddit uses Basic Auth
-        const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-        response = await fetch(config.tokenUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Basic ${auth}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                grant_type: 'authorization_code',
-                code,
-                redirect_uri: redirectUri,
-            }),
-        });
-    } else if (platform === 'x') {
+    if (platform === 'x') {
         // X uses PKCE + Basic Auth
         const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
         const cookieStore = await import('next/headers').then(h => h.cookies());
@@ -113,21 +87,8 @@ async function exchangeCodeForToken(platform: Platform, code: string, redirectUr
                 code_verifier: codeVerifier,
             }),
         });
-    } else if (platform === 'tiktok') {
-        response = await fetch(config.tokenUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                client_key: clientId,
-                client_secret: clientSecret,
-                code,
-                grant_type: 'authorization_code',
-                redirect_uri: redirectUri,
-                code_verifier: 'challenge',
-            }),
-        });
     } else {
-        // Facebook, Instagram, LinkedIn
+        // Facebook, Instagram, LinkedIn, Threads
         response = await fetch(config.tokenUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -305,18 +266,6 @@ export async function GET(
                     accountName = userInfo.name;
                     accountAvatar = userInfo.picture;
                 }
-                break;
-            case 'tiktok':
-                platformUserId = userInfo.data.user.open_id;
-                accountName = userInfo.data.user.display_name;
-                accountUsername = userInfo.data.user.username;
-                accountAvatar = userInfo.data.user.avatar_url;
-                break;
-            case 'reddit':
-                platformUserId = userInfo.id;
-                accountName = userInfo.name;
-                accountUsername = userInfo.name;
-                accountAvatar = userInfo.icon_img;
                 break;
             case 'threads':
                 platformUserId = userInfo.id;
