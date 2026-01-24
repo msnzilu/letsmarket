@@ -27,7 +27,7 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
     },
     linkedin: {
         authUrl: 'https://www.linkedin.com/oauth/v2/authorization',
-        scope: 'openid profile w_member_social w_organization_social',
+        scope: 'openid profile email w_member_social',
     },
     threads: {
         authUrl: 'https://threads.net/oauth/authorize',

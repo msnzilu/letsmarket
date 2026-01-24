@@ -31,7 +31,7 @@ const PLATFORM_CONFIGS: Record<Platform, {
     linkedin: {
         tokenUrl: 'https://www.linkedin.com/oauth/v2/accessToken',
         userInfoUrl: 'https://api.linkedin.com/v2/userinfo',
-        scope: 'openid profile w_member_social',
+        scope: 'openid profile email w_member_social',
     },
     threads: {
         tokenUrl: 'https://graph.threads.net/oauth/access_token',
