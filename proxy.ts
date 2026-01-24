@@ -4,21 +4,19 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-    // Clone headers and add pathname
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-pathname', request.nextUrl.pathname);
-
     let supabaseResponse = NextResponse.next({
         request: {
-            headers: requestHeaders,
+            headers: request.headers,
         },
     });
+
+    // Set x-pathname for internal routing/breadcrumbs
+    request.headers.set('x-pathname', request.nextUrl.pathname);
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
-        console.error('Middleware: Missing Supabase environment variables');
         return supabaseResponse;
     }
 
@@ -37,7 +35,9 @@ export async function proxy(request: NextRequest) {
                         ...options,
                     });
                     supabaseResponse = NextResponse.next({
-                        request,
+                        request: {
+                            headers: request.headers,
+                        },
                     });
                     supabaseResponse.cookies.set({
                         name,
@@ -52,7 +52,9 @@ export async function proxy(request: NextRequest) {
                         ...options,
                     });
                     supabaseResponse = NextResponse.next({
-                        request,
+                        request: {
+                            headers: request.headers,
+                        },
                     });
                     supabaseResponse.cookies.set({
                         name,
@@ -65,30 +67,33 @@ export async function proxy(request: NextRequest) {
     );
 
     try {
+        // This will refresh the session if needed
         const { data: { user } } = await supabase.auth.getUser();
 
-        // Protected routes that require authentication
-        const protectedRoutes = ['/dashboard', '/analyze', '/connections', '/posts', '/campaigns', '/profile'];
-        const isProtectedRoute = protectedRoutes.some(route =>
-            request.nextUrl.pathname.startsWith(route)
-        );
+        const path = request.nextUrl.pathname;
 
-        // Redirect to login if accessing protected route without authentication
+        // Protected routes check
+        const protectedRoutes = ['/dashboard', '/analyze', '/connections', '/posts', '/campaigns', '/profile'];
+        const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
+
         if (isProtectedRoute && !user) {
-            return NextResponse.redirect(new URL('/login', request.url));
+            const redirectUrl = request.nextUrl.clone();
+            redirectUrl.pathname = '/login';
+            redirectUrl.searchParams.set('redirectedFrom', path);
+            return NextResponse.redirect(redirectUrl);
         }
 
-        // Redirect to dashboard if accessing auth pages while logged in
+        // Auth page check
         const authRoutes = ['/login', '/signup'];
-        const isAuthRoute = authRoutes.includes(request.nextUrl.pathname);
-
-        if (isAuthRoute && user) {
-            return NextResponse.redirect(new URL('/dashboard', request.url));
+        if (authRoutes.includes(path) && user) {
+            const redirectUrl = request.nextUrl.clone();
+            redirectUrl.pathname = '/dashboard';
+            return NextResponse.redirect(redirectUrl);
         }
 
         return supabaseResponse;
-    } catch (e) {
-        console.error('Middleware Error:', e);
+    } catch (error) {
+        console.error('Middleware execution error:', error);
         return supabaseResponse;
     }
 }
