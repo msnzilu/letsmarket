@@ -29,13 +29,24 @@ export async function GET(request: NextRequest) {
         }
 
         const supabase = await createClient();
-        const metadata = result.data.customer as any;
+        const metadata = result.data.metadata as any;
 
-        // Extract user_id and plan from reference
-        // Reference format: sub_<userId>_<timestamp>
-        const refParts = ref.split('_');
-        const userId = refParts[1];
-        const plan = 'pro'; // Default to pro for now
+        // Extract user_id, plan, and interval from metadata
+        const userId = metadata?.user_id;
+        const plan = metadata?.plan || 'pro';
+        const interval = metadata?.interval || 'month';
+
+        if (!userId) {
+            throw new Error('User ID not found in transaction metadata');
+        }
+
+        // Calculate period end based on interval
+        const periodEndDate = new Date();
+        if (interval === 'year') {
+            periodEndDate.setFullYear(periodEndDate.getFullYear() + 1);
+        } else {
+            periodEndDate.setMonth(periodEndDate.getMonth() + 1);
+        }
 
         // Update subscription
         const { error: subError } = await supabase
@@ -43,13 +54,12 @@ export async function GET(request: NextRequest) {
             .upsert({
                 user_id: userId,
                 plan,
+                interval,
                 status: 'active',
                 provider: 'paystack',
                 provider_customer_id: String(result.data.customer.id),
                 current_period_start: new Date().toISOString(),
-                current_period_end: new Date(
-                    Date.now() + 30 * 24 * 60 * 60 * 1000
-                ).toISOString(), // 30 days
+                current_period_end: periodEndDate.toISOString(),
             }, {
                 onConflict: 'user_id',
             });

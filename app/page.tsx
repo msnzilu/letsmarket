@@ -15,46 +15,46 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="pt-20 pb-32 px-4">
-        <div className="w-full mx-auto text-center">
-          <div className="inline-block mb-4 px-4 py-2 bg-brand-secondary-light text-brand-primary rounded-full text-sm font-medium">
+      <section className="pt-16 md:pt-24 pb-20 md:pb-32 px-4 md:px-0">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="inline-block mb-4 px-4 py-2 bg-brand-secondary-light text-brand-primary rounded-full text-xs md:text-sm font-medium">
             Join 500+ marketers optimizing their websites
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent px-2">
             Turn Visitors Into Customers
           </h1>
 
-          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 mb-8 max-w-2xl mx-auto px-4">
             Analyze your website for 6 core conversion principles and get AI-powered copy
             that turns visitors into customers. See what you're missing in under 2 minutes.
           </p>
 
-          <div className="flex gap-4 justify-center">
-            <Link href="/signup">
-              <Button size="lg" className="text-lg px-8 bg-brand-primary hover:bg-brand-primary/90">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
+            <Link href="/signup" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full sm:w-auto text-lg px-8 bg-brand-primary hover:bg-brand-primary/90 py-6">
                 Analyze Website Free
               </Button>
             </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="text-lg px-8">
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6">
                 Sign In
               </Button>
             </Link>
           </div>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-8 opacity-60 grayscale">
-            <div className="flex items-center gap-2">
+          <div className="mt-12 flex flex-wrap justify-center items-center gap-6 md:gap-8 opacity-60 grayscale px-4">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               <ShieldAlert className="w-5 h-5" />
-              <span className="font-semibold">GDPR Compliant</span>
+              <span className="text-sm md:text-base font-semibold">GDPR Compliant</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               <Award className="w-5 h-5" />
-              <span className="font-semibold">Industry Methodology</span>
+              <span className="text-sm md:text-base font-semibold">Industry Methodology</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 whitespace-nowrap">
               <Zap className="w-5 h-5" />
-              <span className="font-semibold">Powered by GPT-4o</span>
+              <span className="text-sm md:text-base font-semibold">Powered by GPT-4o</span>
             </div>
           </div>
         </div>

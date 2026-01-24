@@ -117,43 +117,47 @@ export default function ProfilePage() {
             )}
 
             {/* User Info Card */}
-            <Card className="p-8 mb-6">
-                <div className="flex justify-between items-start mb-6">
-                    <div className="flex items-center gap-4">
-                        <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            <Card className="p-6 md:p-8 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-6 mb-6">
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left w-full">
+                        <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
                             {(fullName || user?.email)?.[0].toUpperCase() || 'U'}
                         </div>
-                        <div>
+                        <div className="flex-1 w-full min-w-0">
                             {editing ? (
                                 <input
                                     type="text"
                                     value={fullName}
                                     onChange={e => setFullName(e.target.value)}
                                     placeholder="Your name"
-                                    className="text-xl font-semibold px-3 py-1 border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none"
+                                    className="w-full text-xl font-semibold px-3 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary focus:outline-none mb-2"
                                 />
                             ) : (
-                                <h2 className="text-xl font-semibold">{displayName}</h2>
+                                <h2 className="text-xl font-semibold truncate">{displayName}</h2>
                             )}
-                            <p className="text-slate-600">{user?.email}</p>
+                            <p className="text-slate-600 truncate">{user?.email}</p>
                         </div>
                     </div>
 
-                    {editing ? (
-                        <div className="flex gap-2">
-                            <Button size="sm" onClick={handleSave} disabled={saving}>
-                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                    <div className="w-full sm:w-auto flex justify-center sm:justify-start">
+                        {editing ? (
+                            <div className="flex gap-2 w-full sm:w-auto">
+                                <Button size="lg" className="flex-1 sm:flex-none" onClick={handleSave} disabled={saving}>
+                                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4 mr-2" />}
+                                    Save
+                                </Button>
+                                <Button size="lg" variant="outline" className="flex-1 sm:flex-none" onClick={handleCancel}>
+                                    <X className="w-4 h-4 mr-2" />
+                                    Cancel
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button variant="outline" className="w-full sm:w-auto" onClick={() => setEditing(true)}>
+                                <Pencil className="w-4 h-4 mr-2" />
+                                Edit Profile
                             </Button>
-                            <Button size="sm" variant="outline" onClick={handleCancel}>
-                                <X className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    ) : (
-                        <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                            <Pencil className="w-4 h-4 mr-2" />
-                            Edit
-                        </Button>
-                    )}
+                        )}
+                    </div>
                 </div>
 
                 <div className="space-y-4 border-t pt-6">
@@ -227,23 +231,25 @@ export default function ProfilePage() {
                     Subscription
                 </h3>
 
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
                     <div>
-                        <p className="font-medium">
-                            {plan === 'enterprise' ? 'Enterprise Plan' : plan === 'pro' ? 'Pro Plan' : 'Free Plan'}
+                        <p className="font-bold text-lg">
+                            {plan === 'free'
+                                ? 'Free Plan'
+                                : `${plan === 'pro' ? 'Pro Plan' : 'Enterprise Plan'} (${subscription?.interval === 'year' ? 'Yearly' : 'Monthly'})`}
                         </p>
                         <p className="text-sm text-slate-500">
                             {plan === 'free'
-                                ? 'Limited features'
+                                ? 'Unlock pro features for automated campaigns'
                                 : subscription?.current_period_end
-                                    ? `Renews ${new Date(subscription.current_period_end).toLocaleDateString()}`
-                                    : 'Active subscription'
+                                    ? `Next billing date: ${new Date(subscription.current_period_end).toLocaleDateString()}`
+                                    : 'Active and verified'
                             }
                         </p>
                     </div>
-                    <Link href="/pricing">
-                        <Button variant={plan === 'free' ? 'default' : 'outline'}>
-                            {plan === 'free' ? 'Upgrade' : 'Manage'}
+                    <Link href="/pricing" className="w-full sm:w-auto">
+                        <Button variant={plan === 'free' ? 'default' : 'outline'} className="w-full sm:w-auto py-6 sm:py-2 text-lg sm:text-base">
+                            {plan === 'free' ? 'Upgrade Now' : 'Manage Subscription'}
                         </Button>
                     </Link>
                 </div>

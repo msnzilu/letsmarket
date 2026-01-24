@@ -7,14 +7,6 @@ import { PaymentFactory } from '@/lib/payment/factory';
 import { Plan } from '@/lib/subscription';
 import { getAppUrl } from '@/lib/utils';
 
-// Base prices in USD
-const BASE_PRICES_USD: Record<'free' | 'pro' | 'enterprise', number> = {
-    free: 0,
-    pro: 49,
-    enterprise: 0,
-};
-
-
 export async function POST(request: NextRequest) {
     try {
         const supabase = await createClient();
@@ -24,7 +16,10 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { plan } = await request.json() as { plan: Plan };
+        const { plan, interval = 'month' } = await request.json() as {
+            plan: Plan;
+            interval?: 'month' | 'year'
+        };
         const currency = 'USD';
 
         if (!plan || !['pro', 'enterprise'].includes(plan)) {
@@ -41,9 +36,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Calculate amount in cents
-        const baseUSD = BASE_PRICES_USD[plan];
-        const amount = Math.round(baseUSD * 100);
+        // Calculate amount in cents using lib/subscription constants
+        const { PLAN_PRICES } = await import('@/lib/subscription');
+        const amount = PLAN_PRICES[plan as keyof typeof PLAN_PRICES][interval as 'month' | 'year'];
+
+        if (!amount && amount !== 0) {
+            return NextResponse.json(
+                { error: 'Invalid interval selected' },
+                { status: 400 }
+            );
+        }
 
         const callbackUrl = `${getAppUrl()}/api/subscription/callback`;
 
@@ -59,6 +61,7 @@ export async function POST(request: NextRequest) {
             metadata: {
                 user_id: user.id,
                 plan,
+                interval,
                 type: 'subscription',
                 currency,
             },

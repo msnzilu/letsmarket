@@ -4,10 +4,11 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { Plan, Feature, canAccessFeature, getEffectivePlan, PLAN_LIMITS, UNLIMITED } from '@/lib/subscription';
+import { Plan, Feature, canAccessFeature, getEffectivePlan, PLAN_LIMITS, UNLIMITED, BillingInterval } from '@/lib/subscription';
 
 interface SubscriptionData {
     plan: Plan;
+    interval?: BillingInterval;
     status: string;
     current_period_end?: string;
 }

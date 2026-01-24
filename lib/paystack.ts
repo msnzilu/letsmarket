@@ -102,6 +102,7 @@ export async function verifyTransaction(reference: string) {
         amount: number;
         customer: PaystackCustomer;
         plan?: { plan_code: string };
+        metadata?: Record<string, any>;
     }>(`/transaction/verify/${reference}`);
 }
 

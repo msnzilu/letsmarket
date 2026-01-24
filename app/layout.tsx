@@ -1,5 +1,3 @@
-// app/layout.tsx
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -15,12 +13,12 @@ import { headers } from "next/headers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "lez Market - AI Website Analyzer for Conversion Optimization",
+  title: "lez Market - Website Analysis Tool for Conversion Optimization",
   description: "Optimize your website for high conversion rates. Analyze your landing page for Social Proof, Scarcity, Authority and more. Get AI-powered copy that turns visitors into loyal customers.",
   keywords: ["AI website analyzer", "conversion optimization", "marketing psychology", "AI copywriting", "landing page optimization", "conversion rate optimization", "CRO tool"],
   authors: [{ name: "lez Market Team" }],
   openGraph: {
-    title: "lez Market - Elevate Your Website's Conversion Potential",
+    title: "lez Market - Website Analysis Tool for Conversion Optimization",
     description: "AI-powered conversion principles analysis and copywriting to transform your website performance.",
     url: "https://lezmarket.vercel.app",
     siteName: "lez Market",
@@ -37,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "lez Market - AI-Powered Conversion Optimization",
+    title: "lez Market - Website Analysis Tool for Conversion Optimization",
     description: "Analyze your website and get AI-powered copy that converts in seconds.",
     images: ["/logo/logo.png"],
   },

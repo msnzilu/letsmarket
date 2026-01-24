@@ -81,11 +81,18 @@ export default function PricingClient() {
     const router = useRouter();
     const { plan: currentPlan, isLoading: subLoading } = useSubscription();
     const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+    const [billingInterval, setBillingInterval] = useState<'month' | 'year'>('month');
 
     const getDisplayPrice = (plan: Plan): string => {
         if (plan.id === 'enterprise') return 'Custom';
-        if (plan.basePrice === 0) return '$0';
-        return `$${plan.basePrice}`;
+        if (plan.id === 'free') return '$0';
+
+        // Use prices from lib/subscription to be consistent
+        const price = plan.id === 'pro'
+            ? (billingInterval === 'month' ? 49 : 470)
+            : 0;
+
+        return `$${price}`;
     };
 
     const handleUpgrade = async (planId: string) => {
@@ -104,7 +111,11 @@ export default function PricingClient() {
             const res = await fetch('/api/subscription/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ plan: planId, currency: 'USD' }),
+                body: JSON.stringify({
+                    plan: planId,
+                    interval: billingInterval,
+                    currency: 'USD'
+                }),
             });
 
             const data = await res.json();
@@ -130,11 +141,28 @@ export default function PricingClient() {
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-16">
-            <div className="text-center mb-16">
+            <div className="text-center mb-10">
                 <h1 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h1>
-                <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-8">
                     Start free and scale as you grow. No hidden fees, cancel anytime.
                 </p>
+
+                {/* Billing Interval Toggle */}
+                <div className="flex justify-center items-center gap-4 mb-8">
+                    <span className={`text-sm font-medium ${billingInterval === 'month' ? 'text-slate-900' : 'text-slate-500'}`}>Monthly</span>
+                    <button
+                        onClick={() => setBillingInterval(prev => prev === 'month' ? 'year' : 'month')}
+                        className="relative w-14 h-7 bg-slate-200 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                    >
+                        <div
+                            className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ${billingInterval === 'year' ? 'translate-x-7' : 'translate-x-0'}`}
+                        />
+                    </button>
+                    <div className="flex items-center gap-2">
+                        <span className={`text-sm font-medium ${billingInterval === 'year' ? 'text-slate-900' : 'text-slate-500'}`}>Annually</span>
+                        <Badge variant="secondary" className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Save 20%</Badge>
+                    </div>
+                </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
@@ -163,7 +191,9 @@ export default function PricingClient() {
                                 <span className="text-4xl font-bold">
                                     {getDisplayPrice(plan)}
                                 </span>
-                                <span className="text-slate-600">{plan.period}</span>
+                                <span className="text-slate-600">
+                                    {plan.id === 'free' ? ' forever' : (billingInterval === 'month' ? ' /mo' : ' /yr')}
+                                </span>
                             </div>
                             <p className="text-slate-600 mb-6">{plan.description}</p>
 

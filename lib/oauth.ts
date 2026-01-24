@@ -20,14 +20,14 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
     },
     x: {
         authUrl: 'https://twitter.com/i/oauth2/authorize',
-        scope: 'tweet.read users.read offline.access',
+        scope: 'tweet.read tweet.write users.read offline.access',
         additionalParams: {
             code_challenge_method: 'S256',
         },
     },
     linkedin: {
         authUrl: 'https://www.linkedin.com/oauth/v2/authorization',
-        scope: 'openid profile w_member_social',
+        scope: 'openid profile w_member_social w_organization_social',
     },
     tiktok: {
         authUrl: 'https://www.tiktok.com/v2/auth/authorize/',

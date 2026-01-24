@@ -47,15 +47,15 @@ export default async function DashboardPage() {
                 analysisCount={totalAnalyses}
             />
 
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
                     <h1 className="text-3xl font-bold mb-2">Your Websites</h1>
                     <p className="text-slate-600">
                         Analyze websites and generate high-converting copy
                     </p>
                 </div>
-                <Link href="/analyze">
-                    <Button size="lg">
+                <Link href="/analyze" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto">
                         <TrendingUp className="w-4 h-4 mr-2" />
                         Analyze New Website
                     </Button>

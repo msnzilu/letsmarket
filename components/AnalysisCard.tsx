@@ -47,10 +47,10 @@ export default function AnalysisCard({ website, analysis, onReanalyze }: Analysi
 
     return (
         <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="flex justify-between items-start gap-4">
-                <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold truncate">{website.url}</h3>
+            <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
+                <div className="flex-1 w-full">
+                    <div className="flex items-center justify-between lg:justify-start gap-3 mb-2">
+                        <h3 className="text-xl font-semibold truncate max-w-[200px] md:max-w-none">{website.url}</h3>
                         <a
                             href={website.url}
                             target="_blank"
@@ -66,20 +66,20 @@ export default function AnalysisCard({ website, analysis, onReanalyze }: Analysi
                     </p>
 
                     {analysis ? (
-                        <div className="flex gap-4 items-center">
-                            <div>
-                                <span className="text-sm text-slate-600">Score</span>
-                                <div className={`text-3xl font-bold ${getScoreColor(analysis.overall_score)}`}>
+                        <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                            <div className="flex flex-col items-center sm:items-start">
+                                <span className="text-xs uppercase font-semibold text-slate-400">Score</span>
+                                <div className={`text-4xl font-bold ${getScoreColor(analysis.overall_score)}`}>
                                     {analysis.overall_score}
                                 </div>
                             </div>
 
-                            <div className="flex-1">
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+                            <div className="flex-1 w-full border-t sm:border-t-0 sm:border-l border-slate-100 pt-4 sm:pt-0 sm:pl-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-sm">
                                     {Object.entries(analysis.principle_scores).slice(0, 3).map(([key, principle]: [string, any]) => (
-                                        <div key={key} className="flex justify-between">
-                                            <span className="text-slate-600 truncate">{principle.name}:</span>
-                                            <span className={`font-semibold ml-2 ${getScoreColor(principle.score)}`}>
+                                        <div key={key} className="flex justify-between items-center">
+                                            <span className="text-slate-500 truncate">{principle.name}</span>
+                                            <span className={`font-bold ml-2 ${getScoreColor(principle.score)}`}>
                                                 {principle.score}
                                             </span>
                                         </div>
@@ -88,20 +88,20 @@ export default function AnalysisCard({ website, analysis, onReanalyze }: Analysi
                             </div>
                         </div>
                     ) : (
-                        <div className="flex items-center gap-2 text-slate-500">
+                        <div className="flex items-center gap-2 text-slate-500 bg-slate-50 p-3 rounded-lg">
                             <BarChart3 className="w-4 h-4" />
-                            <span>No analysis data</span>
+                            <span className="text-sm font-medium">No analysis data available yet</span>
                         </div>
                     )}
                 </div>
 
-                <div className="flex flex-col gap-2 flex-shrink-0">
+                <div className="flex flex-col gap-2 w-full lg:w-auto lg:min-w-[160px]">
                     {analysis && (
-                        <Link href={`/dashboard/${analysis.id}`}>
-                            <Button variant="default">View Details</Button>
+                        <Link href={`/dashboard/${analysis.id}`} className="w-full">
+                            <Button variant="default" className="w-full shadow-sm">View Details</Button>
                         </Link>
                     )}
-                    <Link href="/analyze">
+                    <Link href="/analyze" className="w-full">
                         <Button variant="outline" className="w-full" onClick={onReanalyze}>
                             <TrendingUp className="w-4 h-4 mr-2" />
                             Re-analyze
@@ -122,7 +122,7 @@ export default function AnalysisCard({ website, analysis, onReanalyze }: Analysi
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="flex-1"
+                                className="flex-1 border"
                                 onClick={() => setShowConfirm(false)}
                                 disabled={isDeleting}
                             >
@@ -133,11 +133,11 @@ export default function AnalysisCard({ website, analysis, onReanalyze }: Analysi
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="text-slate-400 hover:text-red-600 hover:bg-red-50"
+                            className="w-full text-slate-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center"
                             onClick={() => setShowConfirm(true)}
                         >
                             <Trash2 className="w-4 h-4 mr-2" />
-                            Delete
+                            Delete Website
                         </Button>
                     )}
                 </div>

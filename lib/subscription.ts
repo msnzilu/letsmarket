@@ -2,12 +2,14 @@
 // Subscription utilities and feature access control
 
 export type Plan = 'free' | 'pro' | 'enterprise';
+export type BillingInterval = 'month' | 'year';
 export type SubscriptionStatus = 'active' | 'canceled' | 'past_due' | 'trialing';
 
 export interface Subscription {
     id: string;
     user_id: string;
     plan: Plan;
+    interval: BillingInterval;
     status: SubscriptionStatus;
     provider: string;
     provider_customer_id?: string;
@@ -65,9 +67,18 @@ export const PLAN_LIMITS = {
 
 // Plan prices in cents (Smallest currency unit)
 export const PLAN_PRICES = {
-    free: 0,
-    pro: 4900, // $49.00
-    enterprise: 0, // Custom pricing
+    free: {
+        month: 0,
+        year: 0,
+    },
+    pro: {
+        month: 4900, // $49.00
+        year: 47000, // $470.00 (~$39/month, 20% discount)
+    },
+    enterprise: {
+        month: 0,
+        year: 0,
+    },
 } as const;
 
 export type Feature = keyof typeof PLAN_LIMITS.free;
