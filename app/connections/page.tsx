@@ -27,6 +27,7 @@ export default function ConnectionsPage() {
     const [loading, setLoading] = useState(true);
     const [authChecked, setAuthChecked] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState<Platform | null>(null);
+    const [localError, setLocalError] = useState<string | null>(null);
     const [limits, setLimits] = useState<any>(null);
     const { onOpen } = useUpgradeModal();
 
@@ -35,18 +36,19 @@ export default function ConnectionsPage() {
 
     // Auto-dismiss success/error messages after 5 seconds
     useEffect(() => {
-        if (successMessage || errorMessage) {
+        if (successMessage || errorMessage || localError) {
             const timer = setTimeout(() => {
                 // Remove query params from URL without reloading
                 const url = new URL(window.location.href);
                 url.searchParams.delete('success');
                 url.searchParams.delete('error');
                 router.replace(url.pathname + url.search);
+                setLocalError(null);
             }, 5000);
 
             return () => clearTimeout(timer);
         }
-    }, [successMessage, errorMessage, router]);
+    }, [successMessage, errorMessage, localError, router]);
 
     useEffect(() => {
         // Check auth first
@@ -84,6 +86,7 @@ export default function ConnectionsPage() {
             return;
         }
         setConnectingPlatform(platform);
+        setLocalError(null);
 
         try {
             let authUrl: string;
@@ -101,9 +104,14 @@ export default function ConnectionsPage() {
                 authUrl = getOAuthUrl(platform);
             }
 
+            if (!authUrl) {
+                throw new Error(`Failed to generate authentication URL for ${platform}. Please check if the platform is correctly configured.`);
+            }
+
             window.location.href = authUrl;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to generate OAuth URL:', error);
+            setLocalError(error.message || 'Failed to start connection flow.');
             setConnectingPlatform(null);
         }
     };
@@ -177,6 +185,17 @@ export default function ConnectionsPage() {
                             <AlertCircle className="w-5 h-5 text-red-600" />
                             <p className="text-red-800">
                                 Connection failed: {decodeURIComponent(errorMessage)}
+                            </p>
+                        </div>
+                    </Card>
+                )}
+
+                {localError && (
+                    <Card className="p-4 mb-6 bg-red-50 border-red-200">
+                        <div className="flex items-center gap-3">
+                            <AlertCircle className="w-5 h-5 text-red-600" />
+                            <p className="text-red-800">
+                                {localError}
                             </p>
                         </div>
                     </Card>

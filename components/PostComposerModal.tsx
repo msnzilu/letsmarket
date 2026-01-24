@@ -3,6 +3,7 @@
 // components/PostComposerModal.tsx
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +25,7 @@ export default function PostComposerModal({
     copyType,
     analysisId,
 }: PostComposerModalProps) {
+    const router = useRouter();
     const [content, setContent] = useState(initialContent);
     const [analysis, setAnalysis] = useState<any>(null);
     const [connections, setConnections] = useState<Partial<SocialConnection>[]>([]);
@@ -211,7 +213,7 @@ export default function PostComposerModal({
                                 ) : connections.length === 0 ? (
                                     <Card className="p-4 bg-slate-50 text-center">
                                         <p className="text-slate-600 mb-2">No connected accounts</p>
-                                        <Button variant="outline" size="sm" onClick={onClose}>
+                                        <Button variant="outline" size="sm" onClick={() => router.push('/connections')}>
                                             Connect Accounts
                                         </Button>
                                     </Card>
