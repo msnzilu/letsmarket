@@ -17,7 +17,7 @@ import { useUpgradeModal } from '@/hooks/use-upgrade-modal';
 import { PremiumGate } from '@/components/PremiumGate';
 import { generateCodeVerifier, generateCodeChallenge } from '@/lib/pkce';
 
-const PLATFORMS: Platform[] = ['x', 'linkedin', 'facebook', 'instagram', 'reddit', 'tiktok', 'threads'];
+const PLATFORMS: Platform[] = ['x', 'linkedin', 'facebook', 'instagram', 'threads'];
 
 export default function ConnectionsPage() {
     const router = useRouter();
@@ -91,7 +91,7 @@ export default function ConnectionsPage() {
         try {
             let authUrl: string;
 
-            if (platform === 'x' || platform === 'tiktok') {
+            if (platform === 'x') {
                 const verifier = generateCodeVerifier();
                 const challenge = await generateCodeChallenge(verifier);
 

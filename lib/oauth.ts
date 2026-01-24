@@ -29,22 +29,6 @@ const OAUTH_CONFIGS: Record<Platform, OAuthConfig> = {
         authUrl: 'https://www.linkedin.com/oauth/v2/authorization',
         scope: 'openid profile w_member_social w_organization_social',
     },
-    tiktok: {
-        authUrl: 'https://www.tiktok.com/v2/auth/authorize/',
-        scope: 'user.info.basic,video.publish',
-        additionalParams: {
-            client_key: process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID || '',
-            code_challenge: 'challenge',
-            code_challenge_method: 'plain',
-        },
-    },
-    reddit: {
-        authUrl: 'https://www.reddit.com/api/v1/authorize',
-        scope: 'identity submit',
-        additionalParams: {
-            duration: 'permanent',
-        },
-    },
     threads: {
         authUrl: 'https://threads.net/oauth/authorize',
         scope: 'threads_basic,threads_content_publish',
@@ -99,12 +83,6 @@ function getClientId(platform: Platform): string {
             break;
         case 'linkedin':
             clientId = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID;
-            break;
-        case 'tiktok':
-            clientId = process.env.NEXT_PUBLIC_TIKTOK_CLIENT_ID;
-            break;
-        case 'reddit':
-            clientId = process.env.NEXT_PUBLIC_REDDIT_CLIENT_ID;
             break;
         case 'threads':
             clientId = process.env.NEXT_PUBLIC_THREADS_CLIENT_ID;

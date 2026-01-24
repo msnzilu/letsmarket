@@ -88,7 +88,7 @@ export interface User {
 }
 
 // Social Media Types
-export type Platform = 'facebook' | 'instagram' | 'x' | 'linkedin' | 'tiktok' | 'reddit' | 'threads';
+export type Platform = 'facebook' | 'instagram' | 'x' | 'linkedin' | 'threads';
 
 export type PostStatus = 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed';
 
@@ -141,8 +141,6 @@ export const PLATFORM_CONFIG: Record<Platform, {
     instagram: { name: 'Instagram', icon: 'instagram', color: '#E4405F', maxLength: 2200, supportsMedia: true },
     x: { name: 'X', icon: 'twitter', color: '#000000', maxLength: 280, supportsMedia: true },
     linkedin: { name: 'LinkedIn', icon: 'linkedin', color: '#0A66C2', maxLength: 3000, supportsMedia: true },
-    tiktok: { name: 'TikTok', icon: 'music', color: '#000000', maxLength: 2200, supportsMedia: true },
-    reddit: { name: 'Reddit', icon: 'message-circle', color: '#FF4500', maxLength: 40000, supportsMedia: true },
     threads: { name: 'Threads', icon: 'at-sign', color: '#000000', maxLength: 500, supportsMedia: true },
 };
 
