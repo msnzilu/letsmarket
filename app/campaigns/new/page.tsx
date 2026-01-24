@@ -171,7 +171,6 @@ export default function NewCampaignPage() {
                     schedule_days: scheduleDays,
                     schedule_time: scheduleTime + ':00',
                     posts_per_week: postsPerWeek,
-                    posts_per_week: postsPerWeek,
                     positioning_focus: positioningFocus,
                     connection_ids: selectedConnections,
                 }),
@@ -288,6 +287,20 @@ export default function NewCampaignPage() {
                                     </p>
                                 )}
                             </div>
+                        </div>
+
+                        <div className="mt-6">
+                            <label className="block text-sm font-medium mb-2">
+                                Positioning Focus (Optional)
+                                <span className="text-slate-500 font-normal ml-2">- How should we frame your content?</span>
+                            </label>
+                            <input
+                                type="text"
+                                value={positioningFocus}
+                                onChange={e => setPositioningFocus(e.target.value)}
+                                placeholder="e.g., Educational, User Stories, Promotional, Behind the Scenes"
+                                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
+                            />
                         </div>
                     </div>
                 )}

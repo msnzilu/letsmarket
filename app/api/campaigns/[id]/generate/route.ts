@@ -67,6 +67,7 @@ export async function POST(
             platforms,
             postsPerPlatform: Math.ceil(campaign.posts_per_week / platforms.length),
             websiteUrl: campaign.websites?.url,
+            positioningFocus: campaign.positioning_focus,
         });
 
         if (generatedPosts.length === 0) {

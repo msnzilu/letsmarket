@@ -52,10 +52,15 @@ export default function CampaignsPage() {
 
     const fetchCampaigns = async () => {
         try {
-            const res = await fetch('/api/subscription');
-            const data = await res.json();
-            setCampaigns(data.usage?.campaigns || []);
-            setLimits(data.limits);
+            // Fetch subscription and limits from subscription API
+            const subRes = await fetch('/api/subscription');
+            const subData = await subRes.json();
+            setLimits(subData.limits);
+
+            // Fetch actual campaigns from campaigns API
+            const campRes = await fetch('/api/campaigns');
+            const campData = await campRes.json();
+            setCampaigns(campData.campaigns || []);
         } catch (error) {
             console.error('Error fetching campaigns/limits:', error);
         } finally {

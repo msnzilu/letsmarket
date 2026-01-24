@@ -103,6 +103,7 @@ export async function POST(request: NextRequest) {
             schedule_timezone = 'UTC',
             posts_per_week = 3,
             connection_ids = [],
+            positioning_focus,
         } = body;
 
         if (!name) {
@@ -123,6 +124,7 @@ export async function POST(request: NextRequest) {
                 schedule_time,
                 schedule_timezone,
                 posts_per_week,
+                positioning_focus,
                 status: 'draft',
             })
             .select()

@@ -25,6 +25,7 @@ export default function PostComposerModal({
     analysisId,
 }: PostComposerModalProps) {
     const [content, setContent] = useState(initialContent);
+    const [analysis, setAnalysis] = useState<any>(null);
     const [connections, setConnections] = useState<Partial<SocialConnection>[]>([]);
     const [selectedConnections, setSelectedConnections] = useState<string[]>([]);
     const [scheduleMode, setScheduleMode] = useState<'now' | 'later'>('now');
@@ -39,8 +40,19 @@ export default function PostComposerModal({
             setContent(initialContent);
             setSuccess(false);
             fetchConnections();
+            if (analysisId) fetchAnalysis();
         }
-    }, [isOpen, initialContent]);
+    }, [isOpen, initialContent, analysisId]);
+
+    const fetchAnalysis = async () => {
+        try {
+            const res = await fetch(`/api/analyses/${analysisId}`);
+            const data = await res.json();
+            setAnalysis(data.analysis);
+        } catch (error) {
+            console.error('Error fetching analysis:', error);
+        }
+    };
 
     const fetchConnections = async () => {
         try {
@@ -156,6 +168,35 @@ export default function PostComposerModal({
                                 <p className="text-xs text-slate-500 mt-1">
                                     {content.length} characters
                                 </p>
+
+                                {/* Suggestions */}
+                                {analysis?.generated_copy && (
+                                    <div className="mt-4">
+                                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                                            Add context from analysis:
+                                        </p>
+                                        <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-1">
+                                            {analysis.generated_copy.valueProps?.map((vp: any, i: number) => (
+                                                <button
+                                                    key={`vp-${i}`}
+                                                    onClick={() => setContent(prev => prev + '\n\n' + vp.copy)}
+                                                    className="text-[10px] bg-brand-secondary-light text-brand-primary px-2 py-1 rounded hover:bg-brand-secondary transition-colors text-left"
+                                                >
+                                                    + {vp.copy}
+                                                </button>
+                                            ))}
+                                            {analysis.generated_copy.painPoints?.map((pp: any, i: number) => (
+                                                <button
+                                                    key={`pp-${i}`}
+                                                    onClick={() => setContent(prev => prev + '\n\n' + pp.copy)}
+                                                    className="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded hover:bg-red-100 transition-colors text-left"
+                                                >
+                                                    + {pp.copy}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Platform Selection */}

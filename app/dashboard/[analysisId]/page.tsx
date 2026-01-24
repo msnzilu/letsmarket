@@ -112,6 +112,9 @@ export default async function AnalysisDetailPage({
                 <CopySection
                     headlines={analysisData.generated_copy.headlines}
                     ctas={analysisData.generated_copy.ctas}
+                    valueProps={analysisData.generated_copy.valueProps}
+                    painPoints={analysisData.generated_copy.painPoints}
+                    postDrafts={analysisData.generated_copy.postDrafts}
                     analysisId={analysisId}
                 />
             </div>

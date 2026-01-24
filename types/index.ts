@@ -20,6 +20,24 @@ export interface PrincipleScores {
 export interface GeneratedCopy {
     headlines: HeadlineVariation[];
     ctas: CTAVariation[];
+    valueProps: ValueProp[];
+    painPoints: PainPoint[];
+    postDrafts: PostDraft[];
+}
+
+export interface ValueProp {
+    copy: string;
+    description: string;
+}
+
+export interface PainPoint {
+    copy: string;
+    description: string;
+}
+
+export interface PostDraft {
+    copy: string;
+    platform: string;
 }
 
 export interface HeadlineVariation {

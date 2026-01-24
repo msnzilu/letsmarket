@@ -11,9 +11,11 @@ interface AnalysisData {
     overall_score: number;
     principle_scores: Record<string, any>;
     generated_copy: {
-        headlines: string[];
-        ctas: string[];
-        value_props: string[];
+        headlines: any[];
+        ctas: any[];
+        valueProps: any[];
+        painPoints: any[];
+        postDrafts: any[];
     };
 }
 
@@ -47,33 +49,36 @@ export async function generateCampaignPosts({
     postsPerPlatform = 3,
     contentTypes = ['post'],
     websiteUrl,
+    positioningFocus,
 }: {
     analysis: AnalysisData;
     platforms: string[];
     postsPerPlatform?: number;
     contentTypes?: string[];
     websiteUrl?: string;
+    positioningFocus?: string;
 }): Promise<GeneratedPost[]> {
     const posts: GeneratedPost[] = [];
 
     // Log what data we're working with
     console.log('Generating posts with context:', {
         websiteUrl,
-        headlines: analysis.generated_copy?.headlines?.slice(0, 3),
-        ctas: analysis.generated_copy?.ctas?.slice(0, 3),
-        value_props: analysis.generated_copy?.value_props?.slice(0, 3),
+        positioningFocus,
+        headlines: analysis.generated_copy?.headlines?.length,
+        valueProps: analysis.generated_copy?.valueProps?.length,
+        painPoints: analysis.generated_copy?.painPoints?.length,
     });
 
     for (const platform of platforms) {
         const limit = PLATFORM_LIMITS[platform as keyof typeof PLATFORM_LIMITS] || 500;
         const style = PLATFORM_STYLES[platform as keyof typeof PLATFORM_STYLES] || 'professional';
 
-        // Build context from available data - headlines and ctas are objects with 'copy' property
+        // Build context from available data
         const headlinesList = analysis.generated_copy?.headlines || [];
         const ctasList = analysis.generated_copy?.ctas || [];
-        const valuePropsList = analysis.generated_copy?.value_props || [];
+        const valuePropsList = analysis.generated_copy?.valueProps || [];
+        const painPointsList = analysis.generated_copy?.painPoints || [];
 
-        // Extract the actual copy text from objects (they have {copy, principle, impactScore, difficulty})
         const headlines = headlinesList
             .slice(0, 5)
             .map((h: any) => typeof h === 'string' ? h : h.copy)
@@ -87,32 +92,34 @@ export async function generateCampaignPosts({
             .join(' | ');
 
         const valueProps = valuePropsList
-            .slice(0, 3)
+            .slice(0, 5)
             .map((v: any) => typeof v === 'string' ? v : v.copy || v)
+            .filter(Boolean)
+            .join(' | ');
+
+        const painPoints = painPointsList
+            .slice(0, 5)
+            .map((p: any) => typeof p === 'string' ? p : p.copy || p)
             .filter(Boolean)
             .join(' | ');
 
         const hasContext = headlines || ctas || valueProps;
 
-        console.log(`[${platform}] Building prompt with:`, {
-            websiteUrl,
-            headlines: headlines.substring(0, 100),
-            ctas: ctas.substring(0, 100),
-            hasContext,
-        });
+        console.log(`[${platform}] Building prompt with focus: ${positioningFocus}`);
 
         const prompt = `You are a social media marketing expert creating posts for a specific business.
 
 WEBSITE URL: ${websiteUrl || 'Unknown'}
+${positioningFocus ? `\nPOSITIONING FOCUS: ${positioningFocus}` : ''}
+
 ${headlines ? `\nHEADLINES FROM THIS WEBSITE:\n${headlines}` : ''}
 ${ctas ? `\nCALL-TO-ACTIONS FROM THIS WEBSITE:\n${ctas}` : ''}
 ${valueProps ? `\nVALUE PROPOSITIONS:\n${valueProps}` : ''}
+${painPoints ? `\nPAIN POINTS THIS BUSINESS SOLVES:\n${painPoints}` : ''}
 
 YOUR TASK: Create ${postsPerPlatform} ${platform} posts that promote THIS SPECIFIC BUSINESS.
 
 CRITICAL REQUIREMENTS:
-1. Posts MUST directly relate to the headlines, CTAs, or value propositions above
-2. Posts MUST be about what ${websiteUrl} actually offers
 3. DO NOT write generic content - reference specific features/benefits from the data above
 4. Maximum ${limit} characters per post
 5. Style: ${style}
@@ -174,7 +181,7 @@ export async function generateSinglePost({
 Topic: ${topic || 'Promote the product/service'}
 Max ${limit} characters.
 Style: ${style}
-Based on: ${analysis.generated_copy?.value_props?.[0] || 'marketing content'}
+Based on: ${analysis.generated_copy?.valueProps?.[0]?.copy || 'marketing content'}
 
 Return only the post text, nothing else.`;
 
