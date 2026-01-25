@@ -36,6 +36,7 @@ export default function PostComposerModal({
     const [loading, setLoading] = useState(true);
     const [posting, setPosting] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (isOpen) {
@@ -80,6 +81,7 @@ export default function PostComposerModal({
         if (selectedConnections.length === 0) return;
 
         setPosting(true);
+        setError(null);
         try {
             // Create posts for each selected connection
             const scheduledFor = scheduleMode === 'later' && scheduleDate && scheduleTime
@@ -103,6 +105,12 @@ export default function PostComposerModal({
             const results = await Promise.all(promises);
             const posts = await Promise.all(results.map(r => r.json()));
 
+            // Check for errors in post creation
+            const createErrors = posts.filter(p => p.error);
+            if (createErrors.length > 0) {
+                throw new Error(createErrors[0].error);
+            }
+
             // If posting now, immediately publish
             if (scheduleMode === 'now') {
                 const publishPromises = posts.map(({ post }) =>
@@ -110,17 +118,24 @@ export default function PostComposerModal({
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ postId: post.id }),
-                    })
+                    }).then(r => r.json())
                 );
-                await Promise.all(publishPromises);
+                const publishResults = await Promise.all(publishPromises);
+
+                // Check for publish errors
+                const publishErrors = publishResults.filter(r => r.error);
+                if (publishErrors.length > 0) {
+                    throw new Error(publishErrors[0].error);
+                }
             }
 
             setSuccess(true);
             setTimeout(() => {
                 onClose();
             }, 2000);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error posting:', error);
+            setError(error.message || 'Failed to post. Please try again.');
         } finally {
             setPosting(false);
         }
@@ -156,6 +171,12 @@ export default function PostComposerModal({
                         </div>
                     ) : (
                         <>
+                            {/* Error Display */}
+                            {error && (
+                                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <p className="text-red-700 text-sm">{error}</p>
+                                </div>
+                            )}
                             {/* Content Editor */}
                             <div className="mb-6">
                                 <label className="block text-sm font-medium text-slate-700 mb-2">

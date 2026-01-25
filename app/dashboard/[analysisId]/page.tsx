@@ -68,14 +68,16 @@ export default async function AnalysisDetailPage({
                     </Button>
                 </Link>
 
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h1 className="text-3xl font-bold mb-2">{analysisData.websites.url}</h1>
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
+                    <div className="min-w-0 flex-1">
+                        <h1 className="text-2xl md:text-3xl font-bold mb-2 break-all md:break-words">{analysisData.websites.url}</h1>
                         <p className="text-slate-600">
                             Analysis from {new Date(analysisData.created_at).toLocaleDateString()}
                         </p>
                     </div>
-                    <ExportPdfButton analysisId={analysisId} plan={plan} />
+                    <div className="shrink-0 w-full sm:w-auto">
+                        <ExportPdfButton analysisId={analysisId} plan={plan} />
+                    </div>
                 </div>
             </div>
 

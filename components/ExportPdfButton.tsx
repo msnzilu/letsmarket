@@ -55,7 +55,7 @@ export default function ExportPdfButton({ analysisId, plan }: ExportPdfButtonPro
             variant={isPro ? "outline" : "secondary"}
             onClick={handleExport}
             disabled={loading}
-            className={!isPro ? "text-slate-500" : ""}
+            className={`w-full sm:w-auto ${!isPro ? "text-slate-500" : ""}`}
         >
             {loading ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

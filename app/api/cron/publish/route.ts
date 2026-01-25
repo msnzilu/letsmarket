@@ -5,8 +5,58 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { publishToSocial } from '@/lib/social';
 import { decrypt } from '@/lib/encryption';
+import { encrypt } from '@/lib/encryption';
 import { Platform } from '@/types';
 import { generateCampaignPosts } from '@/lib/campaign-generator';
+import { refreshOAuthToken } from '@/lib/oauth';
+
+async function getValidAccessToken(supabase: any, connection: any): Promise<string> {
+    const expiresAt = connection.token_expires_at;
+    const now = new Date();
+
+    // Refresh if expiring within 5 minutes or already expired
+    const isExpired = expiresAt && new Date(expiresAt).getTime() < now.getTime() + 5 * 60 * 1000;
+
+    if (!isExpired) {
+        return decrypt(connection.access_token);
+    }
+
+    if (!connection.refresh_token) {
+        throw new Error(`Access token expired and no refresh token available for ${connection.platform}`);
+    }
+
+    console.log(`[Cron] [${connection.platform}] Access token expired. Attempting refresh...`);
+
+    try {
+        const tokenData = await refreshOAuthToken(
+            connection.platform as Platform,
+            decrypt(connection.refresh_token)
+        );
+
+        const newAccessToken = tokenData.access_token;
+        const newRefreshToken = tokenData.refresh_token;
+        const expiresIn = tokenData.expires_in;
+
+        // Update database with new tokens
+        await supabase
+            .from('social_connections')
+            .update({
+                access_token: encrypt(newAccessToken),
+                refresh_token: newRefreshToken ? encrypt(newRefreshToken) : connection.refresh_token,
+                token_expires_at: expiresIn
+                    ? new Date(Date.now() + expiresIn * 1000).toISOString()
+                    : null,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', connection.id);
+
+        console.log(`[Cron] [${connection.platform}] Token refreshed successfully.`);
+        return newAccessToken;
+    } catch (error: any) {
+        console.error(`[Cron] [${connection.platform}] Token refresh failed:`, error.message);
+        throw new Error(`Session with ${connection.platform} has expired.`);
+    }
+}
 
 // Minimum pending posts before triggering regeneration
 const MIN_PENDING_POSTS = 2;
@@ -65,11 +115,13 @@ export async function GET(request: NextRequest) {
                     throw new Error(`No active connection found for ${post.platform}`);
                 }
 
+                const accessToken = await getValidAccessToken(supabase, connection);
+
                 const publishResult = await publishToSocial(
                     post.platform as Platform,
                     {
                         content: post.content,
-                        accessToken: decrypt(connection.access_token),
+                        accessToken: accessToken,
                         userId: connection.platform_user_id,
                     }
                 );
