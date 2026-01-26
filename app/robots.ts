@@ -15,6 +15,6 @@ export default function robots(): MetadataRoute.Robots {
                 '/api/',
             ],
         },
-        sitemap: 'https://lezmarket.vercel.app/sitemap.xml',
+        sitemap: 'https://lezmarket.io/sitemap.xml',
     };
 }
