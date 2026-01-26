@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://lezmarket.vercel.app';
+    const baseUrl = 'https://lezmarket.io';
 
     // Public pages
     const routes = [
