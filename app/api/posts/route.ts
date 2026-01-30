@@ -99,14 +99,24 @@ export async function POST(request: NextRequest) {
         }
 
         // Create the post
+        let finalScheduledFor = scheduledFor;
+        if (scheduledFor) {
+            const scheduledDate = new Date(scheduledFor);
+            const now = new Date();
+            if (scheduledDate < now) {
+                // If in the past, set to 2 minutes from now to give the system time to process
+                finalScheduledFor = new Date(now.getTime() + 2 * 60 * 1000).toISOString();
+            }
+        }
+
         const postData = {
             user_id: user.id,
             connection_id: connectionId,
             content,
             copy_type: copyType || 'custom',
             analysis_id: analysisId || null,
-            scheduled_for: scheduledFor || null,
-            status: scheduledFor ? 'scheduled' : 'draft',
+            scheduled_for: finalScheduledFor || null,
+            status: finalScheduledFor ? 'scheduled' : 'draft',
         };
 
         const { data: post, error: insertError } = await supabase

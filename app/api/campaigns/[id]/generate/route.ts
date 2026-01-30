@@ -125,9 +125,19 @@ export async function POST(
                 
                 const offset = goalUTC.getTime() - formattedDate.getTime();
                 scheduledFor = new Date(goalUTC.getTime() + offset);
+
+                // Safeguard: Ensure we don't schedule in the past
+                if (scheduledFor.getTime() < now.getTime()) {
+                    scheduledFor.setDate(scheduledFor.getDate() + 1);
+                }
             } catch (e) {
                 console.error(`Timezone ${timezone} failed, falling back to UTC`);
                 scheduledFor = new Date(`${localString}Z`);
+                
+                // Fallback safeguard
+                if (scheduledFor.getTime() < now.getTime()) {
+                    scheduledFor.setDate(scheduledFor.getDate() + 1);
+                }
             }
 
             return {

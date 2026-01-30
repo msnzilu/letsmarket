@@ -15,7 +15,7 @@ export const posts: BlogPost[] = [
         title: 'Mastering Conversion Psychology in 2026',
         excerpt: 'The digital landscape is changing faster than ever. Discover the key psychological triggers that are driving performance in 2026 and how to apply them to your brand.',
         category: 'Conversion',
-        date: 'Jan 30, 2026',
+        date: 'Jan 31, 2026',
         readTime: '10 min read',
         image: '/blog/conv-2026.png',
         content: `
