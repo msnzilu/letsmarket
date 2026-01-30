@@ -11,7 +11,12 @@ export const metadata: Metadata = {
   description: 'Analyze your website for 6 core conversion principles and get AI-powered copy that turns visitors into loyal customers in under 2 minutes.',
 };
 
-export default function HomePage() {
+import { createClient } from '@/lib/supabase/server';
+
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -31,16 +36,26 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
-            <Link href="/signup" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto text-lg px-8 bg-brand-primary hover:bg-brand-primary/90 py-6">
-                Analyze Website Free
-              </Button>
-            </Link>
-            <Link href="/login" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6">
-                Sign In
-              </Button>
-            </Link>
+            {user ? (
+              <Link href="/dashboard" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto text-lg px-12 bg-brand-primary hover:bg-brand-primary/90 py-6">
+                  Go to Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/signup" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-lg px-8 bg-brand-primary hover:bg-brand-primary/90 py-6">
+                    Analyze Website Free
+                  </Button>
+                </Link>
+                <Link href="/login" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 py-6">
+                    Sign In
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <div className="mt-12 flex flex-wrap justify-center items-center gap-6 md:gap-8 opacity-60 grayscale px-4">

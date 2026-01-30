@@ -12,70 +12,20 @@ export const metadata: Metadata = {
     description: 'Learn how to optimize your website copy and boost conversions with AI-powered insights, marketing psychology, and behavioral economics.',
 };
 
-const featuredPost = {
-    slug: 'psychology-of-ctas',
-    title: 'The Complete Guide to High-Converting CTAs',
-    excerpt: 'Learn how to craft calls-to-action that leverage urgency, social proof, and loss aversion to drive more clicks and conversions on your landing pages.',
-    category: 'Conversion',
-    date: 'Jan 10, 2026',
-    readTime: '8 min read',
-    image: '/blog/cta-hero.jpg',
-};
+import { posts as allPosts } from '@/lib/blog-data';
 
-const posts = [
-    {
-        slug: 'social-proof-guide',
-        title: 'The Ultimate Guide to Social Proof',
-        excerpt: 'Discover how testimonials, reviews, and user counts can dramatically increase trust.',
-        category: 'Marketing',
-        date: 'Jan 5, 2026',
-        readTime: '6 min read',
-    },
-    {
-        slug: 'ai-copywriting-tips',
-        title: '10 Tips for Better AI-Generated Copy',
-        excerpt: 'Get the most out of AI copywriting tools with these proven strategies.',
-        category: 'AI',
-        date: 'Dec 28, 2025',
-        readTime: '5 min read',
-    },
-    {
-        slug: 'landing-page-optimization',
-        title: 'Landing Page Optimization Guide',
-        excerpt: 'Use scoring and A/B testing to improve your conversion rates.',
-        category: 'Conversion',
-        date: 'Dec 20, 2025',
-        readTime: '7 min read',
-    },
-    {
-        slug: 'scarcity-marketing',
-        title: 'How to Use Scarcity in Marketing',
-        excerpt: 'Create urgency without being pushy or misleading your customers.',
-        category: 'Marketing',
-        date: 'Dec 15, 2025',
-        readTime: '5 min read',
-    },
-    {
-        slug: 'authority-building',
-        title: 'Building Authority for Your Brand',
-        excerpt: 'Establish credibility with certifications, experts, and trust signals.',
-        category: 'Branding',
-        date: 'Dec 10, 2025',
-        readTime: '6 min read',
-    },
-    {
-        slug: 'pricing-strategies',
-        title: 'Pricing Strategies That Convert',
-        excerpt: 'Charm pricing, anchoring, and tier structures that boost sales.',
-        category: 'Conversion',
-        date: 'Dec 5, 2025',
-        readTime: '7 min read',
-    },
-];
+// Only show posts that have content
+const posts = allPosts.filter(post => post.content && post.content.trim().length > 0);
 
+const featuredPost = posts[0];
 const categories = ['All', 'Conversion', 'Marketing', 'AI', 'Branding'];
 
-export default function BlogPage() {
+import { createClient } from '@/lib/supabase/server';
+
+export default async function BlogPage() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
     return (
         <div className="max-w-7xl mx-auto px-4 py-16">
             {/* Header */}
@@ -90,42 +40,49 @@ export default function BlogPage() {
             </div>
 
             {/* Featured Post */}
-            <Card className="mb-12 overflow-hidden bg-gradient-to-br from-brand-primary to-brand-secondary text-white">
-                <div className="p-8 md:p-12">
-                    <Badge className="bg-white/20 text-white mb-4">Featured</Badge>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <Card className="mb-12 overflow-hidden border-none shadow-2xl relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary via-brand-primary/90 to-blue-600 group-hover:scale-105 transition-transform duration-700"></div>
+                <div className="relative p-8 md:p-16 backdrop-blur-sm text-white">
+                    <Badge className="bg-white/20 hover:bg-white/30 text-white mb-6 backdrop-blur-md border-white/10 px-4 py-1">Featured Article</Badge>
+                    <h2 className="text-4xl md:text-6xl font-bold mb-6 leading-tight max-w-4xl tracking-tight">
                         {featuredPost.title}
                     </h2>
-                    <p className="text-lg opacity-90 mb-6 max-w-2xl">
+                    <p className="text-xl md:text-2xl opacity-90 mb-8 max-w-2xl font-light leading-relaxed">
                         {featuredPost.excerpt}
                     </p>
-                    <div className="flex items-center gap-6 mb-6 text-sm opacity-75">
-                        <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
+                    <div className="flex items-center gap-8 mb-10 text-sm font-medium opacity-80">
+                        <span className="flex items-center gap-2">
+                            <Calendar className="w-5 h-5 text-blue-300" />
                             {featuredPost.date}
                         </span>
-                        <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
+                        <span className="flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-blue-300" />
                             {featuredPost.readTime}
                         </span>
                     </div>
                     <Link href={`/blog/${featuredPost.slug}`}>
-                        <Button variant="secondary" size="lg">
-                            Read Article
-                            <ArrowRight className="w-4 h-4 ml-2" />
+                        <Button variant="secondary" size="lg" className="h-14 px-10 text-lg font-semibold bg-white text-brand-primary hover:bg-slate-100 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+                            Read Full Story
+                            <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </Link>
                 </div>
+                {/* Decorative Elements */}
+                <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                <div className="absolute -top-12 -left-12 w-48 h-48 bg-blue-400/20 rounded-full blur-3xl"></div>
             </Card>
 
             {/* Category Filter */}
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+            <div className="flex gap-3 mb-12 overflow-x-auto pb-4 scrollbar-hide">
                 {categories.map((cat) => (
                     <Button
                         key={cat}
                         variant={cat === 'All' ? 'default' : 'outline'}
-                        size="sm"
-                        className="whitespace-nowrap"
+                        className={`rounded-full px-6 transition-all ${
+                            cat === 'All' 
+                            ? 'bg-brand-primary text-white shadow-lg hover:shadow-brand-primary/20' 
+                            : 'hover:bg-brand-primary/5 hover:border-brand-primary text-slate-600'
+                        }`}
                     >
                         {cat}
                     </Button>
@@ -133,26 +90,33 @@ export default function BlogPage() {
             </div>
 
             {/* Posts Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {posts.map((post) => (
-                    <Card key={post.slug} className="p-6 hover:shadow-lg transition-all hover:-translate-y-1">
-                        <Badge variant="secondary" className="mb-3">
-                            {post.category}
-                        </Badge>
-                        <h3 className="text-xl font-semibold mb-2 hover:text-brand-primary transition-colors">
-                            <Link href={`/blog/${post.slug}`}>
-                                {post.title}
-                            </Link>
-                        </h3>
-                        <p className="text-slate-600 mb-4 text-sm line-clamp-2">
-                            {post.excerpt}
-                        </p>
-                        <div className="flex items-center justify-between text-sm text-slate-500">
-                            <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {post.date}
-                            </span>
-                            <span>{post.readTime}</span>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+                {posts.slice(0, 6).map((post) => (
+                    <Card key={post.slug} className="flex flex-col h-full border-none shadow-md hover:shadow-2xl transition-all hover:-translate-y-2 group overflow-hidden bg-white">
+                        <div className="p-8 flex flex-col h-full justify-between">
+                            <div>
+                                <Badge variant="secondary" className="mb-4 bg-slate-100 text-slate-600 font-medium px-3">
+                                    {post.category}
+                                </Badge>
+                                <h3 className="text-2xl font-bold mb-4 group-hover:text-brand-primary transition-colors leading-snug">
+                                    <Link href={`/blog/${post.slug}`}>
+                                        {post.title}
+                                    </Link>
+                                </h3>
+                                <p className="text-slate-500 mb-6 text-base leading-relaxed line-clamp-3">
+                                    {post.excerpt}
+                                </p>
+                            </div>
+                            <div className="pt-6 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 font-medium">
+                                <span className="flex items-center gap-1.5">
+                                    <Calendar className="w-4 h-4" />
+                                    {post.date}
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                    <Clock className="w-4 h-4" />
+                                    {post.readTime}
+                                </span>
+                            </div>
                         </div>
                     </Card>
                 ))}

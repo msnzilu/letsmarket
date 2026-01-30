@@ -79,7 +79,7 @@ const plans: Plan[] = [
 
 export default function PricingClient() {
     const router = useRouter();
-    const { plan: currentPlan, isLoading: subLoading } = useSubscription();
+    const { subscription, plan: currentPlan, isLoading: subLoading } = useSubscription();
     const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
     const [billingInterval, setBillingInterval] = useState<'month' | 'year'>('month');
 
@@ -133,6 +133,11 @@ export default function PricingClient() {
     };
 
     const getButtonText = (planId: string, cta: string) => {
+        // If not logged in (no actual subscription data from server)
+        if (!subscription) {
+            return planId === 'free' ? 'Get Started' : cta;
+        }
+
         if (currentPlan === planId) return 'Current Plan';
         if (planId === 'free' && currentPlan !== 'free') return 'Downgrade';
         if (currentPlan === 'free' && planId === 'pro') return 'Upgrade';
@@ -211,7 +216,7 @@ export default function PricingClient() {
                                 variant={plan.popular ? 'default' : 'outline'}
                                 size="lg"
                                 onClick={() => handleUpgrade(plan.id)}
-                                disabled={isCurrentPlan || isLoading || subLoading}
+                                disabled={(subscription && isCurrentPlan) || isLoading || subLoading}
                             >
                                 {isLoading ? (
                                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
