@@ -221,11 +221,47 @@ export async function GET(request: NextRequest) {
 
                     // Schedule the new posts starting from now
                     const [hours, minutes] = (campaign.schedule_time || '09:00:00').split(':').map(Number);
+                    const timezone = campaign.schedule_timezone || 'UTC';
+
                     const scheduledPosts = generatedPosts.map((post, index) => {
-                        const scheduledFor = new Date(now);
+                        // Create a date in the target timezone
+                        const scheduledDate = new Date(now);
                         // Spread posts across upcoming days
-                        scheduledFor.setDate(scheduledFor.getDate() + index + 1);
-                        scheduledFor.setHours(hours, minutes, 0, 0);
+                        scheduledDate.setDate(scheduledDate.getDate() + index + 1);
+                        
+                        // Format to YYYY-MM-DD
+                        const dateStr = scheduledDate.toISOString().split('T')[0];
+                        const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+                        
+                        const localString = `${dateStr}T${timeStr}`;
+                        
+                        let scheduledFor: Date;
+                        try {
+                            const formatter = new Intl.DateTimeFormat('en-US', {
+                                timeZone: timezone,
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: false
+                            });
+                            
+                            const goalUTC = new Date(`${localString}Z`);
+                            const parts = formatter.formatToParts(goalUTC);
+                            const partMap: any = {};
+                            parts.forEach(p => partMap[p.type] = p.value);
+                            
+                            const formattedFormatted = `${partMap.year}-${partMap.month}-${partMap.day}T${partMap.hour}:${partMap.minute}:${partMap.second}Z`;
+                            const formattedDate = new Date(formattedFormatted);
+                            
+                            const offset = goalUTC.getTime() - formattedDate.getTime();
+                            scheduledFor = new Date(goalUTC.getTime() + offset);
+                        } catch (e) {
+                            console.error(`Timezone ${timezone} failed, falling back to UTC`);
+                            scheduledFor = new Date(`${localString}Z`);
+                        }
 
                         return {
                             campaign_id: campaign.id,

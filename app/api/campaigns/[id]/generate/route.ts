@@ -77,13 +77,58 @@ export async function POST(
             );
         }
 
-        // Calculate scheduled times using campaign's schedule_time
+        // Calculate scheduled times using campaign's schedule_time and schedule_timezone
         const now = new Date();
         const [hours, minutes] = (campaign.schedule_time || '09:00:00').split(':').map(Number);
+        const timezone = campaign.schedule_timezone || 'UTC';
+        
         const scheduledPosts = generatedPosts.map((post, index) => {
-            const scheduledFor = new Date(now);
-            scheduledFor.setDate(scheduledFor.getDate() + Math.floor(index / platforms.length) * 7);
-            scheduledFor.setHours(hours, minutes, 0, 0);
+            // Create a date in the target timezone
+            const scheduledDate = new Date(now);
+            scheduledDate.setDate(scheduledDate.getDate() + Math.floor(index / platforms.length) * 7);
+            
+            // Format to YYYY-MM-DD
+            const dateStr = scheduledDate.toISOString().split('T')[0];
+            const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
+            
+            // Create a local ISO string with the target timezone
+            // Example: 2024-01-24T09:00:00.000 (local time)
+            // Then parse it as that timezone to get the correct UTC version
+            const localString = `${dateStr}T${timeStr}`;
+            
+            // Use Intl.DateTimeFormat to help find the offset if we didn't want to use a library
+            // but for simplicity and reliability with native Date in Node/Next.js:
+            let scheduledFor: Date;
+            try {
+                // This creates a Date object that represents the local time in the target timezone
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: timezone,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                
+                // We need to calculate the offset to convert our goal local time to UTC
+                // Strategy: Create a UTC Date for the goal time, then see what time it WOULD be in that timezone
+                // and adjust.
+                const goalUTC = new Date(`${localString}Z`);
+                const parts = formatter.formatToParts(goalUTC);
+                const partMap: any = {};
+                parts.forEach(p => partMap[p.type] = p.value);
+                
+                const formattedFormatted = `${partMap.year}-${partMap.month}-${partMap.day}T${partMap.hour}:${partMap.minute}:${partMap.second}Z`;
+                const formattedDate = new Date(formattedFormatted);
+                
+                const offset = goalUTC.getTime() - formattedDate.getTime();
+                scheduledFor = new Date(goalUTC.getTime() + offset);
+            } catch (e) {
+                console.error(`Timezone ${timezone} failed, falling back to UTC`);
+                scheduledFor = new Date(`${localString}Z`);
+            }
 
             return {
                 campaign_id: id,
