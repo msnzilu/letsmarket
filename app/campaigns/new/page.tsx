@@ -63,9 +63,17 @@ export default function NewCampaignPage() {
     const [scheduleType, setScheduleType] = useState('weekly');
     const [scheduleDays, setScheduleDays] = useState<number[]>([1, 3, 5]); // Mon, Wed, Fri
     const [scheduleTime, setScheduleTime] = useState('09:00');
+    const [scheduleTimezone, setScheduleTimezone] = useState('UTC');
     const [postsPerWeek, setPostsPerWeek] = useState(3);
 
     useEffect(() => {
+        // Detect timezone
+        try {
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (tz) setScheduleTimezone(tz);
+        } catch (e) {
+            console.error('Timezone detection failed:', e);
+        }
         supabase.auth.getUser().then(({ data: { user } }) => {
             if (!user) {
                 router.push('/login');
@@ -170,6 +178,7 @@ export default function NewCampaignPage() {
                     schedule_type: scheduleType,
                     schedule_days: scheduleDays,
                     schedule_time: scheduleTime + ':00',
+                    schedule_timezone: scheduleTimezone,
                     posts_per_week: postsPerWeek,
                     positioning_focus: positioningFocus,
                     connection_ids: selectedConnections,

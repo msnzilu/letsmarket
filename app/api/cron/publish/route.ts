@@ -258,6 +258,8 @@ async function handler(request: NextRequest) {
                     // Schedule the new posts starting from now
                     const [hours, minutes] = (campaign.schedule_time || '09:00:00').split(':').map(Number);
                     const timezone = campaign.schedule_timezone || 'UTC';
+                    
+                    console.log(`[Cron] [Campaign ${campaign.id}] Regeneration - Time: ${campaign.schedule_time}, TZ: ${timezone}`);
 
                     const scheduledPosts = generatedPosts.map((post, index) => {
                         // Create a date in the target timezone
@@ -268,12 +270,11 @@ async function handler(request: NextRequest) {
                         // Format to YYYY-MM-DD
                         const dateStr = scheduledDate.toISOString().split('T')[0];
                         const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`;
-                        
                         const localString = `${dateStr}T${timeStr}`;
                         
                         let scheduledFor: Date;
                         try {
-                            const formatter = new Intl.DateTimeFormat('en-US', {
+                            const formatter = new Intl.DateTimeFormat('en-GB', {
                                 timeZone: timezone,
                                 year: 'numeric',
                                 month: '2-digit',
@@ -289,8 +290,7 @@ async function handler(request: NextRequest) {
                             const partMap: any = {};
                             parts.forEach(p => partMap[p.type] = p.value);
                             
-                            const formattedFormatted = `${partMap.year}-${partMap.month}-${partMap.day}T${partMap.hour}:${partMap.minute}:${partMap.second}Z`;
-                            const formattedDate = new Date(formattedFormatted);
+                            const formattedDate = new Date(`${partMap.year}-${partMap.month}-${partMap.day}T${partMap.hour}:${partMap.minute}:${partMap.second}Z`);
                             
                             const offset = goalUTC.getTime() - formattedDate.getTime();
                             scheduledFor = new Date(goalUTC.getTime() + offset);
@@ -300,7 +300,7 @@ async function handler(request: NextRequest) {
                                 scheduledFor.setDate(scheduledFor.getDate() + 1);
                             }
                         } catch (e) {
-                            console.error(`Timezone ${timezone} failed, falling back to UTC`);
+                            console.error(`Cron: Timezone ${timezone} failed fallback to UTC`, e);
                             scheduledFor = new Date(`${localString}Z`);
 
                             // Fallback safeguard
