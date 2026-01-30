@@ -61,17 +61,53 @@ async function getValidAccessToken(supabase: any, connection: any): Promise<stri
 // Minimum pending posts before triggering regeneration
 const MIN_PENDING_POSTS = 2;
 
-export async function GET(request: NextRequest) {
-    try {
-        // Simple secret check (configure in Vercel/env)
-        const { searchParams } = new URL(request.url);
-        const secret = searchParams.get('secret');
+import { Receiver } from '@upstash/qstash';
 
-        if (process.env.CRON_SECRET && secret !== process.env.CRON_SECRET) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+// Initialize QStash receiver
+const receiver = process.env.QSTASH_CURRENT_SIGNING_KEY
+    ? new Receiver({
+        currentSigningKey: process.env.QSTASH_CURRENT_SIGNING_KEY,
+        nextSigningKey: process.env.QSTASH_NEXT_SIGNING_KEY!,
+    })
+    : null;
+
+async function handler(request: NextRequest) {
+    try {
+        // 1. Verify QStash Signature if configured
+        if (receiver) {
+            const signature = request.headers.get('upstash-signature');
+            if (signature) {
+                const body = await request.text();
+                const isValid = await receiver.verify({
+                    signature,
+                    body,
+                }).catch(() => false);
+
+                if (!isValid) {
+                    return NextResponse.json({ error: 'Invalid Upstash signature' }, { status: 401 });
+                }
+            } else {
+                // If signature header is missing but QStash is configured, 
+                // we still allow the CRON_SECRET fallback for Vercel's native cron
+                const { searchParams } = new URL(request.url);
+                const secret = searchParams.get('secret');
+
+                if (process.env.CRON_SECRET && secret !== process.env.CRON_SECRET) {
+                    return NextResponse.json({ error: 'Unauthorized (Missing Upstash-Signature)' }, { status: 401 });
+                }
+            }
+        } else {
+            // Fallback to secret check if QStash is not configured
+            const { searchParams } = new URL(request.url);
+            const secret = searchParams.get('secret');
+
+            if (process.env.CRON_SECRET && secret !== process.env.CRON_SECRET) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
         }
 
         const supabase = await createClient();
+
         const now = new Date();
         const nowISO = now.toISOString();
 
@@ -319,4 +355,7 @@ export async function GET(request: NextRequest) {
         );
     }
 }
+
+export const GET = handler;
+export const POST = handler;
 
