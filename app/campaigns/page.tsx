@@ -89,29 +89,34 @@ export default function CampaignsPage() {
     return (
         <PremiumGate>
             <div className="max-w-7xl mx-auto px-4 py-12">
-                <div className="mb-8">
-                    <Link href="/dashboard">
-                        <Button variant="ghost" className="mb-4">
+                <div className="mb-8 space-y-4">
+                    <Link href="/dashboard" className="inline-block">
+                        <Button variant="ghost" size="sm" className="text-slate-500 hover:text-brand-primary transition-colors">
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Back to Dashboard
                         </Button>
                     </Link>
 
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h1 className="text-3xl font-bold mb-2">Campaigns</h1>
-                            <p className="text-slate-600">
-                                Automate your social media posting with AI-generated content
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-6 border-b border-slate-200">
+                        <div className="space-y-1">
+                            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+                                Campaigns
+                            </h1>
+                            <p className="text-lg text-slate-600 max-w-2xl">
+                                Automate your social media posting with AI-generated content tailored to your business.
                             </p>
                         </div>
-                        <div onClick={(e) => {
-                            if (limits && limits.posts_per_month === 0) {
-                                e.preventDefault();
-                                onOpen();
-                            }
-                        }}>
+                        <div 
+                            className="w-full md:w-auto"
+                            onClick={(e) => {
+                                if (limits && limits.posts_per_month === 0) {
+                                    e.preventDefault();
+                                    onOpen();
+                                }
+                            }}
+                        >
                             <Link href="/campaigns/new">
-                                <Button size="lg">
+                                <Button size="lg" className="w-full md:w-auto shadow-lg shadow-brand-primary/20 hover:shadow-brand-primary/40 transition-all">
                                     <Plus className="w-4 h-4 mr-2" />
                                     New Campaign
                                 </Button>

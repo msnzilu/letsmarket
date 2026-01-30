@@ -10,7 +10,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, Loader2, Check, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Loader2, Check, Sparkles, Clock, Plus, Megaphone } from 'lucide-react';
 import { PLATFORM_CONFIG, Platform } from '@/types';
 
 interface Website {
@@ -220,12 +220,21 @@ export default function NewCampaignPage() {
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-12">
-            <Link href="/campaigns">
-                <Button variant="ghost" className="mb-8">
+            <Link href="/campaigns" className="inline-block mb-8">
+                <Button variant="ghost" size="sm" className="text-slate-500 hover:text-brand-primary transition-colors">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Back to Campaigns
                 </Button>
             </Link>
+
+            <div className="mb-12 text-center">
+                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">
+                    Create Campaign
+                </h1>
+                <p className="text-lg text-slate-600">
+                    Set up your automated social media strategy in minutes.
+                </p>
+            </div>
 
             {/* Progress Steps */}
             <div className="flex items-center justify-center gap-4 mb-8">
@@ -265,25 +274,38 @@ export default function NewCampaignPage() {
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Select Website</label>
-                            <div className="space-y-2">
+                        <div className="mb-8">
+                            <label className="block text-sm font-medium mb-3 text-slate-700">Select Website</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {websites.map(site => (
                                     <div
                                         key={site.id}
                                         onClick={() => setSelectedWebsite(site.id)}
-                                        className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedWebsite === site.id
-                                            ? 'border-brand-primary bg-brand-secondary-light'
-                                            : 'hover:border-slate-300'
-                                            }`}
+                                        className={`p-5 rounded-xl border-2 cursor-pointer transition-all duration-300 group ${
+                                            selectedWebsite === site.id
+                                            ? 'border-brand-primary bg-brand-primary/5 shadow-md shadow-brand-primary/10'
+                                            : 'border-slate-100 bg-white hover:border-brand-primary/30 hover:shadow-sm'
+                                        }`}
                                     >
-                                        <div className="flex justify-between items-center">
-                                            <span className="font-medium">{site.url}</span>
-                                            {site.analyses?.[0] && (
-                                                <Badge variant="outline">
-                                                    Score: {site.analyses[0].overall_score}
-                                                </Badge>
-                                            )}
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex justify-between items-start">
+                                                <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-brand-primary/10 transition-colors">
+                                                    <Sparkles className={`w-5 h-5 ${selectedWebsite === site.id ? 'text-brand-primary' : 'text-slate-400'}`} />
+                                                </div>
+                                                {site.analyses?.[0] && (
+                                                    <Badge className="bg-brand-primary text-white">
+                                                        {site.analyses[0].overall_score}%
+                                                    </Badge>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-slate-900 truncate">
+                                                    {site.url.replace(/^https?:\/\//, '')}
+                                                </p>
+                                                <p className="text-xs text-slate-500 mt-1">
+                                                    {site.analyses?.[0] ? 'Analysis Complete' : 'Needs Analysis'}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -320,7 +342,7 @@ export default function NewCampaignPage() {
                         <h2 className="text-2xl font-bold mb-2">Select Social Accounts</h2>
                         <p className="text-slate-600 mb-6">Choose where to publish your posts</p>
 
-                        <div className="space-y-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {connections.map(conn => {
                                 const config = PLATFORM_CONFIG[conn.platform as Platform];
                                 const isSelected = selectedConnections.includes(conn.id);
@@ -329,22 +351,33 @@ export default function NewCampaignPage() {
                                     <div
                                         key={conn.id}
                                         onClick={() => toggleConnection(conn.id)}
-                                        className={`p-4 border rounded-lg cursor-pointer transition-all flex items-center gap-4 ${isSelected
-                                            ? 'border-brand-primary bg-brand-secondary-light'
-                                            : 'hover:border-slate-300'
-                                            }`}
+                                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 relative group ${
+                                            isSelected
+                                            ? 'border-brand-primary bg-brand-primary/5 shadow-md shadow-brand-primary/10'
+                                            : 'border-slate-100 bg-white hover:border-brand-primary/30 hover:shadow-sm'
+                                        }`}
                                     >
-                                        <div
-                                            className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
-                                            style={{ backgroundColor: config?.color || '#666' }}
-                                        >
-                                            {(config?.name || conn.platform)[0]}
+                                        <div className="flex items-center gap-4">
+                                            <div
+                                                className="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-inner transform group-hover:scale-110 transition-transform"
+                                                style={{ 
+                                                    background: `linear-gradient(135deg, ${config?.color || '#666'}dd, ${config?.color || '#666'})` 
+                                                }}
+                                            >
+                                                {(config?.name || conn.platform)[0]}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-bold text-slate-900 truncate">{conn.account_name}</p>
+                                                <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
+                                                    {config?.name || conn.platform}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className="flex-1">
-                                            <p className="font-medium">{conn.account_name}</p>
-                                            <p className="text-sm text-slate-500">{config?.name || conn.platform}</p>
-                                        </div>
-                                        {isSelected && <Check className="w-5 h-5 text-brand-primary" />}
+                                        {isSelected && (
+                                            <div className="absolute top-2 right-2 bg-brand-primary text-white rounded-full p-1 shadow-sm">
+                                                <Check className="w-3 h-3" />
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
@@ -366,46 +399,61 @@ export default function NewCampaignPage() {
                         <h2 className="text-2xl font-bold mb-2">Set Schedule</h2>
                         <p className="text-slate-600 mb-6">When should we publish your posts?</p>
 
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium mb-2">Posting Days</label>
-                            <div className="flex gap-2">
-                                {DAY_OPTIONS.map(day => (
-                                    <button
-                                        key={day.value}
-                                        onClick={() => toggleDay(day.value)}
-                                        className={`px-4 py-2 rounded-lg border transition-all ${scheduleDays.includes(day.value)
-                                            ? 'bg-brand-primary text-white border-brand-primary'
-                                            : 'hover:border-brand-secondary'
+                        <div className="space-y-8">
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-700 mb-4">Posting Days</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {DAY_OPTIONS.map(day => (
+                                        <button
+                                            key={day.value}
+                                            onClick={() => toggleDay(day.value)}
+                                            className={`flex-1 sm:flex-none px-5 py-3 rounded-xl border-2 font-bold transition-all duration-200 ${
+                                                scheduleDays.includes(day.value)
+                                                ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/20'
+                                                : 'bg-white border-slate-100 text-slate-600 hover:border-slate-300'
                                             }`}
-                                    >
-                                        {day.label}
-                                    </button>
-                                ))}
+                                        >
+                                            {day.label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium mb-2">Time</label>
-                            <input
-                                type="time"
-                                value={scheduleTime}
-                                onChange={e => setScheduleTime(e.target.value)}
-                                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-brand-primary"
-                            />
-                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="space-y-3">
+                                    <label className="block text-sm font-semibold text-slate-700">Preferred Time</label>
+                                    <div className="relative">
+                                        <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                                        <input
+                                            type="time"
+                                            value={scheduleTime}
+                                            onChange={e => setScheduleTime(e.target.value)}
+                                            className="w-full pl-12 pr-4 py-4 border-2 border-slate-100 rounded-xl focus:border-brand-primary focus:ring-0 outline-none transition-colors text-lg font-medium"
+                                        />
+                                    </div>
+                                </div>
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">
-                                Posts per week: {postsPerWeek}
-                            </label>
-                            <input
-                                type="range"
-                                min="1"
-                                max="14"
-                                value={postsPerWeek}
-                                onChange={e => setPostsPerWeek(parseInt(e.target.value))}
-                                className="w-full accent-brand-primary"
-                            />
+                                <div className="space-y-3">
+                                    <label className="block text-sm font-semibold text-slate-700">
+                                        Posts per week: <span className="text-brand-primary font-bold">{postsPerWeek}</span>
+                                    </label>
+                                    <div className="pt-2">
+                                        <input
+                                            type="range"
+                                            min="1"
+                                            max="14"
+                                            value={postsPerWeek}
+                                            onChange={e => setPostsPerWeek(parseInt(e.target.value))}
+                                            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-brand-primary"
+                                        />
+                                        <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
+                                            <span>1 post</span>
+                                            <span>7 posts</span>
+                                            <span>14 posts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

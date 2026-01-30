@@ -132,7 +132,7 @@ export default function CampaignCard({ campaign, onStatusChange }: CampaignCardP
             </div>
 
             {/* Schedule & Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm mt-6 pt-4 border-t">
                 <div className="flex items-center gap-2 text-slate-600">
                     <Calendar className="w-4 h-4" />
                     <span>{scheduleDays} @ {campaign.schedule_time?.slice(0, 5)}</span>
