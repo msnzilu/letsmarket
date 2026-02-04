@@ -20,13 +20,23 @@ export async function proxy(request: NextRequest) {
         return supabaseResponse;
     }
 
+    // Track corrupted cookies to clear them
+    const corruptedCookies: string[] = [];
+
     const supabase = createServerClient(
         supabaseUrl,
         supabaseAnonKey,
         {
             cookies: {
                 get(name: string) {
-                    return request.cookies.get(name)?.value;
+                    try {
+                        return request.cookies.get(name)?.value;
+                    } catch (error) {
+                        // Handle corrupted cookies (Invalid UTF-8 sequence)
+                        console.error(`Error reading cookie ${name}:`, error);
+                        corruptedCookies.push(name);
+                        return undefined;
+                    }
                 },
                 set(name: string, value: string, options: CookieOptions) {
                     request.cookies.set({
@@ -67,6 +77,37 @@ export async function proxy(request: NextRequest) {
     );
 
     try {
+        // If corrupted cookies were detected, clear them and redirect to login
+        if (corruptedCookies.length > 0) {
+            console.error('Corrupted cookies detected, clearing and redirecting to login:', corruptedCookies);
+            const redirectUrl = request.nextUrl.clone();
+            redirectUrl.pathname = '/login';
+            redirectUrl.searchParams.set('session_expired', 'true');
+            
+            const response = NextResponse.redirect(redirectUrl);
+            
+            // Clear all Supabase auth cookies
+            const cookiesToClear = [
+                'sb-access-token',
+                'sb-refresh-token',
+                ...corruptedCookies,
+            ];
+            
+            // Also clear any cookies that start with sb- (Supabase prefix)
+            request.cookies.getAll().forEach(cookie => {
+                if (cookie.name.startsWith('sb-')) {
+                    cookiesToClear.push(cookie.name);
+                }
+            });
+            
+            // Remove duplicates and clear cookies
+            [...new Set(cookiesToClear)].forEach(name => {
+                response.cookies.set(name, '', { maxAge: 0, path: '/' });
+            });
+            
+            return response;
+        }
+
         // This will refresh the session if needed
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -94,6 +135,25 @@ export async function proxy(request: NextRequest) {
         return supabaseResponse;
     } catch (error) {
         console.error('Middleware execution error:', error);
+        
+        // If error is UTF-8 related, clear cookies and redirect
+        if (error instanceof Error && error.message.includes('UTF-8')) {
+            const redirectUrl = request.nextUrl.clone();
+            redirectUrl.pathname = '/login';
+            redirectUrl.searchParams.set('session_expired', 'true');
+            
+            const response = NextResponse.redirect(redirectUrl);
+            
+            // Clear all Supabase cookies
+            request.cookies.getAll().forEach(cookie => {
+                if (cookie.name.startsWith('sb-')) {
+                    response.cookies.set(cookie.name, '', { maxAge: 0, path: '/' });
+                }
+            });
+            
+            return response;
+        }
+        
         return supabaseResponse;
     }
 }

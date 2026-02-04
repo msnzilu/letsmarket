@@ -17,7 +17,13 @@ export async function GET(request: Request) {
             {
                 cookies: {
                     get(name: string) {
-                        return cookieStore.get(name)?.value;
+                        try {
+                            return cookieStore.get(name)?.value;
+                        } catch (error) {
+                            // Handle corrupted cookies (Invalid UTF-8 sequence)
+                            console.error(`Error reading cookie ${name}:`, error);
+                            return undefined;
+                        }
                     },
                     set(name: string, value: string, options: CookieOptions) {
                         cookieStore.set({ name, value, ...options });

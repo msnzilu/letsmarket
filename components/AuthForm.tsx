@@ -2,9 +2,9 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -21,8 +21,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [sessionExpiredMessage, setSessionExpiredMessage] = useState('');
     const router = useRouter();
+    const searchParams = useSearchParams();
     const supabase = createClient();
+
+    // Check for session expired parameter
+    useEffect(() => {
+        if (searchParams.get('session_expired') === 'true') {
+            setSessionExpiredMessage('Your session has expired. Please sign in again.');
+        }
+    }, [searchParams]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -101,6 +110,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
             <h2 className="text-2xl font-bold mb-6 text-center">
                 {mode === 'signup' ? 'Create Account' : 'Welcome Back'}
             </h2>
+
+            {sessionExpiredMessage && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-700 px-4 py-3 rounded mb-4 text-sm">
+                    {sessionExpiredMessage}
+                </div>
+            )}
 
             {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4 text-sm">
